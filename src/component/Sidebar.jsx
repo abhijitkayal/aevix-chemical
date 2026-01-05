@@ -69,7 +69,7 @@ export default function App() {
       {/* Sidebar */}
       <aside className="w-80 bg-slate-900 text-white p-4">
         <h1 className="text-2xl font-bold mb-6 text-emerald-400">
-          Aevix
+          Aevix CHEMICAL
         </h1>
 
         {tabs.map((tab, i) => (
