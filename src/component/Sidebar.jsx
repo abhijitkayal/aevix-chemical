@@ -12,6 +12,10 @@ import {
 import Overview from "./Overview.jsx";
 import SalesTeamPieChart from "./Salesteampiechart.jsx";
 import StockAnalytics from "./Stockanalytics.jsx";
+import Invoice from "./Invoice.jsx";
+import Quotation from "./Quotation.jsx";
+import Report from "./Report.jsx";
+import Ledger from "./Ledger.jsx";
 import Warehouse from "./Warehouse.jsx";
 import Movement from "./Movement.jsx";
 import LowStock from "./Lowstock.jsx";
@@ -129,6 +133,30 @@ export default function App() {
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock Analytics" && (
     <StockAnalytics />
+  )}
+
+  {/* BILLING & ACCOUNTING → INVOICES */}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Invoices" && (
+    <Invoice />
+  )}
+
+  {/* BILLING & ACCOUNTING → QUOTATIONS */}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Quotations" && (
+    <Quotation />
+  )}
+
+  {/* BILLING & ACCOUNTING → LEDGERS */}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Ledgers" && (
+    <Ledger />
+  )}
+
+  {/* BILLING & ACCOUNTING → REPORTS */}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Reports" && (
+    <Report />
   )}
 
   {/* INVENTORY → STOCK VIEW */}
