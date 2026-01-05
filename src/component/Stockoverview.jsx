@@ -8,6 +8,8 @@ import {
   Filter,
   Download,
   Eye,
+  Plus,
+  X,
 } from "lucide-react";
 
 // Complete stock inventory
@@ -296,6 +298,41 @@ export default function StockOverview() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    itemCode: "",
+    itemName: "",
+    category: "",
+    currentStock: "",
+    unit: "",
+    unitPrice: "",
+    reorderLevel: "",
+    warehouse: "",
+    supplier: "",
+    expiryDate: ""
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    console.log("Stock item submitted:", form);
+    // Add your submission logic here
+    setForm({
+      itemCode: "",
+      itemName: "",
+      category: "",
+      currentStock: "",
+      unit: "",
+      unitPrice: "",
+      reorderLevel: "",
+      warehouse: "",
+      supplier: "",
+      expiryDate: ""
+    });
+    setShowModal(false);
+  };
 
   const filteredStock = stockInventory.filter((item) => {
     const matchesSearch =
@@ -329,6 +366,20 @@ export default function StockOverview() {
 
   return (
     <div className="space-y-6">
+      {/* Header with Add Button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Stock Inventory
+        </h2>
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-4 py-2 rounded-lg transition-colors"
+        >
+          <Plus size={20} />
+          Add Stock Item
+        </button>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow p-6 border-l-4 border-blue-500">
@@ -578,6 +629,192 @@ export default function StockOverview() {
           </div>
         )}
       </div>
+
+      {/* Add Stock Item Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+
+            <h3 className="text-2xl font-bold mb-6 text-gray-900">
+              Add New Stock Item
+            </h3>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Item Code *
+                  </label>
+                  <input
+                    name="itemCode"
+                    placeholder="e.g., CHM-001"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.itemCode}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Item Name *
+                  </label>
+                  <input
+                    name="itemName"
+                    placeholder="Enter item name"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.itemName}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Category *
+                  </label>
+                  <select
+                    name="category"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.category}
+                  >
+                    <option value="">Select category</option>
+                    <option value="Chemicals">Chemicals</option>
+                    <option value="Raw Materials">Raw Materials</option>
+                    <option value="Packaging">Packaging</option>
+                    <option value="Equipment">Equipment</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Warehouse *
+                  </label>
+                  <select
+                    name="warehouse"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.warehouse}
+                  >
+                    <option value="">Select warehouse</option>
+                    <option value="Main Warehouse A">Main Warehouse A</option>
+                    <option value="Warehouse B">Warehouse B</option>
+                    <option value="Warehouse C">Warehouse C</option>
+                    <option value="Distribution Center">Distribution Center</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Current Stock *
+                  </label>
+                  <input
+                    name="currentStock"
+                    type="number"
+                    placeholder="Enter quantity"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.currentStock}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Unit *
+                  </label>
+                  <select
+                    name="unit"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.unit}
+                  >
+                    <option value="">Select unit</option>
+                    <option value="Liters">Liters</option>
+                    <option value="Kg">Kg</option>
+                    <option value="Pieces">Pieces</option>
+                    <option value="Boxes">Boxes</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Reorder Level *
+                  </label>
+                  <input
+                    name="reorderLevel"
+                    type="number"
+                    placeholder="Min stock"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.reorderLevel}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Unit Price (₹) *
+                  </label>
+                  <input
+                    name="unitPrice"
+                    type="number"
+                    placeholder="Price per unit"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.unitPrice}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Supplier *
+                  </label>
+                  <input
+                    name="supplier"
+                    placeholder="Supplier name"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.supplier}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Expiry Date
+                </label>
+                <input
+                  name="expiryDate"
+                  type="date"
+                  className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  onChange={handleChange}
+                  value={form.expiryDate}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleSubmit}
+                className="flex-1 bg-emerald-600 text-black py-2.5 rounded-lg hover:bg-emerald-700 font-medium transition-colors"
+              >
+                Add Stock Item
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-6 bg-gray-200 text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

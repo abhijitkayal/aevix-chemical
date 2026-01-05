@@ -29,6 +29,7 @@ import Role from "./Role.jsx";
 import Leads from "./Leads.jsx";
 import Activitylogs from "./Activitylogs.jsx";
 import Security from "./Security.jsx";
+import Header from "./Header.jsx";
 
 // Sidebar configuration (from ERP PDF modules)
 const tabs = [
@@ -78,10 +79,10 @@ export default function App() {
                 setActiveTab(i);
                 setActiveSubTab(0);
               }}
-              className={`flex items-center gap-3 w-full px-3 py-2 rounded border ${
+              className={`flex items-center gap-3 w-full px-3 py-2 rounded border font-bold ${
                 activeTab === i
-                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-400"
-                  : "bg-transparent border-slate-600 hover:bg-slate-800"
+                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-400 text-black"
+                  : "bg-transparent border-slate-600 text-cyan-200 hover:bg-slate-800"
               }`}
             >
               <tab.icon size={18} />
@@ -95,10 +96,10 @@ export default function App() {
                   <button
                     key={j}
                     onClick={() => setActiveSubTab(j)}
-                    className={`block w-full text-left px-2 py-1 rounded border ${
+                    className={`block w-full text-left px-2 py-1 rounded border font-semibold ${
                       activeSubTab === j
-                        ? "bg-gradient-to-r from-emerald-400 to-teal-400 border-emerald-300"
-                        : "bg-transparent border-slate-700 hover:bg-slate-800"
+                        ? "bg-gradient-to-r from-emerald-400 to-teal-400 border-emerald-300 text-black"
+                        : "bg-transparent text-cyan-200 border-slate-700 hover:bg-slate-800"
                     }`}
                   >
                     {sub}
@@ -113,126 +114,204 @@ export default function App() {
       {/* Main Content */}
      {/* Main Content Area */}
 <main className="flex-1 p-6 overflow-y-auto bg-transparent">
-  <h2 className="text-2xl font-semibold mb-4 text-black">
+  {/* <h2 className="text-2xl font-semibold mb-4 text-black">
     {tabs[activeTab].name} / {tabs[activeTab].subtabs[activeSubTab]}
-  </h2>
+  </h2> */}
 
   {/* DASHBOARD → OVERVIEW */}
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Overview" && (
+    <>
+     <Header/>
     <Overview />
+    </>
   )}
 
   {/* DASHBOARD → SALES ANALYTICS */}
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Sales Analytics" && (
-    <SalesTeamPieChart />
+    // <SalesTeamPieChart />
+    <>
+    <Header/>
+    <SalesTeamPieChart/>
+    </>
   )}
 
   {/* DASHBOARD → STOCK ANALYTICS */}
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock Analytics" && (
+    <>
+    <Header/>
     <StockAnalytics />
+    
+    </>
   )}
 
   {/* BILLING & ACCOUNTING → INVOICES */}
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Invoices" && (
+    <>
+    <Header/>
     <Invoice />
+    </>
+    
   )}
 
   {/* BILLING & ACCOUNTING → QUOTATIONS */}
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Quotations" && (
+    <>
+    
+    <Header/>
     <Quotation />
+    </>
+    
   )}
 
   {/* BILLING & ACCOUNTING → LEDGERS */}
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Ledgers" && (
+    <>
+    <Header/>
     <Ledger />
+    </>
+    
   )}
 
   {/* BILLING & ACCOUNTING → REPORTS */}
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Reports" && (
-    <Report />
+    <>
+    <Header/>
+    <Report/>
+    </>
+    // <Report />
   )}
 
   {/* INVENTORY → STOCK VIEW */}
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock View" && (
-    <StockOverview />
+    // <StockOverview />
+    <>
+    <Header/>
+    <StockOverview/>
+    </>
   )}
 
   {/* inventory */}
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Warehouses" && (
+    <>
+    <Header/>
     <Warehouse />
+    </>
   )}
 
   {/* INVENTORY → LOW STOCK */}
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Low Stock" && (
+    <>
+    <Header/>
     <LowStock/>
+    </>
+    // <LowStock/>
   )}
   {/* INVENTORY → MOVEMENT */}
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Movement" && (
-    <Movement />
+    <>
+    <Header/>
+    <Movement/>
+    </>
+    // <Movement />
   )}
 
   {/* PRODUCTION → VARIANCE */}
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Variance" && (
+    <>
+    <Header/>
     <Variance />
+    </>
+    
   )}
 
   {/* PRODUCTION → BOM */}
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "BOM" && (
-    <BOM />
+    <>
+    <Header/>
+    <BOM/>
+    </>
+    // <BOM />
   )}
 
   {/* PRODUCTION → JOB WORK */}
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Job Work" && (
+    <>
+    <Header/>
     <Jobwork />
+    </>
   )}
 
   {/* PRODUCTION → PLANNING */}
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Planning" && (
-    <Planning />
+    <>
+    <Header/>
+    <Planning/>
+    </>
+    // <Planning />
   )}
 
   {/* USERS & CRM → USERS */}
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Users" && (
-    <User />
+    <>
+    <Header/>
+    <User/>
+    </>
+    // <User />
   )}
 
   {/* USERS & CRM → ROLES */}
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Roles" && (
-    <Role />
+    <>
+    <Header/>
+    <Role/>
+    </>
+    // <Role />
   )}
 
     {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Leads" && (
-    <Leads />
+    <>
+    <Header/>
+    <Leads/>
+    </>
+    // <Leads />
   )}
 
   {/* USERS & CRM → ACTIVITY LOGS */}
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Activity Logs" && (
-    <Activitylogs />
+    <>
+    <Header/>
+    <Activitylogs/>
+    </>
+    // <Activitylogs />
   )}
 
   {/* USERS & CRM → SECURITY */}
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Security" && (
+    <>
+    <Header/>
     <Security />
+    </>
+    
   )}
   
   {/* DEFAULT CONTENT */}

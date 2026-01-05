@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   BarChart,
   Bar,
@@ -11,7 +11,7 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import { Package, TrendingUp, TrendingDown, AlertTriangle } from "lucide-react";
+import { Package, TrendingUp, TrendingDown, AlertTriangle, X, Plus } from "lucide-react";
 
 // Warehouse movement data (daily/weekly tracking)
 const warehouseMovementData = [
@@ -145,9 +145,48 @@ export default function Warehouse() {
   const totalStock = stockOverviewData.reduce((sum, wh) => sum + wh.totalItems, 0);
   const criticalItems = lowStockItems.filter(item => item.status === "Critical").length;
   const lowItems = lowStockItems.filter(item => item.status === "Low").length;
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    warehouse: "",
+    location: "",
+    totalItems: "",
+    capacity: "",
+    value: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    console.log("Warehouse data submitted:", form);
+    // Add your submission logic here
+    setForm({
+      warehouse: "",
+      location: "",
+      totalItems: "",
+      capacity: "",
+      value: "",
+    });
+    setShowModal(false);
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header with Add Button */}
+      <div className="flex items-center justify-between">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Warehouse Management
+        </h2>
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-4 py-2 rounded-lg transition-colors"
+        >
+          <Plus size={20} />
+          Add Warehouse
+        </button>
+      </div>
+
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow p-6 border-l-4 border-blue-500">
@@ -333,6 +372,328 @@ export default function Warehouse() {
           </table>
         </div>
       </div>
+
+      {/* Add Warehouse Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-lg rounded-xl shadow p-6 relative">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+            >
+              <X />
+            </button>
+
+            <h3 className="text-xl font-semibold mb-4">
+              Add Warehouse
+            </h3>
+
+            <div className="space-y-3">
+              <input
+                name="warehouse"
+                placeholder="Warehouse Name"
+                className="w-full border p-2 rounded"
+                onChange={handleChange}
+                value={form.warehouse}
+              />
+              <input
+                name="location"
+                placeholder="Location"
+                className="w-full border p-2 rounded"
+                onChange={handleChange}
+                value={form.location}
+              />
+              <input
+                name="totalItems"
+                placeholder="Total Items"
+                type="number"
+                className="w-full border p-2 rounded"
+                onChange={handleChange}
+                value={form.totalItems}
+              />
+              <input
+                name="capacity"
+                placeholder="Capacity"
+                type="number"
+                className="w-full border p-2 rounded"
+                onChange={handleChange}
+                value={form.capacity}
+              />
+              <input
+                name="value"
+                placeholder="Stock Value (₹)"
+                className="w-full border p-2 rounded"
+                onChange={handleChange}
+                value={form.value}
+              />
+            </div>
+
+            <button
+              onClick={handleSubmit}
+              className="mt-4 w-full bg-emerald-600 text-black py-2 rounded-lg hover:bg-emerald-700"
+            >
+              Save Warehouse
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+
+
+
+
+
+
+// import React, { useState } from "react";
+// import {
+//   BarChart,
+//   Bar,
+//   LineChart,
+//   Line,
+//   XAxis,
+//   YAxis,
+//   CartesianGrid,
+//   Tooltip,
+//   Legend,
+//   ResponsiveContainer,
+// } from "recharts";
+// import { Package, TrendingUp, AlertTriangle, X, Plus } from "lucide-react";
+
+// /* ------------------ DATA ------------------ */
+
+// const warehouseMovementData = [
+//   { date: "Week 1", received: 450, dispatched: 320, transferred: 80, returns: 20 },
+//   { date: "Week 2", received: 520, dispatched: 380, transferred: 95, returns: 15 },
+//   { date: "Week 3", received: 480, dispatched: 420, transferred: 70, returns: 25 },
+//   { date: "Week 4", received: 610, dispatched: 390, transferred: 110, returns: 18 },
+// ];
+
+// const monthlyStockTrend = [
+//   { month: "Aug", stock: 6200 },
+//   { month: "Sep", stock: 6580 },
+//   { month: "Oct", stock: 6320 },
+//   { month: "Nov", stock: 6890 },
+//   { month: "Dec", stock: 7100 },
+//   { month: "Jan", stock: 7580 },
+// ];
+
+// /* ------------------ COMPONENT ------------------ */
+
+// export default function Warehouse() {
+//   const [warehouses, setWarehouses] = useState([
+//     {
+//       warehouse: "Main Warehouse A",
+//       location: "Mumbai",
+//       totalItems: 2850,
+//       capacity: 5000,
+//       utilizationPercent: 57,
+//       value: "₹45,00,000",
+//     },
+//     {
+//       warehouse: "Warehouse B",
+//       location: "Delhi",
+//       totalItems: 2100,
+//       capacity: 3500,
+//       utilizationPercent: 60,
+//       value: "₹32,50,000",
+//     },
+//   ]);
+
+//   const [showModal, setShowModal] = useState(false);
+//   const [form, setForm] = useState({
+//     warehouse: "",
+//     location: "",
+//     totalItems: "",
+//     capacity: "",
+//     value: "",
+//   });
+
+//   const totalStock = warehouses.reduce(
+//     (sum, w) => sum + Number(w.totalItems),
+//     0
+//   );
+
+//   /* ------------------ HANDLERS ------------------ */
+
+//   const handleChange = (e) => {
+//     setForm({ ...form, [e.target.name]: e.target.value });
+//   };
+
+//   const handleSubmit = () => {
+//     const utilization = Math.round(
+//       (form.totalItems / form.capacity) * 100
+//     );
+
+//     setWarehouses([
+//       ...warehouses,
+//       {
+//         ...form,
+//         utilizationPercent: utilization,
+//       },
+//     ]);
+
+//     setForm({
+//       warehouse: "",
+//       location: "",
+//       totalItems: "",
+//       capacity: "",
+//       value: "",
+//     });
+//     setShowModal(false);
+//   };
+
+//   /* ------------------ UI ------------------ */
+
+//   return (
+//     <div className="space-y-6">
+
+//       {/* HEADER + ADD BUTTON */}
+//       <div className="flex items-center justify-between">
+//         <h2 className="text-2xl font-semibold text-black">
+//           Warehouse Management
+//         </h2>
+
+//         <button
+//           onClick={() => setShowModal(true)}
+//           className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700"
+//         >
+//           <Plus size={16} /> Add Warehouse
+//         </button>
+//       </div>
+
+//       {/* SUMMARY */}
+//       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//         <div className="bg-white p-6 rounded-xl shadow border-l-4 border-blue-500">
+//           <p className="text-sm text-gray-600">Total Stock</p>
+//           <p className="text-3xl font-bold text-black">
+//             {totalStock.toLocaleString()}
+//           </p>
+//         </div>
+
+//         <div className="bg-white p-6 rounded-xl shadow border-l-4 border-emerald-500">
+//           <p className="text-sm text-gray-600">Active Warehouses</p>
+//           <p className="text-3xl font-bold text-black">
+//             {warehouses.length}
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* MOVEMENT CHART */}
+//       <div className="bg-white p-6 rounded-xl shadow">
+//         <h3 className="text-xl font-semibold mb-4">
+//           Warehouse Movement
+//         </h3>
+//         <ResponsiveContainer width="100%" height={300}>
+//           <BarChart data={warehouseMovementData}>
+//             <CartesianGrid strokeDasharray="3 3" />
+//             <XAxis dataKey="date" />
+//             <YAxis />
+//             <Tooltip />
+//             <Legend />
+//             <Bar dataKey="received" fill="#10b981" />
+//             <Bar dataKey="dispatched" fill="#3b82f6" />
+//             <Bar dataKey="transferred" fill="#f59e0b" />
+//             <Bar dataKey="returns" fill="#ef4444" />
+//           </BarChart>
+//         </ResponsiveContainer>
+//       </div>
+
+//       {/* WAREHOUSE TABLE */}
+//       <div className="bg-white p-6 rounded-xl shadow">
+//         <h3 className="text-xl font-semibold mb-4">
+//           Stock Overview by Warehouse
+//         </h3>
+
+//         <table className="w-full text-sm">
+//           <thead className="bg-gray-100">
+//             <tr>
+//               <th className="p-3 text-left">Warehouse</th>
+//               <th className="p-3">Location</th>
+//               <th className="p-3 text-right">Items</th>
+//               <th className="p-3 text-right">Capacity</th>
+//               <th className="p-3 text-center">Utilization</th>
+//               <th className="p-3 text-right">Value</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {warehouses.map((w, i) => (
+//               <tr key={i} className="border-b">
+//                 <td className="p-3 font-semibold">{w.warehouse}</td>
+//                 <td className="p-3 text-center">{w.location}</td>
+//                 <td className="p-3 text-right">{w.totalItems}</td>
+//                 <td className="p-3 text-right">{w.capacity}</td>
+//                 <td className="p-3 text-center">{w.utilizationPercent}%</td>
+//                 <td className="p-3 text-right text-emerald-600 font-semibold">
+//                   {w.value}
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
+
+//       {/* ADD WAREHOUSE MODAL */}
+//       {showModal && (
+//         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+//           <div className="bg-white w-full max-w-lg rounded-xl shadow p-6 relative">
+//             <button
+//               onClick={() => setShowModal(false)}
+//               className="absolute top-3 right-3"
+//             >
+//               <X />
+//             </button>
+
+//             <h3 className="text-xl font-semibold mb-4">
+//               Add Warehouse
+//             </h3>
+
+//             <div className="space-y-3">
+//               <input
+//                 name="warehouse"
+//                 placeholder="Warehouse Name"
+//                 className="w-full border p-2 rounded"
+//                 onChange={handleChange}
+//               />
+//               <input
+//                 name="location"
+//                 placeholder="Location"
+//                 className="w-full border p-2 rounded"
+//                 onChange={handleChange}
+//               />
+//               <input
+//                 name="totalItems"
+//                 placeholder="Total Items"
+//                 type="number"
+//                 className="w-full border p-2 rounded"
+//                 onChange={handleChange}
+//               />
+//               <input
+//                 name="capacity"
+//                 placeholder="Capacity"
+//                 type="number"
+//                 className="w-full border p-2 rounded"
+//                 onChange={handleChange}
+//               />
+//               <input
+//                 name="value"
+//                 placeholder="Stock Value (₹)"
+//                 className="w-full border p-2 rounded"
+//                 onChange={handleChange}
+//               />
+//             </div>
+
+//             <button
+//               onClick={handleSubmit}
+//               className="mt-4 w-full bg-emerald-600 text-white py-2 rounded-lg hover:bg-emerald-700"
+//             >
+//               Save Warehouse
+//             </button>
+//           </div>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }

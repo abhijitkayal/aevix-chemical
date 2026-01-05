@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileText, DollarSign, TrendingUp, Clock, CheckCircle, AlertCircle, XCircle, Search, Filter, Download, Eye, Send, Calendar } from 'lucide-react';
+import { FileText, DollarSign, TrendingUp, Clock, CheckCircle, AlertCircle, XCircle, Search, Filter, Download, Eye, Send, Calendar, Plus, X } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const Invoice = () => {
@@ -7,6 +7,17 @@ const Invoice = () => {
   const [selectedStatus, setSelectedStatus] = useState('All');
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState('All');
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [form, setForm] = useState({
+    customer: '',
+    customerId: '',
+    date: '',
+    dueDate: '',
+    product: '',
+    quantity: '',
+    rate: '',
+    notes: ''
+  });
 
   // Summary data
   const summary = {
@@ -525,12 +536,41 @@ const Invoice = () => {
     return `₹${value.toLocaleString('en-IN')}`;
   };
 
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = () => {
+    console.log('Invoice data submitted:', form);
+    // Add your submission logic here
+    setForm({
+      customer: '',
+      customerId: '',
+      date: '',
+      dueDate: '',
+      product: '',
+      quantity: '',
+      rate: '',
+      notes: ''
+    });
+    setShowModal(false);
+  };
+
   return (
     <div className="p-6 bg-white min-h-screen">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-black mb-2">Invoice Management</h1>
-        <p className="text-gray-600">Track and manage all customer invoices and payments</p>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-black mb-2">Invoice Management</h1>
+          <p className="text-gray-600">Track and manage all customer invoices and payments</p>
+        </div>
+        <button
+          onClick={() => setShowModal(true)}
+          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-2 py-2 rounded-lg transition-colors"
+        >
+          <Plus size={20} />
+          Create Invoice
+        </button>
       </div>
 
       {/* Summary Cards */}
@@ -887,6 +927,150 @@ const Invoice = () => {
         <div className="text-center py-12 bg-white border border-gray-200 rounded-lg mt-6">
           <FileText className="mx-auto text-gray-400 mb-4" size={48} />
           <p className="text-gray-600">No invoices found matching your criteria</p>
+        </div>
+      )}
+
+      {/* Create Invoice Modal */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-2xl rounded-xl shadow-lg p-6 relative max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <X size={24} />
+            </button>
+
+            <h3 className="text-2xl font-bold mb-6 text-gray-900">
+              Create New Invoice
+            </h3>
+
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Customer Name *
+                  </label>
+                  <input
+                    name="customer"
+                    placeholder="Enter customer name"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.customer}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Customer ID *
+                  </label>
+                  <input
+                    name="customerId"
+                    placeholder="e.g., CUST-1001"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.customerId}
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Invoice Date *
+                  </label>
+                  <input
+                    name="date"
+                    type="date"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.date}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Due Date *
+                  </label>
+                  <input
+                    name="dueDate"
+                    type="date"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.dueDate}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Product/Service *
+                </label>
+                <input
+                  name="product"
+                  placeholder="Enter product or service name"
+                  className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  onChange={handleChange}
+                  value={form.product}
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Quantity *
+                  </label>
+                  <input
+                    name="quantity"
+                    placeholder="e.g., 500 L"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.quantity}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Rate (₹) *
+                  </label>
+                  <input
+                    name="rate"
+                    type="number"
+                    placeholder="Enter rate per unit"
+                    className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                    onChange={handleChange}
+                    value={form.rate}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Notes
+                </label>
+                <textarea
+                  name="notes"
+                  placeholder="Add any additional notes..."
+                  rows={3}
+                  className="w-full border border-gray-300 p-2.5 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500"
+                  onChange={handleChange}
+                  value={form.notes}
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={handleSubmit}
+                className="flex-1 bg-emerald-600 text-black py-2.5 rounded-lg hover:bg-emerald-700 font-medium transition-colors"
+              >
+                Create Invoice
+              </button>
+              <button
+                onClick={() => setShowModal(false)}
+                className="px-6 bg-gray-200 text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

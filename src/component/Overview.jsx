@@ -185,7 +185,7 @@ const Overview = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 bg-gray-100 rounded-r-3xl min-h-screen">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Dashboard Overview</h1>
