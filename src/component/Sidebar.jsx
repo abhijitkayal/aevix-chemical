@@ -68,9 +68,9 @@ export default function App() {
     <div className="flex h-screen w-screen bg-transparent overflow-hidden">
       {/* Sidebar */}
       <aside className="w-80 bg-slate-900 text-white p-4">
-        <h1 className="text-2xl font-bold mb-6 text-emerald-400">
-          Aevix CHEMICAL
-        </h1>
+        <h2 className="text-3xl font-bold mb-6 text-emerald-400">
+          Aevix Chemical
+        </h2>
 
         {tabs.map((tab, i) => (
           <div key={i} className="mb-4">
