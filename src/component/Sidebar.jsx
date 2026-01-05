@@ -9,6 +9,7 @@ import {
   Factory,
   Users,
 } from "lucide-react";
+import Overview from "./Overview.jsx";
 import SalesTeamPieChart from "./Salesteampiechart.jsx";
 import StockAnalytics from "./Stockanalytics.jsx";
 import Warehouse from "./Warehouse.jsx";
@@ -111,6 +112,12 @@ export default function App() {
   <h2 className="text-2xl font-semibold mb-4 text-black">
     {tabs[activeTab].name} / {tabs[activeTab].subtabs[activeSubTab]}
   </h2>
+
+  {/* DASHBOARD → OVERVIEW */}
+  {tabs[activeTab].name === "Dashboard" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Overview" && (
+    <Overview />
+  )}
 
   {/* DASHBOARD → SALES ANALYTICS */}
   {tabs[activeTab].name === "Dashboard" &&
