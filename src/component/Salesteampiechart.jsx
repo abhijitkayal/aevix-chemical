@@ -33,7 +33,7 @@ const salesBarData = [
 
 export default function SalesTeamPieChart() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-15 mt-15">
       {/* Line Chart - Sales Trend with Data Table */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-white rounded-xl shadow p-6">
@@ -65,7 +65,7 @@ export default function SalesTeamPieChart() {
               </thead>
               <tbody>
                 {salesLineData.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-2">{item.month}</td>
                     <td className="p-2 text-right">{item.sales.toLocaleString()}</td>
                     <td className="p-2 text-right">{item.revenue.toLocaleString()}</td>
@@ -106,7 +106,7 @@ export default function SalesTeamPieChart() {
               </thead>
               <tbody>
                 {salesBarData.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-2">{item.product}</td>
                     <td className="p-2 text-right">{item.sales.toLocaleString()}</td>
                   </tr>

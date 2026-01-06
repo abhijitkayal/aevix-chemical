@@ -255,7 +255,7 @@ export default function Variance() {
   );
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-15">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow p-6 border-l-4 border-emerald-500">
@@ -370,7 +370,7 @@ export default function Variance() {
             </thead>
             <tbody>
               {materialVariance.map((item, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50">
+                <tr key={idx} className="border-b hover:bg-gray-100">
                   <td className="p-3 font-semibold">{item.material}</td>
                   <td className="p-3 text-center text-gray-700">
                     {item.standardQty}
@@ -433,7 +433,7 @@ export default function Variance() {
             </thead>
             <tbody>
               {laborVariance.map((item, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50">
+                <tr key={idx} className="border-b hover:bg-gray-100">
                   <td className="p-3 font-semibold">{item.department}</td>
                   <td className="p-3 text-center text-gray-700">
                     {item.standardHours}h
@@ -510,7 +510,7 @@ export default function Variance() {
               {filteredVariance.map((item) => (
                 <tr
                   key={item.id}
-                  className={`border-b hover:bg-gray-50 ${
+                  className={`border-b hover:bg-gray-100 ${
                     item.status === "Unfavorable" ? "bg-red-50" : "bg-green-50"
                   }`}
                 >

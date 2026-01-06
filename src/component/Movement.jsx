@@ -320,7 +320,7 @@ export default function Movement() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-20">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow p-6 border-l-4 border-emerald-500">
@@ -483,7 +483,7 @@ export default function Movement() {
             </thead>
             <tbody>
               {filteredTransactions.map((txn) => (
-                <tr key={txn.id} className="border-b hover:bg-gray-50">
+                <tr key={txn.id} className="border-b hover:bg-gray-100">
                   <td className="p-3 font-mono text-blue-600 font-semibold">
                     {txn.id}
                   </td>

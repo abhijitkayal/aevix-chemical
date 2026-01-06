@@ -127,7 +127,7 @@ const Report = () => {
   ];
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Billing & Accounting Reports</h1>
@@ -342,12 +342,12 @@ const Report = () => {
 
           {/* Customer Details Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Customer Revenue Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Customer</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Revenue</th>
@@ -358,7 +358,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {customerRevenue.map((customer, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-medium text-black">{customer.customer}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(customer.revenue)}</td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">{customer.invoices}</td>
@@ -393,12 +393,12 @@ const Report = () => {
 
           {/* Product Details Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Product Performance Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Product</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Revenue</th>
@@ -409,7 +409,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {productRevenue.map((product, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-medium text-black">{product.product}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(product.revenue)}</td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">{product.quantity}</td>
@@ -478,12 +478,12 @@ const Report = () => {
 
           {/* Tax Details Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Tax Summary Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Tax Rate</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Taxable Amount</th>
@@ -493,7 +493,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {taxSummary.map((tax, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-semibold text-black">{tax.taxRate}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-medium">{formatCurrency(tax.taxableAmount)}</td>
                       <td className="px-6 py-4 text-sm text-green-600 text-right font-semibold">{formatCurrency(tax.taxAmount)}</td>
@@ -568,12 +568,12 @@ const Report = () => {
 
           {/* Payment Details */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Payment Method Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Payment Method</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Amount</th>
@@ -583,7 +583,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {paymentMethods.map((method, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-medium text-black">{method.method}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(method.amount)}</td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">{method.transactions}</td>
@@ -647,12 +647,12 @@ const Report = () => {
 
           {/* Aging Details */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Aging Analysis Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Amount</th>
@@ -663,7 +663,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {agingAnalysis.map((aging, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-medium text-black">{aging.category}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(aging.amount)}</td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">{aging.invoices}</td>
@@ -708,12 +708,12 @@ const Report = () => {
 
           {/* Profit Details Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Profit Margin Details by Category</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Category</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Revenue</th>
@@ -724,7 +724,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {profitByCategory.map((category, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-medium text-black">{category.category}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(category.revenue)}</td>
                       <td className="px-6 py-4 text-sm text-red-600 text-right font-medium">{formatCurrency(category.cost)}</td>
@@ -760,12 +760,12 @@ const Report = () => {
 
           {/* Quarterly Details Table */}
           <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-            <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+            <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-black">Quarterly Performance Details</h2>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-100 border-b border-gray-200">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Quarter</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-600 uppercase">Revenue</th>
@@ -777,7 +777,7 @@ const Report = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {quarterlyComparison.map((quarter, index) => (
-                    <tr key={index} className="hover:bg-gray-50">
+                    <tr key={index} className="hover:bg-gray-100">
                       <td className="px-6 py-4 text-sm font-semibold text-black">{quarter.quarter}</td>
                       <td className="px-6 py-4 text-sm text-black text-right font-semibold">{formatCurrency(quarter.revenue)}</td>
                       <td className="px-6 py-4 text-sm text-gray-700 text-right">{quarter.invoices}</td>

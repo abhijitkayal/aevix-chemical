@@ -212,7 +212,7 @@ export default function LowStock() {
   }, 0);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-20">
       {/* Alert Banner */}
       <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
         <div className="flex items-start gap-3">
@@ -331,7 +331,7 @@ export default function LowStock() {
             </thead>
             <tbody>
               {lowStockItems.map((item) => (
-                <tr key={item.id} className={`border-b hover:bg-gray-50 ${
+                <tr key={item.id} className={`border-b hover:bg-gray-100 ${
                   item.status === 'Critical' ? 'bg-red-50' : ''
                 }`}>
                   <td className="p-3 font-mono font-semibold text-blue-600">{item.itemCode}</td>

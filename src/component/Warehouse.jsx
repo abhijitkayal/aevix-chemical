@@ -172,7 +172,7 @@ export default function Warehouse() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-15 mt-15">
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -272,7 +272,7 @@ export default function Warehouse() {
               </thead>
               <tbody>
                 {stockOverviewData.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-3 font-semibold">{item.warehouse}</td>
                     <td className="p-3 text-gray-600">{item.location}</td>
                     <td className="p-3 text-right">{item.totalItems.toLocaleString()}</td>
@@ -342,7 +342,7 @@ export default function Warehouse() {
             </thead>
             <tbody>
               {lowStockItems.map((item, idx) => (
-                <tr key={idx} className="border-b hover:bg-gray-50">
+                <tr key={idx} className="border-b hover:bg-gray-100">
                   <td className="p-3 font-mono font-semibold">{item.itemCode}</td>
                   <td className="p-3">{item.itemName}</td>
                   <td className="p-3 text-center">
@@ -548,7 +548,7 @@ export default function Warehouse() {
 //   /* ------------------ UI ------------------ */
 
 //   return (
-//     <div className="space-y-6">
+//     <div className="space-y-6 mt-15">
 
 //       {/* HEADER + ADD BUTTON */}
 //       <div className="flex items-center justify-between">

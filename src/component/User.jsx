@@ -447,7 +447,7 @@ const User = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">User Management</h1>
@@ -612,7 +612,7 @@ const User = () => {
 
       {/* Users List */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">All Users ({filteredUsers.length})</h2>
         </div>
 
@@ -669,7 +669,7 @@ const User = () => {
                     </span>
                   ))}
                   {user.permissions.length > 3 && (
-                    <span className="px-2 py-1 bg-gray-50 text-gray-700 text-xs rounded">
+                    <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
                       +{user.permissions.length - 3} more
                     </span>
                   )}

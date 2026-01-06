@@ -365,7 +365,7 @@ export default function StockOverview() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-15 mt-15">
       {/* Header with Add Button */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
@@ -557,7 +557,7 @@ export default function StockOverview() {
                   item.maxStock
                 );
                 return (
-                  <tr key={item.id} className="border-b hover:bg-gray-50">
+                  <tr key={item.id} className="border-b hover:bg-gray-100">
                     <td className="p-3 font-mono text-blue-600 font-semibold">
                       {item.itemCode}
                     </td>

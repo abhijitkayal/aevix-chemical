@@ -8,6 +8,8 @@ import {
   Package,
   Factory,
   Users,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import Overview from "./Overview.jsx";
 import SalesTeamPieChart from "./Salesteampiechart.jsx";
@@ -60,14 +62,17 @@ const tabs = [
   },
 ];
 
-export default function App() {
+export default function App({ darkMode, setDarkMode }) {
   const [activeTab, setActiveTab] = useState(0);
   const [activeSubTab, setActiveSubTab] = useState(0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   return (
     <div className="flex h-screen w-screen bg-transparent overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-80 bg-slate-900 text-white p-4">
+      <aside className={`w-80 p-4 transition-colors duration-300 ${
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-300 text-black'
+      }`}>
         <h2 className="text-3xl font-bold mb-6 text-emerald-400">
           Aevix Chemical
         </h2>
@@ -79,27 +84,43 @@ export default function App() {
                 setActiveTab(i);
                 setActiveSubTab(0);
               }}
-              className={`flex items-center gap-3 w-full px-3 py-2 rounded border font-bold ${
+              className={`flex items-center gap-3 w-full px-3 py-2 rounded border font-bold transition-colors duration-300 ${
                 activeTab === i
-                  ? "bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-400 text-black"
-                  : "bg-transparent border-slate-600 text-cyan-200 hover:bg-slate-800"
+                  ? `bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-400 ${
+                    darkMode ? 'text-white' : 'text-black'
+                  }`
+                  : darkMode 
+                    ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200" 
+                    : "bg-transparent border-slate-600 text-black hover:bg-slate-800"
               }`}
             >
               <tab.icon size={18} />
               {tab.name}
+             {activeTab === i ? (
+  <ChevronUp className="ml-auto" size={16} />
+) : (
+  <ChevronDown className="ml-auto" size={16} />
+)}
+
             </button>
 
             {/* Sub Tabs */}
             {activeTab === i && (
-              <div className="ml-8 mt-2 space-y-1 text-sm">
+              <div className={`ml-8 mt-2 border-l space-y-1 text-sm border-l-2 ${
+                darkMode ? 'border-gray-400' : 'border-black'
+              }`}>
                 {tab.subtabs.map((sub, j) => (
                   <button
                     key={j}
                     onClick={() => setActiveSubTab(j)}
-                    className={`block w-full text-left px-2 py-1 rounded border font-semibold ${
+                    className={`block w-full text-left px-2 py-1 ml-1 rounded border font-semibold transition-colors duration-300 ${
                       activeSubTab === j
-                        ? "bg-gradient-to-r from-emerald-400 to-teal-400 border-emerald-300 text-black"
-                        : "bg-transparent text-cyan-200 border-slate-700 hover:bg-slate-800"
+                        ? `bg-gradient-to-r from-emerald-400 to-teal-400 border-emerald-300 ${
+                          darkMode ? 'text-white' : 'text-white'
+                        }`
+                        : darkMode
+                          ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200"
+                          : "bg-transparent text-gray-800 border-slate-700 hover:bg-slate-800"
                     }`}
                   >
                     {sub}
@@ -113,7 +134,9 @@ export default function App() {
 
       {/* Main Content */}
      {/* Main Content Area */}
-<main className="flex-1 p-6 overflow-y-auto bg-transparent">
+<main className={`flex-1 p-6 overflow-y-auto transition-colors duration-300 ${
+  darkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'
+}`}>
   {/* <h2 className="text-2xl font-semibold mb-4 text-black">
     {tabs[activeTab].name} / {tabs[activeTab].subtabs[activeSubTab]}
   </h2> */}
@@ -122,8 +145,8 @@ export default function App() {
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Overview" && (
     <>
-     <Header/>
-    <Overview />
+     <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Overview darkMode={darkMode} />
     </>
   )}
 
@@ -132,8 +155,8 @@ export default function App() {
    tabs[activeTab].subtabs[activeSubTab] === "Sales Analytics" && (
     // <SalesTeamPieChart />
     <>
-    <Header/>
-    <SalesTeamPieChart/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <SalesTeamPieChart darkMode={darkMode} />
     </>
   )}
 
@@ -141,8 +164,8 @@ export default function App() {
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock Analytics" && (
     <>
-    <Header/>
-    <StockAnalytics />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <StockAnalytics darkMode={darkMode} />
     
     </>
   )}
@@ -151,8 +174,8 @@ export default function App() {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Invoices" && (
     <>
-    <Header/>
-    <Invoice />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Invoice darkMode={darkMode} />
     </>
     
   )}
@@ -162,8 +185,8 @@ export default function App() {
    tabs[activeTab].subtabs[activeSubTab] === "Quotations" && (
     <>
     
-    <Header/>
-    <Quotation />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Quotation darkMode={darkMode} />
     </>
     
   )}
@@ -172,8 +195,8 @@ export default function App() {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Ledgers" && (
     <>
-    <Header/>
-    <Ledger />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Ledger darkMode={darkMode} />
     </>
     
   )}
@@ -182,8 +205,8 @@ export default function App() {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Reports" && (
     <>
-    <Header/>
-    <Report/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Report darkMode={darkMode} />
     </>
     // <Report />
   )}
@@ -193,8 +216,8 @@ export default function App() {
    tabs[activeTab].subtabs[activeSubTab] === "Stock View" && (
     // <StockOverview />
     <>
-    <Header/>
-    <StockOverview/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <StockOverview darkMode={darkMode} />
     </>
   )}
 
@@ -202,8 +225,8 @@ export default function App() {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Warehouses" && (
     <>
-    <Header/>
-    <Warehouse />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Warehouse darkMode={darkMode} />
     </>
   )}
 
@@ -211,8 +234,8 @@ export default function App() {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Low Stock" && (
     <>
-    <Header/>
-    <LowStock/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <LowStock darkMode={darkMode} />
     </>
     // <LowStock/>
   )}
@@ -220,8 +243,8 @@ export default function App() {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Movement" && (
     <>
-    <Header/>
-    <Movement/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Movement darkMode={darkMode} />
     </>
     // <Movement />
   )}
@@ -230,8 +253,8 @@ export default function App() {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Variance" && (
     <>
-    <Header/>
-    <Variance />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Variance darkMode={darkMode} />
     </>
     
   )}
@@ -240,8 +263,8 @@ export default function App() {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "BOM" && (
     <>
-    <Header/>
-    <BOM/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <BOM darkMode={darkMode} />
     </>
     // <BOM />
   )}
@@ -250,8 +273,8 @@ export default function App() {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Job Work" && (
     <>
-    <Header/>
-    <Jobwork />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Jobwork darkMode={darkMode} />
     </>
   )}
 
@@ -259,8 +282,8 @@ export default function App() {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Planning" && (
     <>
-    <Header/>
-    <Planning/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Planning darkMode={darkMode} />
     </>
     // <Planning />
   )}
@@ -269,8 +292,8 @@ export default function App() {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Users" && (
     <>
-    <Header/>
-    <User/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <User darkMode={darkMode} />
     </>
     // <User />
   )}
@@ -279,8 +302,8 @@ export default function App() {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Roles" && (
     <>
-    <Header/>
-    <Role/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Role darkMode={darkMode} />
     </>
     // <Role />
   )}
@@ -288,8 +311,8 @@ export default function App() {
     {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Leads" && (
     <>
-    <Header/>
-    <Leads/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Leads darkMode={darkMode} />
     </>
     // <Leads />
   )}
@@ -298,8 +321,8 @@ export default function App() {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Activity Logs" && (
     <>
-    <Header/>
-    <Activitylogs/>
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Activitylogs darkMode={darkMode} />
     </>
     // <Activitylogs />
   )}
@@ -308,8 +331,8 @@ export default function App() {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Security" && (
     <>
-    <Header/>
-    <Security />
+    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
+    <Security darkMode={darkMode} />
     </>
     
   )}

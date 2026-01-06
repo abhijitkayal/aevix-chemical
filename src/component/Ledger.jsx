@@ -349,7 +349,7 @@ const Ledger = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Customer Ledger Management</h1>
@@ -514,13 +514,13 @@ const Ledger = () => {
 
       {/* Ledger Accounts List */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden mb-6">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">Customer Accounts ({filteredLedgers.length} customers)</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-100 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Customer</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Opening</th>
@@ -535,7 +535,7 @@ const Ledger = () => {
             </thead>
             <tbody className="divide-y divide-gray-200">
               {filteredLedgers.map((ledger) => (
-                <tr key={ledger.id} className="hover:bg-gray-50">
+                <tr key={ledger.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4">
                     <div>
                       <p className="text-sm font-semibold text-black">{ledger.customerName}</p>
@@ -635,7 +635,7 @@ const Ledger = () => {
               </div>
 
               {/* Balance Summary */}
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
+              <div className="bg-gray-100 p-4 rounded-lg mb-6">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-sm text-gray-600">Opening Balance</p>
@@ -688,7 +688,7 @@ const Ledger = () => {
                 <h3 className="text-lg font-semibold text-black mb-3">Transaction History</h3>
                 <div className="overflow-x-auto">
                   <table className="w-full border border-gray-200">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-gray-100">
                       <tr>
                         <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b">Date</th>
                         <th className="px-4 py-2 text-left text-xs font-semibold text-gray-600 border-b">Type</th>
@@ -701,7 +701,7 @@ const Ledger = () => {
                     </thead>
                     <tbody>
                       {selectedLedger.transactions.map((txn, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-50">
+                        <tr key={index} className="border-b hover:bg-gray-100">
                           <td className="px-4 py-2 text-sm text-gray-700">{txn.date}</td>
                           <td className="px-4 py-2">
                             <span className={`px-2 py-1 text-xs font-semibold rounded ${

@@ -10,7 +10,7 @@ import {
 
 export default function Security() {
   return (
-    <div className="p-6">
+    <div className="p-6 mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-black">

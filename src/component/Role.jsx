@@ -277,7 +277,7 @@ const Role = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Role Management</h1>
@@ -442,7 +442,7 @@ const Role = () => {
                 {/* Permissions by Category */}
                 <div className="space-y-3">
                   {Object.entries(role.permissions).map(([category, perms]) => (
-                    <div key={category} className="bg-gray-50 rounded-lg p-3">
+                    <div key={category} className="bg-gray-100 rounded-lg p-3">
                       <h5 className="font-medium text-black text-xs mb-2 uppercase">{category}</h5>
                       <div className="flex flex-wrap gap-1">
                         {perms.map((perm, idx) => (
@@ -476,7 +476,7 @@ const Role = () => {
         <h2 className="text-xl font-semibold text-black mb-4">Permission Categories Reference</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {permissionCategories.map((cat, idx) => (
-            <div key={idx} className="bg-gray-50 rounded-lg p-4">
+            <div key={idx} className="bg-gray-100 rounded-lg p-4">
               <h3 className="font-semibold text-black mb-3 flex items-center">
                 <Lock className="mr-2 text-blue-500" size={18} />
                 {cat.category}

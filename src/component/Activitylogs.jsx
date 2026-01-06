@@ -690,7 +690,7 @@ const Activitylogs = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10 mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Activity Logs</h1>
@@ -877,13 +877,13 @@ const Activitylogs = () => {
 
       {/* Activity Logs Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">Activity Timeline ({filteredLogs.length} records)</h2>
         </div>
 
         <div className="divide-y divide-gray-200 max-h-[800px] overflow-y-auto">
           {filteredLogs.map((log) => (
-            <div key={log.id} className="p-4 hover:bg-gray-50 transition-colors">
+            <div key={log.id} className="p-4 hover:bg-gray-100 transition-colors">
               <div className="flex items-start justify-between">
                 <div className="flex items-start space-x-4 flex-1">
                   <div className="mt-1">

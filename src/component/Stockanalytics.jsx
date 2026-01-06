@@ -56,7 +56,7 @@ const COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#8b5cf6"];
 
 export default function StockAnalytics() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mt-15 mt-15">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-white rounded-xl shadow p-6 border-l-4 border-emerald-500">
@@ -112,7 +112,7 @@ export default function StockAnalytics() {
               </thead>
               <tbody>
                 {stockLevelData.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-2">{item.category}</td>
                     <td className="p-2 text-right font-semibold">
                       {(item.inStock + item.lowStock + item.outOfStock).toLocaleString()}
@@ -157,7 +157,7 @@ export default function StockAnalytics() {
               </thead>
               <tbody>
                 {stockMovementData.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-2">{item.month}</td>
                     <td className="p-2 text-right text-emerald-600">{item.incoming.toLocaleString()}</td>
                     <td className="p-2 text-right text-red-600">{item.outgoing.toLocaleString()}</td>
@@ -205,7 +205,7 @@ export default function StockAnalytics() {
                 </thead>
                 <tbody>
                   {warehouseData.map((item, idx) => (
-                    <tr key={idx} className="border-b hover:bg-gray-50">
+                    <tr key={idx} className="border-b hover:bg-gray-100">
                       <td className="p-2 flex items-center gap-2">
                         <span 
                           className="w-3 h-3 rounded-full" 
@@ -237,7 +237,7 @@ export default function StockAnalytics() {
               </thead>
               <tbody>
                 {topProductsStock.map((item, idx) => (
-                  <tr key={idx} className="border-b hover:bg-gray-50">
+                  <tr key={idx} className="border-b hover:bg-gray-100">
                     <td className="p-2">{item.product}</td>
                     <td className="p-2 text-right font-semibold">{item.stock}</td>
                     <td className="p-2 text-right text-gray-600">{item.sold}</td>

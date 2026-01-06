@@ -244,7 +244,7 @@ const BOM = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Bill of Materials (BOM)</h1>
@@ -391,7 +391,7 @@ const BOM = () => {
 
       {/* BOM List */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">Bill of Materials List</h2>
           <p className="text-sm text-gray-600 mt-1">Click on any product to view detailed component breakdown</p>
         </div>
@@ -401,7 +401,7 @@ const BOM = () => {
             <div key={bom.id} className="bg-white">
               {/* Product Header */}
               <div
-                className="px-6 py-4 cursor-pointer hover:bg-gray-50 transition-colors"
+                className="px-6 py-4 cursor-pointer hover:bg-gray-100 transition-colors"
                 onClick={() => toggleProduct(bom.id)}
               >
                 <div className="flex items-center justify-between">
@@ -435,7 +435,7 @@ const BOM = () => {
 
               {/* Component Details (Expanded) */}
               {expandedProduct === bom.id && (
-                <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div className="px-6 py-4 bg-gray-100 border-t border-gray-200">
                   <h4 className="font-semibold text-black mb-3">Component Breakdown</h4>
                   <div className="overflow-x-auto">
                     <table className="min-w-full divide-y divide-gray-200">
@@ -452,7 +452,7 @@ const BOM = () => {
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
                         {bom.components.map((component, idx) => (
-                          <tr key={idx} className="hover:bg-gray-50">
+                          <tr key={idx} className="hover:bg-gray-100">
                             <td className="px-4 py-3 text-sm text-black font-mono">{component.code}</td>
                             <td className="px-4 py-3 text-sm text-black">{component.name}</td>
                             <td className="px-4 py-3 text-sm text-black">{component.quantity}</td>

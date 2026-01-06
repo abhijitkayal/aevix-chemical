@@ -477,7 +477,7 @@ const Jobwork = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Job Work Management</h1>
@@ -622,13 +622,13 @@ const Jobwork = () => {
 
       {/* Job Work Orders Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">Job Work Orders</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Order Details</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">Job Worker</th>
@@ -642,7 +642,7 @@ const Jobwork = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredJobWorks.map((job) => (
-                <tr key={job.id} className="hover:bg-gray-50">
+                <tr key={job.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4">
                     <div className="text-sm font-semibold text-black">{job.orderNo}</div>
                     <div className="text-sm text-gray-600">{job.orderDate}</div>

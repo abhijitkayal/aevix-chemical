@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TrendingUp, TrendingDown, DollarSign, Package, ShoppingCart, Factory, Users, AlertCircle, CheckCircle, Clock, ArrowUpRight, ArrowDownRight, Activity } from 'lucide-react';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-const Overview = () => {
+const Overview = ({ darkMode }) => {
   // Summary metrics
   const metrics = {
     totalRevenue: {
@@ -185,11 +185,13 @@ const Overview = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-100 rounded-r-3xl min-h-screen">
+    <div className={`p-6 mt-10 min-h-screen transition-colors duration-300 ${
+      darkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'
+    }`}>
       {/* Header */}
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-black mb-2">Dashboard Overview</h1>
-        <p className="text-gray-600">Welcome back! Here's what's happening with your business today.</p>
+        <h1 className={`text-3xl font-bold mb-2 ${darkMode ? 'text-white' : 'text-black'}`}>Dashboard Overview</h1>
+        <p className={darkMode ? 'text-gray-400' : 'text-gray-600'}>Welcome back! Here's what's happening with your business today.</p>
       </div>
 
       {/* Key Metrics Grid */}
@@ -373,7 +375,7 @@ const Overview = () => {
           <h2 className="text-xl font-semibold text-black mb-4">Top Selling Products</h2>
           <div className="space-y-4">
             {topProducts.map((product, index) => (
-              <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+              <div key={index} className="flex items-center justify-between p-4 bg-gray-100 rounded-lg hover:bg-gray-100 transition-colors">
                 <div className="flex-1">
                   <h3 className="font-semibold text-black">{product.product}</h3>
                   <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
@@ -395,7 +397,7 @@ const Overview = () => {
           <h2 className="text-xl font-semibold text-black mb-4">Recent Activities</h2>
           <div className="space-y-3 max-h-[400px] overflow-y-auto">
             {recentActivities.map((activity) => (
-              <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
+              <div key={activity.id} className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-100 transition-colors">
                 <div className={`${activity.bgColor} p-2 rounded-lg`}>
                   <activity.icon className={activity.color} size={20} />
                 </div>
@@ -417,7 +419,7 @@ const Overview = () => {
           <h2 className="text-xl font-semibold text-black mb-4">Top Customers</h2>
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-100">
                 <tr>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Customer</th>
                   <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase">Revenue</th>
@@ -427,7 +429,7 @@ const Overview = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {topCustomers.map((customer, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
+                  <tr key={index} className="hover:bg-gray-100">
                     <td className="px-4 py-3 text-sm text-black font-medium">{customer.name}</td>
                     <td className="px-4 py-3 text-sm text-gray-700">{formatCurrency(customer.revenue)}</td>
                     <td className="px-4 py-3 text-sm text-gray-700">{customer.orders}</td>

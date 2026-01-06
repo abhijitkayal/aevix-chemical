@@ -1,4 +1,8 @@
-@import "tailwindcss";
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import "tailwindcss"; 
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -12,6 +16,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode root fallback when `html` has .dark */
+html.dark :root {
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #0f172a; /* slate-900 */
 }
 
 a {
@@ -33,6 +44,19 @@ body {
   overflow: hidden;
   color: #000000;
   background-color: #ffffff;
+}
+
+/* Ensure body also updates when dark class is applied to html */
+html.dark body {
+  color: #ffffff;
+  background-color: #0f172a; /* slate-900 */
+}
+
+/* Make base buttons lighter in dark mode for better visibility */
+html.dark button {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
 }
 
 h1 {

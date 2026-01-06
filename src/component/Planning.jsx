@@ -560,7 +560,7 @@ const Planning = () => {
   };
 
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 min-h-screen mt-10">
       {/* Header */}
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-black mb-2">Production Planning</h1>
@@ -668,7 +668,7 @@ const Planning = () => {
         <h2 className="text-xl font-semibold text-black mb-4">Material Requirements (Next 2 Weeks)</h2>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Material</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Required</th>
@@ -680,7 +680,7 @@ const Planning = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {materialRequirements.map((material, index) => (
-                <tr key={index} className="hover:bg-gray-50">
+                <tr key={index} className="hover:bg-gray-100">
                   <td className="px-6 py-4 text-sm font-medium text-black">{material.material}</td>
                   <td className="px-6 py-4 text-sm text-black">{material.required}</td>
                   <td className="px-6 py-4 text-sm text-black">{material.available}</td>
@@ -736,13 +736,13 @@ const Planning = () => {
 
       {/* Work Orders Table */}
       <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
-        <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
+        <div className="px-6 py-4 bg-gray-100 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-black">Work Orders Schedule</h2>
         </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">WO Number</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase">Product</th>
@@ -757,7 +757,7 @@ const Planning = () => {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredWorkOrders.map((order) => (
-                <tr key={order.id} className="hover:bg-gray-50">
+                <tr key={order.id} className="hover:bg-gray-100">
                   <td className="px-6 py-4">
                     <div className="text-sm font-semibold text-black">{order.id}</div>
                     <div className="text-xs text-gray-600">{order.productCode}</div>
