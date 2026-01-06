@@ -71,7 +71,7 @@ export default function App({ darkMode, setDarkMode }) {
     <div className="flex h-screen w-screen bg-transparent overflow-hidden">
       {/* Sidebar */}
       <aside className={`w-80 p-4 transition-colors duration-300 ${
-        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-300 text-black'
+        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-800 text-white'
       }`}>
         <h2 className="text-3xl font-bold mb-6 text-emerald-400">
           Aevix Chemical
@@ -91,7 +91,7 @@ export default function App({ darkMode, setDarkMode }) {
                   }`
                   : darkMode 
                     ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200" 
-                    : "bg-transparent border-slate-600 text-black hover:bg-slate-800"
+                    : "bg-transparent border-slate-600 text-white hover:bg-slate-800"
               }`}
             >
               <tab.icon size={18} />
@@ -120,7 +120,7 @@ export default function App({ darkMode, setDarkMode }) {
                         }`
                         : darkMode
                           ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200"
-                          : "bg-transparent text-gray-800 border-slate-700 hover:bg-slate-800"
+                          : "bg-transparent text-white border-slate-700 hover:bg-slate-800"
                     }`}
                   >
                     {sub}

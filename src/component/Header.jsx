@@ -153,7 +153,7 @@ const Header = ({ darkMode, setDarkMode }) => {
         {/* Left Section: Hello & Dark Mode Toggle */}
         <div className="gap-4 flex mx-2 items-center">
           <h2 className="text-lg font-semibold">👋 Hello, John!</h2>
-          <button
+          {/* <button
             onClick={() => setDarkMode(!darkMode)}
             // Applying the base class and consistent hover effect
             className={`${ICON_BUTTON_BASE_CLASS} ${getHoverClass()}`} 
@@ -163,9 +163,9 @@ const Header = ({ darkMode, setDarkMode }) => {
               <Sun size={24} className="text-yellow-400" />
             ) : (
               <Moon size={24} className="text-gray-700" />
-            )}
-            <span className="ml-1 text-xs">{darkMode ? "light" : "dark"}</span>
-          </button>
+            )} */}
+            {/* <span className="ml-1 text-xs">{darkMode ? "light" : "dark"}</span> */}
+          {/* </button> */}
         </div>
         
         {/* Center Section: Search Bar and AI Assistant */}
@@ -188,7 +188,7 @@ const Header = ({ darkMode, setDarkMode }) => {
             />
           </div>
           {/* AI ICON BUTTON - Now consistent with others */}
-         <button
+         {/* <button
   onClick={handleAIAssistant}
   className={`${ICON_BUTTON_BASE_CLASS} ${
     darkMode ? "text-gray-100" : "text-gray-900"
@@ -197,7 +197,7 @@ const Header = ({ darkMode, setDarkMode }) => {
 >
   <IoSparklesOutline size={24} color="red"/>
   <span className="ml-1 text-xs">AI</span>
-</button>
+</button> */}
 
         </div>
         
