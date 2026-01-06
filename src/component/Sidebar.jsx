@@ -204,7 +204,7 @@ const toggleTab = (index) => {
   )}
 
   {/* BILLING & ACCOUNTING → INVOICES */}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Invoices" && (
     <>
     <Header />
@@ -214,7 +214,7 @@ const toggleTab = (index) => {
   )}
 
   {/* BILLING & ACCOUNTING → QUOTATIONS */}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Quotations" && (
     <>
     
@@ -225,7 +225,7 @@ const toggleTab = (index) => {
   )}
 
   {/* BILLING & ACCOUNTING → LEDGERS */}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Ledgers" && (
     <>
     <Header />
@@ -235,7 +235,7 @@ const toggleTab = (index) => {
   )}
 
   {/* BILLING & ACCOUNTING → REPORTS */}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Reports" && (
     <>
     <Header />
@@ -245,28 +245,28 @@ const toggleTab = (index) => {
   )}
 
   {/* BILLING & ACCOUNTING → PROFORMA */}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Proforma" && (
     <>
     <Header />
     <Proforma  />
     </>
   )}
-   {tabs[activeTab].name === "Billing & Accounting" &&
+   {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Delivery Challan" && (
     <>
     <Header />
     <Deliverychalan  />
     </>
   )}
-  {tabs[activeTab].name === "Billing & Accounting" &&
+  {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Order Acknowledgement" && (
     <>
     <Header />
     <Orderacknowledgement  />
     </>
   )}
-   {tabs[activeTab].name === "Billing & Accounting" &&
+   {tabs[activeTab].name === "Billing" &&
    tabs[activeTab].subtabs[activeSubTab] === "Packing List" && (
     <>
     <Header />
