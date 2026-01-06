@@ -19,6 +19,7 @@ import Quotation from "./Quotation.jsx";
 import Report from "./Report.jsx";
 import Ledger from "./Ledger.jsx";
 import Warehouse from "./Warehouse.jsx";
+import Proforma from "./Proforma.jsx";
 import Movement from "./Movement.jsx";
 import LowStock from "./Lowstock.jsx";
 import StockOverview from "./Stockoverview.jsx";
@@ -32,6 +33,18 @@ import Leads from "./Leads.jsx";
 import Activitylogs from "./Activitylogs.jsx";
 import Security from "./Security.jsx";
 import Header from "./Header.jsx";
+import Deliverychalan from "./Deliverychalan.jsx";
+import Orderacknowledgement from "./Orderacknowledgement.jsx";
+import Packinglist from "./Packinglist.jsx";
+import Inwardpayment from "./Inwardpayment.jsx";
+import Outwardpayment from "./Outwardpayment.jsx";
+import Creditnote from "./Creditnote.jsx";
+import DebitNote from "./Debitnote.jsx";
+import Agentcommition from "./Agentcommition.jsx";
+import Journal from "./Journal.jsx";
+import TrialBalance from "./Trialbalance.jsx";
+import PaymentReminder from "./Payemntreminder.jsx";
+import ProfitLoss from "./P&L.jsx";
 
 // Sidebar configuration (from ERP PDF modules)
 const tabs = [
@@ -41,9 +54,9 @@ const tabs = [
     subtabs: ["Overview", "Sales Analytics", "Stock Analytics"],
   },
   {
-    name: "Billing & Accounting",
+    name: "Billing",
     icon: PieChart,
-    subtabs: ["Invoices", "Quotations", "Ledgers", "Reports"],
+    subtabs: ["Invoices", "Quotations", "Ledgers", "Reports","Proforma","Delivery Challan","Order Acknowledgement","Packing List"],
   },
   {
     name: "Inventory",
@@ -54,6 +67,11 @@ const tabs = [
     name: "Production",
     icon: Factory,
     subtabs: ["BOM", "Job Work", "Planning", "Variance"],
+  },
+  {
+    name: "Accounting",
+    icon: Factory,
+    subtabs: ["Inward Payment", "Outward Payment", "Credit Note", "Debit Note","Agent Commission Calculation","Journal","Trial Balance","P&L","Payment Reminder"],
   },
   {
     name: "Users & CRM",
@@ -226,6 +244,36 @@ const toggleTab = (index) => {
     // <Report />
   )}
 
+  {/* BILLING & ACCOUNTING → PROFORMA */}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Proforma" && (
+    <>
+    <Header />
+    <Proforma  />
+    </>
+  )}
+   {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Delivery Challan" && (
+    <>
+    <Header />
+    <Deliverychalan  />
+    </>
+  )}
+  {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Order Acknowledgement" && (
+    <>
+    <Header />
+    <Orderacknowledgement  />
+    </>
+  )}
+   {tabs[activeTab].name === "Billing & Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Packing List" && (
+    <>
+    <Header />
+    <Packinglist  />
+    </>
+  )}
+
   {/* INVENTORY → STOCK VIEW */}
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock View" && (
@@ -303,6 +351,74 @@ const toggleTab = (index) => {
     // <Planning />
   )}
 
+  {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Inward Payment" && (
+    <>
+    <Header />
+    <Inwardpayment  />
+    </>
+  )}
+  
+  {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Outward Payment" && (
+    <>
+    <Header />
+    <Outwardpayment  />
+    </>
+  )}
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Credit Note" && (
+    <>
+    <Header />
+    <Creditnote  />
+    </>
+  )}
+
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Debit Note" && (
+    <>
+    <Header />
+    <DebitNote  />
+    </>
+  )}
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Agent Commission Calculation" && (
+    <>
+    <Header />
+    <Agentcommition  />
+    </>
+  )}
+
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Journal" && (
+    <>
+    <Header />
+    <Journal  />
+    </>
+  )}
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Trial Balance" && (
+    <>
+    <Header />
+    <TrialBalance  />
+    </>
+  )}
+     {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "P&L" && (
+    <>
+    <Header />
+    <ProfitLoss  />
+    </>
+  )}
+
+   {tabs[activeTab].name === "Accounting" &&
+   tabs[activeTab].subtabs[activeSubTab] === "Payment Reminder" && (
+    <>
+    <Header />
+    <PaymentReminder  />
+    </>
+  )}
+
   {/* USERS & CRM → USERS */}
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Users" && (
@@ -320,7 +436,6 @@ const toggleTab = (index) => {
     <Header />
     <Role  />
     </>
-    // <Role />
   )}
 
     {tabs[activeTab].name === "Users & CRM" &&
