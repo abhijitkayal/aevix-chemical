@@ -63,68 +63,88 @@ const tabs = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState(0);
-  const [activeSubTab, setActiveSubTab] = useState(0);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+const [openTabs, setOpenTabs] = useState([]); // 👈 controls accordion
+const [activeTab, setActiveTab] = useState(0);
+const [activeSubTab, setActiveSubTab] = useState(0);
+const toggleTab = (index) => {
+  setOpenTabs((prev) =>
+    prev.includes(index)
+      ? prev.filter((i) => i !== index) // close tab
+      : [...prev, index] // open tab
+  );
+};
+
+
 
   return (
     <div className="flex h-screen w-screen bg-transparent overflow-hidden">
       {/* Sidebar */}
       {/* Sidebar */}
-<aside className="w-70 p-4 bg-slate-900 text-white">
+<aside className="w-70 h-screen bg-slate-900 text-white p-4 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-600 scrollbar-track-slate-800">
+
   <h2 className="text-3xl font-bold mb-6 text-emerald-400">
     Aevix Chemical
   </h2>
 
-  {tabs.map((tab, i) => (
-    <div key={i} className="mb-3">
-      {/* MAIN TAB */}
-      <button
-        onClick={() => {
-          setActiveTab(i);
-          setActiveSubTab(0);
-        }}
-        className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg font-bold transition-all duration-300
-          ${
-            activeTab === i
-              ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
-              : "bg-slate-800 text-white hover:bg-slate-700"
-          }
-        `}
-      >
-        <tab.icon size={18} />
-        {tab.name}
+  {tabs.map((tab, i) => {
+    const isOpen = openTabs.includes(i);
 
-        {activeTab === i ? (
-          <ChevronUp className="ml-auto" size={16} />
-        ) : (
-          <ChevronDown className="ml-auto" size={16} />
+    return (
+      <div key={i} className="mb-3">
+        {/* MAIN TAB */}
+        <button
+          onClick={() => {
+            toggleTab(i);          // ✅ multiple open
+            setActiveTab(i);
+            setActiveSubTab(0);
+          }}
+          className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg font-bold transition-all duration-300
+            ${
+              isOpen
+                ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
+                : "bg-slate-800 text-white hover:bg-slate-700"
+            }
+          `}
+        >
+          <tab.icon size={18} />
+          <span className="flex-1 text-left">{tab.name}</span>
+
+          {isOpen ? (
+            <ChevronUp size={16} />
+          ) : (
+            <ChevronDown size={16} />
+          )}
+        </button>
+
+        {/* SUB TABS */}
+        {isOpen && (
+          <div className="ml-6 mt-2 border-l-2 border-slate-300 pl-2 space-y-1">
+            {tab.subtabs.map((sub, j) => (
+              <button
+                key={j}
+                onClick={() => {
+                  setActiveTab(i);
+                  setActiveSubTab(j);
+                }}
+                className={`block w-full text-left px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200
+                  ${
+                    activeTab === i && activeSubTab === j
+                      ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
+                      : "bg-slate-800 text-white hover:bg-slate-700"
+                  }
+                `}
+              >
+                {sub}
+              </button>
+            ))}
+          </div>
         )}
-      </button>
-
-      {/* SUB TABS */}
-      {activeTab === i && (
-        <div className="ml-6 mt-2 border-l-2 border-slate-300 pl-2 space-y-1">
-          {tab.subtabs.map((sub, j) => (
-            <button
-              key={j}
-              onClick={() => setActiveSubTab(j)}
-              className={`block w-full text-left px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 
-                ${
-                  activeSubTab === j
-                    ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
-              : "bg-slate-800 text-white hover:bg-slate-700"
-                }
-              `}
-            >
-              {sub}
-            </button>
-          ))}
-        </div>
-      )}
-    </div>
-  ))}
+      </div>
+    );
+  })}
 </aside>
+
+
 
 
       {/* Main Content */}
