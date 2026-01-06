@@ -566,7 +566,7 @@ const Invoice = () => {
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-2 py-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-blue-500 hover:bg-emerald-700 text-black px-2 py-2 rounded-lg"
         >
           <Plus size={20} />
           Create Invoice

@@ -113,7 +113,7 @@ const ICON_BUTTON_BASE_CLASS =
   "w-10 h-10 p-2 rounded-lg transition-colors duration-300 flex items-center justify-center border border-gray-300";
 
 
-const Header = ({ darkMode, setDarkMode }) => {
+const Header = () => {
   const [showProfilePopup, setShowProfilePopup] = useState(false);
   const [showMessagesPopup, setShowMessagesPopup] = useState(false);
   const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
@@ -137,18 +137,14 @@ const Header = ({ darkMode, setDarkMode }) => {
     console.log("AI Assistant button clicked!");
   };
 
-  // Reusable hover class function based on dark mode state
+  // Reusable hover class function
   const getHoverClass = (extraClasses = "") =>
-    `${extraClasses} ${
-      darkMode ? "hover:bg-gray-700" : "hover:bg-gray-100"
-    }`;
+    `${extraClasses} hover:bg-gray-100`;
 
   return (
     <>
       <div
-        className={`flex items-center justify-between shadow-md ml-16 px-6 py-3 fixed top-0 left-64 right-5 z-40 duration-300 ${
-          darkMode ? "bg-gray-800 text-gray-100" : "bg-gray-100 text-gray-900"
-        }`}
+        className="flex items-center justify-between shadow-md ml-6 px-6 py-3 fixed top-0 left-64 right-3.5 z-40 duration-300 bg-gray-100 text-gray-900"
       >
         {/* Left Section: Hello & Dark Mode Toggle */}
         <div className="gap-4 flex mx-2 items-center">
@@ -172,19 +168,13 @@ const Header = ({ darkMode, setDarkMode }) => {
         <div className="flex items-center flex-1 max-w-lg space-x-2">
           <div className="relative flex-1">
             <Search
-              className={`absolute left-3 top-2.5 ${
-                darkMode ? "text-gray-300" : "text-gray-400"
-              }`}
+              className="absolute left-3 top-2.5 text-gray-400"
               size={18}
             />
             <input
               type="text"
               placeholder="Search anything"
-              className={`w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                darkMode
-                  ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
-                  : "bg-white border-gray-300 text-gray-900"
-              }`}
+              className="w-full pl-10 pr-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white border-gray-300 text-gray-900"
             />
           </div>
           {/* AI ICON BUTTON - Now consistent with others */}
@@ -204,25 +194,25 @@ const Header = ({ darkMode, setDarkMode }) => {
         {/* Right Section: Messages, Notes, Notifications, and Profile */}
         <div className="flex items-center gap-2 mx-2">
           {/* Messages Button - Now consistent */}
-          <button
+          {/* <button
             onClick={() => setShowMessagesPopup(true)}
             className={`${ICON_BUTTON_BASE_CLASS} ${getHoverClass()}`}
             title="Messages"
           >
-            <IoChatboxEllipsesOutline size={24} className={darkMode ? "text-white" : "text-gray-700"} />
+            <IoChatboxEllipsesOutline size={24} className="text-gray-700" />
             <span className="ml-1 text-xs">Chat</span>
-          </button>
+          </button> */}
           {/* Notes Button - Now consistent */}
-          <button
+          {/* <button
             // onClick={() => navigate("/add-note")}
             className={`${ICON_BUTTON_BASE_CLASS} ${getHoverClass()}`}
             title="Add Note"
           >
             <ScrollText size={24} />
             <span className="ml-1 text-xs">Note</span>
-          </button>
+          </button> */}
           {/* Notifications Button - Now consistent */}
-          <button
+          {/* <button
             onClick={() => setShowNotificationsPopup(true)}
             className={`${ICON_BUTTON_BASE_CLASS} relative ${getHoverClass()}`}
             title="Notifications"
@@ -232,8 +222,8 @@ const Header = ({ darkMode, setDarkMode }) => {
               4
             </span>
             <span className="ml-1 text-xs">Alert</span>
-            {/* <img src={notification} className="ml-1 w-4 h-4"/> */}
-          </button>
+            <img src={notification} className="ml-1 w-4 h-4"/>
+          </button> */}
           
           {/* Profile Area */}
           <div
@@ -247,7 +237,7 @@ const Header = ({ darkMode, setDarkMode }) => {
             />
             <div>
               <p className="text-sm font-medium">John Prince</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400">
+              <p className="text-xs text-gray-500">
                 princejohn04@gmail.com
               </p>
             </div>
@@ -263,11 +253,7 @@ const Header = ({ darkMode, setDarkMode }) => {
       {showProfilePopup && (
         // ... (profile popup content)
         <div className="fixed inset-0 bg-opacity-100 backdrop-blur-sm flex justify-center items-center z-50">
-            <div
-                className={`rounded-lg p-6 w-96 relative ${
-                    darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
-                }`}
-            >
+            <div className="rounded-lg p-6 w-96 relative bg-white text-gray-900">
                 <button
                     onClick={() => setShowProfilePopup(false)}
                     className="absolute top-3 right-3 text-red-500 text-xl font-bold"
@@ -298,11 +284,7 @@ const Header = ({ darkMode, setDarkMode }) => {
       {showMessagesPopup && (
         // ... (messages popup content)
         <div className="fixed inset-0 bg-opacity-100 backdrop-blur-sm flex justify-center items-center z-50">
-            <div
-                className={`rounded-lg p-6 w-96 relative ${
-                    darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
-                }`}
-            >
+            <div className="rounded-lg p-6 w-96 relative bg-white text-gray-900">
                 <button
                     onClick={() => setShowMessagesPopup(false)}
                     className="absolute top-3 right-3 text-red-500 text-xl font-bold"
@@ -317,11 +299,7 @@ const Header = ({ darkMode, setDarkMode }) => {
                             value={messageText}
                             onChange={(e) => setMessageText(e.target.value)}
                             placeholder="Type your message here..."
-                            className={`w-full h-24 p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none ${
-                                darkMode
-                                    ? "bg-gray-700 border-gray-600 text-gray-100 placeholder-gray-400"
-                                    : "bg-white border-gray-300 text-gray-900"
-                            }`}
+                            className="w-full h-24 p-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none bg-white border-gray-300 text-gray-900"
                         />
                         <button
                             onClick={handleSendMessage}
@@ -339,11 +317,7 @@ const Header = ({ darkMode, setDarkMode }) => {
       {showNotificationsPopup && (
         // ... (notifications popup content)
         <div className="fixed inset-0 bg-opacity-100 backdrop-blur-sm flex justify-center items-center z-50">
-            <div
-                className={`rounded-lg p-6 w-96 relative ${
-                    darkMode ? "bg-gray-800 text-gray-100" : "bg-white text-gray-900"
-                }`}
-            >
+            <div className="rounded-lg p-6 w-96 relative bg-white text-gray-900">
                 <button
                     onClick={() => setShowNotificationsPopup(false)}
                     className="absolute top-3 right-3 text-red-500 text-xl font-bold"

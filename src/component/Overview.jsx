@@ -186,7 +186,7 @@ const Overview = ({ darkMode }) => {
 
   return (
     <div className={`p-6 mt-10 min-h-screen transition-colors duration-300 ${
-      darkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'
+      darkMode ? 'bg-black text-white' : 'bg-cyan-50 text-black'
     }`}>
       {/* Header */}
       <div className="mb-6">

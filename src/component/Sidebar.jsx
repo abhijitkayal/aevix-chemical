@@ -62,7 +62,7 @@ const tabs = [
   },
 ];
 
-export default function App({ darkMode, setDarkMode }) {
+export default function App() {
   const [activeTab, setActiveTab] = useState(0);
   const [activeSubTab, setActiveSubTab] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -70,72 +70,67 @@ export default function App({ darkMode, setDarkMode }) {
   return (
     <div className="flex h-screen w-screen bg-transparent overflow-hidden">
       {/* Sidebar */}
-      <aside className={`w-80 p-4 transition-colors duration-300 ${
-        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-800 text-white'
-      }`}>
-        <h2 className="text-3xl font-bold mb-6 text-emerald-400">
-          Aevix Chemical
-        </h2>
+      {/* Sidebar */}
+<aside className="w-70 p-4 bg-slate-900 text-white">
+  <h2 className="text-3xl font-bold mb-6 text-emerald-400">
+    Aevix Chemical
+  </h2>
 
-        {tabs.map((tab, i) => (
-          <div key={i} className="mb-4">
+  {tabs.map((tab, i) => (
+    <div key={i} className="mb-3">
+      {/* MAIN TAB */}
+      <button
+        onClick={() => {
+          setActiveTab(i);
+          setActiveSubTab(0);
+        }}
+        className={`flex items-center gap-3 w-full px-3 py-2 rounded-lg font-bold transition-all duration-300
+          ${
+            activeTab === i
+              ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
+              : "bg-slate-800 text-white hover:bg-slate-700"
+          }
+        `}
+      >
+        <tab.icon size={18} />
+        {tab.name}
+
+        {activeTab === i ? (
+          <ChevronUp className="ml-auto" size={16} />
+        ) : (
+          <ChevronDown className="ml-auto" size={16} />
+        )}
+      </button>
+
+      {/* SUB TABS */}
+      {activeTab === i && (
+        <div className="ml-6 mt-2 border-l-2 border-slate-300 pl-2 space-y-1">
+          {tab.subtabs.map((sub, j) => (
             <button
-              onClick={() => {
-                setActiveTab(i);
-                setActiveSubTab(0);
-              }}
-              className={`flex items-center gap-3 w-full px-3 py-2 rounded border font-bold transition-colors duration-300 ${
-                activeTab === i
-                  ? `bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 border-emerald-400 ${
-                    darkMode ? 'text-white' : 'text-black'
-                  }`
-                  : darkMode 
-                    ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200" 
-                    : "bg-transparent border-slate-600 text-white hover:bg-slate-800"
-              }`}
+              key={j}
+              onClick={() => setActiveSubTab(j)}
+              className={`block w-full text-left px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200
+                ${
+                  activeSubTab === j
+                    ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"
+              : "bg-slate-800 text-white hover:bg-slate-700"
+                }
+              `}
             >
-              <tab.icon size={18} />
-              {tab.name}
-             {activeTab === i ? (
-  <ChevronUp className="ml-auto" size={16} />
-) : (
-  <ChevronDown className="ml-auto" size={16} />
-)}
-
+              {sub}
             </button>
+          ))}
+        </div>
+      )}
+    </div>
+  ))}
+</aside>
 
-            {/* Sub Tabs */}
-            {activeTab === i && (
-              <div className={`ml-8 mt-2 border-l space-y-1 text-sm border-l-2 ${
-                darkMode ? 'border-gray-400' : 'border-black'
-              }`}>
-                {tab.subtabs.map((sub, j) => (
-                  <button
-                    key={j}
-                    onClick={() => setActiveSubTab(j)}
-                    className={`block w-full text-left px-2 py-1 ml-1 rounded border font-semibold transition-colors duration-300 ${
-                      activeSubTab === j
-                        ? `bg-gradient-to-r from-emerald-400 to-teal-400 border-emerald-300 ${
-                          darkMode ? 'text-white' : 'text-white'
-                        }`
-                        : darkMode
-                          ? "bg-gray-100 text-white border-gray-300 hover:bg-gray-200"
-                          : "bg-transparent text-white border-slate-700 hover:bg-slate-800"
-                    }`}
-                  >
-                    {sub}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
-      </aside>
 
       {/* Main Content */}
      {/* Main Content Area */}
 <main className={`flex-1 p-6 overflow-y-auto transition-colors duration-300 ${
-  darkMode ? 'bg-black text-white' : 'bg-gray-100 text-black'
+ 'bg-cyan-50 text-black'
 }`}>
   {/* <h2 className="text-2xl font-semibold mb-4 text-black">
     {tabs[activeTab].name} / {tabs[activeTab].subtabs[activeSubTab]}
@@ -145,8 +140,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Overview" && (
     <>
-     <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Overview darkMode={darkMode} />
+     <Header />
+    <Overview />
     </>
   )}
 
@@ -155,8 +150,8 @@ export default function App({ darkMode, setDarkMode }) {
    tabs[activeTab].subtabs[activeSubTab] === "Sales Analytics" && (
     // <SalesTeamPieChart />
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <SalesTeamPieChart darkMode={darkMode} />
+    <Header />
+    <SalesTeamPieChart  />
     </>
   )}
 
@@ -164,8 +159,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Dashboard" &&
    tabs[activeTab].subtabs[activeSubTab] === "Stock Analytics" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <StockAnalytics darkMode={darkMode} />
+    <Header />
+    <StockAnalytics  />
     
     </>
   )}
@@ -174,8 +169,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Invoices" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Invoice darkMode={darkMode} />
+    <Header />
+    <Invoice  />
     </>
     
   )}
@@ -185,8 +180,8 @@ export default function App({ darkMode, setDarkMode }) {
    tabs[activeTab].subtabs[activeSubTab] === "Quotations" && (
     <>
     
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Quotation darkMode={darkMode} />
+    <Header />
+    <Quotation  />
     </>
     
   )}
@@ -195,8 +190,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Ledgers" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Ledger darkMode={darkMode} />
+    <Header />
+    <Ledger  />
     </>
     
   )}
@@ -205,8 +200,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Billing & Accounting" &&
    tabs[activeTab].subtabs[activeSubTab] === "Reports" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Report darkMode={darkMode} />
+    <Header />
+    <Report  />
     </>
     // <Report />
   )}
@@ -216,8 +211,8 @@ export default function App({ darkMode, setDarkMode }) {
    tabs[activeTab].subtabs[activeSubTab] === "Stock View" && (
     // <StockOverview />
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <StockOverview darkMode={darkMode} />
+    <Header />
+    <StockOverview  />
     </>
   )}
 
@@ -225,8 +220,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Warehouses" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Warehouse darkMode={darkMode} />
+    <Header />
+    <Warehouse  />
     </>
   )}
 
@@ -234,8 +229,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Low Stock" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <LowStock darkMode={darkMode} />
+    <Header />
+    <LowStock  />
     </>
     // <LowStock/>
   )}
@@ -243,8 +238,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Inventory" &&
    tabs[activeTab].subtabs[activeSubTab] === "Movement" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Movement darkMode={darkMode} />
+    <Header />
+    <Movement  />
     </>
     // <Movement />
   )}
@@ -253,8 +248,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Variance" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Variance darkMode={darkMode} />
+    <Header />
+    <Variance  />
     </>
     
   )}
@@ -263,8 +258,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "BOM" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <BOM darkMode={darkMode} />
+    <Header />
+    <BOM  />
     </>
     // <BOM />
   )}
@@ -273,8 +268,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Job Work" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Jobwork darkMode={darkMode} />
+    <Header />
+    <Jobwork  />
     </>
   )}
 
@@ -282,8 +277,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Production" &&
    tabs[activeTab].subtabs[activeSubTab] === "Planning" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Planning darkMode={darkMode} />
+    <Header />
+    <Planning  />
     </>
     // <Planning />
   )}
@@ -292,8 +287,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Users" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <User darkMode={darkMode} />
+    <Header />
+    <User  />
     </>
     // <User />
   )}
@@ -302,8 +297,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Roles" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Role darkMode={darkMode} />
+    <Header />
+    <Role  />
     </>
     // <Role />
   )}
@@ -311,8 +306,8 @@ export default function App({ darkMode, setDarkMode }) {
     {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Leads" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Leads darkMode={darkMode} />
+    <Header />
+    <Leads  />
     </>
     // <Leads />
   )}
@@ -321,8 +316,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Activity Logs" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Activitylogs darkMode={darkMode} />
+    <Header />
+    <Activitylogs  />
     </>
     // <Activitylogs />
   )}
@@ -331,8 +326,8 @@ export default function App({ darkMode, setDarkMode }) {
   {tabs[activeTab].name === "Users & CRM" &&
    tabs[activeTab].subtabs[activeSubTab] === "Security" && (
     <>
-    <Header darkMode={darkMode} setDarkMode={setDarkMode} />
-    <Security darkMode={darkMode} />
+    <Header />
+    <Security  />
     </>
     
   )}
@@ -344,3 +339,115 @@ export default function App({ darkMode, setDarkMode }) {
     </div>
   );
 }
+
+// import React, { useState } from "react";
+// import {
+//   LayoutDashboard,
+//   PieChart,
+//   Package,
+//   Factory,
+//   Users,
+//   ChevronDown,
+//   ChevronUp,
+// } from "lucide-react";
+
+// // Sidebar config
+// const tabs = [
+//   {
+//     name: "Dashboard",
+//     icon: LayoutDashboard,
+//     subtabs: ["Overview", "Sales Analytics", "Stock Analytics"],
+//   },
+//   {
+//     name: "Billing & Accounting",
+//     icon: PieChart,
+//     subtabs: ["Invoices", "Quotations", "Ledgers", "Reports"],
+//   },
+//   {
+//     name: "Inventory",
+//     icon: Package,
+//     subtabs: ["Stock View", "Warehouses", "Low Stock", "Movement"],
+//   },
+//   {
+//     name: "Production",
+//     icon: Factory,
+//     subtabs: ["BOM", "Job Work", "Planning", "Variance"],
+//   },
+//   {
+//     name: "Users & CRM",
+//     icon: Users,
+//     subtabs: ["Users", "Roles", "Leads", "Activity Logs", "Security"],
+//   },
+// ];
+
+// export default function Sidebar({
+//   activeTab,
+//   setActiveTab,
+//   activeSubTab,
+//   setActiveSubTab,
+// }) {
+//   const [openTab, setOpenTab] = useState(activeTab);
+
+//   return (
+//     <aside className="w-72 bg-slate-900 text-white h-screen p-4 overflow-y-auto">
+//       {/* Logo */}
+//       <h2 className="text-3xl font-bold mb-8 text-emerald-400">
+//         Aevix Chemical
+//       </h2>
+
+//       {/* Tabs */}
+//       {tabs.map((tab, i) => (
+//         <div key={i} className="mb-3">
+//           {/* Main Tab */}
+//           <button
+//             onClick={() => {
+//               setActiveTab(i);
+//               setActiveSubTab(0);
+//               setOpenTab(openTab === i ? null : i);
+//             }}
+//             className={`flex items-center gap-3 w-full px-4 py-2 rounded-lg font-semibold transition-all duration-300
+//               ${
+//                 activeTab === i
+//                   ? "bg-gradient-to-r from-slate-500 to-slate-500 text-black shadow-md"
+//                   : "bg-slate-800 text-white hover:bg-slate-700"
+//               }
+//             `}
+//           >
+//             <tab.icon size={18} />
+//             <span className="flex-1 text-left">{tab.name}</span>
+
+//             {openTab === i ? (
+//               <ChevronUp size={16} />
+//             ) : (
+//               <ChevronDown size={16} />
+//             )}
+//           </button>
+
+//           {/* Sub Tabs */}
+//           {openTab === i && (
+//             <div className="ml-6 mt-2 space-y-1 border-l-2 border-slate-700 pl-3">
+//               {tab.subtabs.map((sub, j) => (
+//                 <button
+//                   key={j}
+//                   onClick={() => {
+//                     setActiveTab(i);
+//                     setActiveSubTab(j);
+//                   }}
+//                   className={`block w-full text-left px-3 py-1 rounded-md text-sm font-medium transition-colors duration-200
+//                     ${
+//                       activeSubTab === j && activeTab === i
+//                         ? "bg-emerald-400 text-black"
+//                         : "text-slate-300 hover:bg-slate-700"
+//                     }
+//                   `}
+//                 >
+//                   {sub}
+//                 </button>
+//               ))}
+//             </div>
+//           )}
+//         </div>
+//       ))}
+//     </aside>
+//   );
+// }
