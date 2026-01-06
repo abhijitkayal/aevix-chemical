@@ -109,7 +109,7 @@ export default function App() {
             <button
               key={j}
               onClick={() => setActiveSubTab(j)}
-              className={`block w-full text-left px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200
+              className={`block w-full text-left px-3 py-1 rounded-md text-sm font-semibold transition-all duration-200 
                 ${
                   activeSubTab === j
                     ? "bg-gradient-to-r from-gray-600 to-gray-600 text-white shadow-md"

@@ -371,13 +371,12 @@ export default function StockOverview() {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           Stock Inventory
         </h2>
-        <button
+        <p
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-4 py-2 rounded-lg transition-colors"
-        >
-          <Plus size={20} />
+          className=" flex border-2  p-2 mt-0.5 bg-black text-white cursor-pointer">
+          <Plus size={20} className="mt-0.5"/>
           Add Stock Item
-        </button>
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -522,10 +521,10 @@ export default function StockOverview() {
               <option>Critical</option>
             </select>
           </div>
-          <button className="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition flex items-center gap-2">
-            <Download size={18} />
+          <p className=" flex border-2  p-2 mt-0.5 bg-black text-white cursor-pointer">
+            <Download size={18} className="mt-0.5"/>
             Export
-          </button>
+          </p>
         </div>
       </div>
 
@@ -801,16 +800,16 @@ export default function StockOverview() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={handleSubmit}
-                className="flex-1 bg-emerald-600 text-black py-2.5 rounded-lg hover:bg-emerald-700 font-medium transition-colors"
+                className=" flex border-2  p-2 mt-0.5 bg-black text-white cursor-pointer"
               >
                 Add Stock Item
               </button>
-              <button
+              <p
                 onClick={() => setShowModal(false)}
-                className="px-6 bg-gray-200 text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+                className="px-6 bg-gray-200 cursor-pointer text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
               >
                 Cancel
-              </button>
+              </p>
             </div>
           </div>
         </div>

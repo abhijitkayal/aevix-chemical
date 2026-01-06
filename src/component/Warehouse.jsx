@@ -178,13 +178,12 @@ export default function Warehouse() {
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           Warehouse Management
         </h2>
-        <button
+        <p
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-black px-4 py-2 rounded-lg transition-colors"
-        >
+          className=" flex border-2  p-2 mt-0.5 bg-black text-white cursor-pointer">
           <Plus size={20} />
           Add Warehouse
-        </button>
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -427,13 +426,18 @@ export default function Warehouse() {
                 value={form.value}
               />
             </div>
-
-            <button
+        <div className="flex gap-2">
+          <p
               onClick={handleSubmit}
-              className="mt-4 w-full bg-emerald-600 text-black py-2 rounded-lg hover:bg-emerald-700"
+              className=" flex border-2  px-2 mt-0.5 bg-black text-white cursor-pointer rounded-xl py-1 "
             >
               Save Warehouse
-            </button>
+            </p>
+            <p className="px-6 cursor-pointer bg-gray-200 text-gray-700 py-1 rounded-lg hover:bg-gray-300 font-medium transition-colors">
+              Cancel
+            </p>
+        </div>
+            
           </div>
         </div>
       )}

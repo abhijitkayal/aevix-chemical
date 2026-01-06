@@ -564,13 +564,13 @@ const Invoice = () => {
           <h1 className="text-3xl font-bold text-black mb-2">Invoice Management</h1>
           <p className="text-gray-600">Track and manage all customer invoices and payments</p>
         </div>
-        <button
+        <p
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-500 hover:bg-emerald-700 text-black px-2 py-2 rounded-lg"
+          className=" flex border-2  p-2 mt-0.5 bg-black text-white cursor-pointer"
         >
-          <Plus size={20} />
+          <Plus size={20} className='mt-0.5'/>
           Create Invoice
-        </button>
+        </p>
       </div>
 
       {/* Summary Cards */}
@@ -1057,18 +1057,17 @@ const Invoice = () => {
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button
+              <p
                 onClick={handleSubmit}
-                className="flex-1 bg-emerald-600 text-black py-2.5 rounded-lg hover:bg-emerald-700 font-medium transition-colors"
-              >
+                className=" flex border-2 px-10 py-2 mt-0.5 bg-black text-white cursor-pointer">
                 Create Invoice
-              </button>
-              <button
+              </p>
+              <p
                 onClick={() => setShowModal(false)}
-                className="px-6 bg-gray-200 text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
+                className="px-6 cursor-pointer bg-gray-200 text-gray-700 py-2.5 rounded-lg hover:bg-gray-300 font-medium transition-colors"
               >
                 Cancel
-              </button>
+              </p>
             </div>
           </div>
         </div>
