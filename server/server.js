@@ -2,8 +2,8 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import warehouseRoutes from "./routes/warehouseRoutes.js";
-import invoiceRoutes from "./routes/invoiceRoutes.js";
-import productRoutes from "./routes/productRoutes.js";
+import invoiceRoutes from "./routes/InvoiceRoutes.js";
+import productRoutes from "./routes/ProductRoutes.js";
 import inwardPaymentRoutes from "./routes/InwardpaymentRoutes.js"
 import outwardPaymentRoutes from "./routes/OutwardpaymentRoutes.js";
 import creditNoteRoutes from "./routes/CreditnoteRoutes.js";
@@ -20,7 +20,7 @@ import RoleRoutes from "./routes/RoleRoutes.js";
 import leadsRoutes from "./routes/LeadRoutes.js";
 import OrderAcknowledgement from "./routes/Orderacknowledgement.js";
 import purchaseInvoiceRoutes from "./routes/PurchaseinvoiceRoutes.js";  
-import authRoutes from './routes/Auth.js';
+// import authRoutes from './routes/Auth.js';
 import clientRoutes from './routes/ClientRoutes.js';
 const app = express();
 
@@ -34,7 +34,7 @@ mongoose
 
 
 // app.use('/api/auth', authRoutes);
-app.use('/api/auth', authRoutes);
+// app.use('/api/auth', authRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/purchase-invoices", purchaseInvoiceRoutes);
 app.use("/api/warehouses", warehouseRoutes);

@@ -1,5 +1,5 @@
 import express from "express";
-import CreditNote from "../models/CreditNote.js";
+import CreditNote from "../models/Creditnote.js";
 
 const router = express.Router();
 
