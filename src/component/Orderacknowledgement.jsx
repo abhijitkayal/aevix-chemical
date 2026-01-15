@@ -340,7 +340,7 @@ import axios from "axios";
 import { Plus, Eye, Download } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import html2pdf from "html2pdf.js";
-import OrderAckPDF from "./OrderAckPDF";
+import OrderAckPDF from "./Orderackpdf";
 import OrderAckForm from "./OrderackForm";
 
 export default function OrderAcknowledgement() {

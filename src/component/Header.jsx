@@ -106,8 +106,7 @@ import React from "react";
 import { Search, Bell, Sun, Moon, ScrollText } from "lucide-react";
 import { IoChatboxEllipsesOutline, IoSparklesOutline } from "react-icons/io5";
 import sun from '../assets/sun-icon-on-white-background-vector.jpg';
-import moon from '../assets/download.png';
-import notification from '../assets/download (1).png';
+
 
 const ICON_BUTTON_BASE_CLASS =
   "w-10 h-10 p-2 rounded-lg transition-colors duration-300 flex items-center justify-center border border-gray-300";
