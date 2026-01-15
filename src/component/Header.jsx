@@ -212,18 +212,16 @@ const Header = () => {
             <span className="ml-1 text-xs">Note</span>
           </button> */}
           {/* Notifications Button - Now consistent */}
-          {/* <button
+          <p
             onClick={() => setShowNotificationsPopup(true)}
             className={`${ICON_BUTTON_BASE_CLASS} relative ${getHoverClass()}`}
             title="Notifications"
           >
-            <Bell size={24} />
+            <Bell size={24} className="text-gray-700" />
             <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
               4
             </span>
-            <span className="ml-1 text-xs">Alert</span>
-            <img src={notification} className="ml-1 w-4 h-4"/>
-          </button> */}
+          </p>
           
           {/* Profile Area */}
           <div
