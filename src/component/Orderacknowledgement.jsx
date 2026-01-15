@@ -334,7 +334,7 @@
 
 // export default Orderacknowledgement;
 
-"use client";
+;
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Plus, Eye, Download } from "lucide-react";

@@ -150,7 +150,7 @@
 // }
 
 
-"use client";
+;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Phone, Mail, User, CalendarCheck, Plus, X } from "lucide-react";

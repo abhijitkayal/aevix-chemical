@@ -542,7 +542,7 @@
 //   );
 // }
 
-"use client";
+;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X, ArrowRightLeft, ArrowUpCircle } from "lucide-react";

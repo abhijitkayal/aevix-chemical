@@ -903,7 +903,7 @@
 // export default Quotation;
 
 
-"use client";
+;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X } from "lucide-react";

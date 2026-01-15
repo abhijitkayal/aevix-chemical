@@ -264,7 +264,7 @@
 
 
 
-"use client";
+;
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X } from "lucide-react";

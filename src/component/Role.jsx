@@ -510,7 +510,7 @@
 
 // export default Role;
 
-"use client";
+;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Shield, Plus, X, Edit, CheckCircle } from "lucide-react";
