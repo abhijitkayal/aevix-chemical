@@ -149,8 +149,6 @@
 //   );
 // }
 
-
-;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Phone, Mail, User, CalendarCheck, Plus, X } from "lucide-react";
@@ -177,7 +175,7 @@ export default function Leads() {
 
   /* FETCH LEADS */
   const fetchLeads = async () => {
-    const res = await axios.get("http://localhost:5000/api/leads");
+    const res = await axios.get("https://abhijitapi-1.onrender.com/api/leads");
     setLeads(res.data);
   };
 
@@ -191,7 +189,7 @@ export default function Leads() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:5000/api/leads", form);
+    await axios.post("https://abhijitapi-1.onrender.com/api/leads", form);
     setShowModal(false);
     setForm({
       name: "",

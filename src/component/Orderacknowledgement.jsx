@@ -350,7 +350,7 @@ export default function OrderAcknowledgement() {
   const printRef = useRef();
 
   const fetchData = async () => {
-    const res = await axios.get("http://localhost:5000/api/order-acknowledgements");
+    const res = await axios.get("https://abhijitapi-1.onrender.com/api/order-acknowledgements");
     setData(res.data);
   };
 

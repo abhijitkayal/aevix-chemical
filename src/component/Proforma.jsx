@@ -279,14 +279,14 @@ export default function Proforma() {
 
   const submit = async () => {
     const res = await axios.post(
-      "http://localhost:5000/api/proforma",
+      "https://abhijitapi-1.onrender.com/api/proforma",
       form
     );
     setProforma(res.data);
     setOpen(false);
   };
    const fetchInvoices = async () => {
-      const res = await axios.get("http://localhost:5000/api/proforma");
+      const res = await axios.get("https://abhijitapi-1.onrender.com/api/proforma");
       setProforma(res.data);
       console.log(res.data);
       console.log("Fetched Proforma Data",proforma);
