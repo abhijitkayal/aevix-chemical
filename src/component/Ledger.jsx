@@ -28,7 +28,7 @@ const Ledger = () => {
      Fetch clients
   ====================== */
   const fetchClients = async () => {
-    const res = await axios.get('https://abhijitapi-1.onrender.com/api/clients');
+    const res = await axios.get('http://localhost:5000/api/clients');
     setClients(res.data);
   };
 
@@ -37,7 +37,7 @@ const Ledger = () => {
   ====================== */
   const fetchInvoices = async () => {
     try {
-      const res = await axios.get('https://abhijitapi-1.onrender.com/api/invoices');
+      const res = await axios.get('http://localhost:5000/api/invoices');
       setInvoices(res.data);
     } catch (err) {
       console.error('Failed to fetch invoices:', err);
@@ -71,13 +71,13 @@ const Ledger = () => {
       if (form._id) {
         // UPDATE
         await axios.put(
-          `https://abhijitapi-1.onrender.com/api/clients/${form._id}`,
+          `http://localhost:5000/api/clients/${form._id}`,
           form
         );
       } else {
         // CREATE
         await axios.post(
-          'https://abhijitapi-1.onrender.com/api/clients',
+          'http://localhost:5000/api/clients',
           form
         );
       }
@@ -109,7 +109,7 @@ const Ledger = () => {
 
     try {
       await axios.delete(
-        `https://abhijitapi-1.onrender.com/api/clients/${id}`
+        `http://localhost:5000/api/clients/${id}`
       );
       fetchClients();
     } catch (err) {

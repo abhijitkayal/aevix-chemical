@@ -454,7 +454,7 @@ export default function LowStock() {
   /* ================= FETCH LOW STOCK ================= */
   const fetchLowStock = async () => {
     try {
-      const res = await axios.get("https://abhijitapi-1.onrender.com/api/stocks");
+      const res = await axios.get("http://localhost:5000/api/stocks");
       const filtered = res.data.filter(
         (item) => item.status === "Low" || item.status === "Critical"
       );

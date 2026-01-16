@@ -716,7 +716,7 @@ const User = () => {
 
   /* FETCH USERS */
   const fetchUsers = async () => {
-    const res = await axios.get("https://abhijitapi-1.onrender.com/api/users");
+    const res = await axios.get("http://localhost:5000/api/users");
     setUsers(res.data);
   };
 
@@ -734,11 +734,11 @@ const User = () => {
 
     if (isEdit) {
       await axios.put(
-        `https://abhijitapi-1.onrender.com/api/users/${editId}`,
+        `http://localhost:5000/api/users/${editId}`,
         form
       );
     } else {
-      await axios.post("https://abhijitapi-1.onrender.com/api/users", form);
+      await axios.post("http://localhost:5000/api/users", form);
     }
 
     resetForm();
@@ -754,7 +754,7 @@ const User = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-    await axios.delete(`https://abhijitapi-1.onrender.com/api/users/${id}`);
+    await axios.delete(`http://localhost:5000/api/users/${id}`);
     fetchUsers();
   };
 

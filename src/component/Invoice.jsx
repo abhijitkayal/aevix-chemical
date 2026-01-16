@@ -1102,12 +1102,12 @@
 //   /* ---------------- FETCH DATA ---------------- */
 
 //   const fetchInvoices = async () => {
-//     const res = await axios.get("https://abhijitapi-1.onrender.com/api/invoices");
+//     const res = await axios.get("http://localhost:5000/api/invoices");
 //     setInvoices(res.data);
 //   };
 
 //   const fetchWarehouses = async () => {
-//     const res = await axios.get("https://abhijitapi-1.onrender.com/api/warehouses");
+//     const res = await axios.get("http://localhost:5000/api/warehouses");
 //     setWarehouses(res.data);
 //   };
 
@@ -1124,7 +1124,7 @@
 
 // const handleSubmit = async () => {
 //   try {
-//     await axios.post("https://abhijitapi-1.onrender.com/api/invoices", {
+//     await axios.post("http://localhost:5000/api/invoices", {
 //       customer: form.customer,
 //       customerId: form.customerId,
 //       warehouseId: form.warehouse,
@@ -1483,12 +1483,12 @@ const Invoice = () => {
   /* ================= FETCH DATA ================= */
 
   const fetchInvoices = async () => {
-    const res = await axios.get("https://abhijitapi-1.onrender.com/api/invoices");
+    const res = await axios.get("http://localhost:5000/api/invoices");
     setInvoices(res.data);
   };
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("https://abhijitapi-1.onrender.com/api/warehouses");
+    const res = await axios.get("http://localhost:5000/api/warehouses");
     setWarehouses(res.data);
   };
 
@@ -1505,7 +1505,7 @@ const Invoice = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("https://abhijitapi-1.onrender.com/api/invoices", {
+      await axios.post("http://localhost:5000/api/invoices", {
         customer: form.customer,
         customerId: form.customerId,
         phone: form.phone,
@@ -1618,7 +1618,7 @@ const Invoice = () => {
                   <button
                     onClick={() =>
                       window.open(
-                        `https://abhijitapi-1.onrender.com/api/invoices/${inv._id}/download`,
+                        `http://localhost:5000/api/invoices/${inv._id}/download`,
                         "_blank"
                       )
                     }

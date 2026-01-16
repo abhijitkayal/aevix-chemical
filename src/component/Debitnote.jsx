@@ -1284,7 +1284,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "lucide-react";
 
-const API = "https://abhijitapi-1.onrender.com/api/debit-notes";
+const API = "http://localhost:5000/api/debit-notes";
 
 export default function CreditNote() {
   const [notes, setNotes] = useState([]);
