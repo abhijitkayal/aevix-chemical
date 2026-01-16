@@ -300,13 +300,13 @@ const [supplyType, setSupplyType] = useState("Outward");
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const saveChallan = async () => {
-    await axios.post("http://localhost:5000/api/delivery-challan", form);
+    await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/delivery-challan", form);
     setOpen(false);
     fetchData();
   };
 
   const fetchData = async () => {
-    const res = await axios.get("http://localhost:5000/api/delivery-challan");
+    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/delivery-challan");
     setData(res.data);
   };
 

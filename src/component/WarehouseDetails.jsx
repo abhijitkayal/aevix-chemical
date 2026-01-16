@@ -19,12 +19,12 @@ export default function WarehouseDetails() {
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
     const fetchData = async () => {
-      const wRes = await axios.get("http://localhost:5000/api/warehouses");
+      const wRes = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
       const selected = wRes.data.find((x) => x._id === id);
       setWarehouse(selected);
 
       const pRes = await axios.get(
-        `http://localhost:5000/api/products/${id}`
+        `https://aevix-chem-backend-bksy.onrender.com/api/products/${id}`
       );
       setProducts(pRes.data);
     };
@@ -44,7 +44,7 @@ export default function WarehouseDetails() {
       return;
     }
 
-    await axios.post("http://localhost:5000/api/products", {
+    await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/products", {
       warehouseId: id,
       productName: form.productName,
       quantity: Number(form.quantity),
@@ -56,7 +56,7 @@ export default function WarehouseDetails() {
     setShowForm(false);
 
     const res = await axios.get(
-      `http://localhost:5000/api/products/${id}`
+      `https://aevix-chem-backend-bksy.onrender.com/api/products/${id}`
     );
     setProducts(res.data);
   };

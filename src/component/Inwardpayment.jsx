@@ -744,7 +744,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "lucide-react";
 
-const API_URL = "http://localhost:5000/api/inward-payments";
+const API_URL = "https://aevix-chem-backend-bksy.onrender.com/api/inward-payments";
 
 export default function InwardPayment() {
   const [payments, setPayments] = useState([]);
@@ -907,7 +907,7 @@ export default function InwardPayment() {
                 <td className="p-3">
                   {p.attachment ? (
                     <a
-                      href={`http://localhost:5000/uploads/${p.attachment}`}
+                      href={`https://aevix-chem-backend-bksy.onrender.com/uploads/${p.attachment}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline text-sm"

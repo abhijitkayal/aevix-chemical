@@ -32,7 +32,7 @@ const PurchaseInvoicePage = () => {
      Fetch invoices
   ====================== */
   const fetchInvoices = async () => {
-    const res = await axios.get('http://localhost:5000/api/purchase-invoices');
+    const res = await axios.get('https://aevix-chem-backend-bksy.onrender.com/api/purchase-invoices');
     setInvoices(res.data);
   };
 
@@ -52,7 +52,7 @@ const PurchaseInvoicePage = () => {
   ====================== */
   const handleSubmit = async () => {
     await axios.post(
-      'http://localhost:5000/api/purchase-invoices',
+      'https://aevix-chem-backend-bksy.onrender.com/api/purchase-invoices',
       {
         ...form,
         totalAmount: Number(form.totalAmount), // ensure number

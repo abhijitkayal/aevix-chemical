@@ -932,7 +932,7 @@ export default function Quotation() {
 
   /* -------------------- FETCH DATA -------------------- */
   const fetchQuotations = async () => {
-    const res = await axios.get("http://localhost:5000/api/quotations");
+    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/quotations");
     setQuotations(res.data);
   };
 
@@ -948,7 +948,7 @@ export default function Quotation() {
 
   /* -------------------- SUBMIT -------------------- */
   const submitQuotation = async () => {
-    await axios.post("http://localhost:5000/api/quotations", form);
+    await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/quotations", form);
     setOpen(false);
     setForm({
       supplyType: "Outward",

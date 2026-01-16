@@ -847,7 +847,7 @@ export default function StockOverview() {
   /* ================= FETCH STOCK ================= */
   const fetchStocks = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/stocks");
+      const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/stocks");
       setStocks(res.data);
     } catch (err) {
       console.error(err);
@@ -896,11 +896,11 @@ const handleSubmit = async () => {
 
     if (editingId) {
       await axios.put(
-        `http://localhost:5000/api/stocks/${editingId}`,
+        `https://aevix-chem-backend-bksy.onrender.com/api/stocks/${editingId}`,
         payload
       );
     } else {
-      await axios.post("http://localhost:5000/api/stocks", payload);
+      await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/stocks", payload);
     }
 
     setShowModal(false);
@@ -926,7 +926,7 @@ const handleSubmit = async () => {
 
   const fetchWarehouses = async () => {
   try {
-    const res = await axios.get("http://localhost:5000/api/warehouses");
+    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
     setWarehouses(res.data);
     console.log(res.data);
   } catch (err) {

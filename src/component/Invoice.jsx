@@ -1102,12 +1102,12 @@
 //   /* ---------------- FETCH DATA ---------------- */
 
 //   const fetchInvoices = async () => {
-//     const res = await axios.get("http://localhost:5000/api/invoices");
+//     const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/invoices");
 //     setInvoices(res.data);
 //   };
 
 //   const fetchWarehouses = async () => {
-//     const res = await axios.get("http://localhost:5000/api/warehouses");
+//     const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
 //     setWarehouses(res.data);
 //   };
 
@@ -1124,7 +1124,7 @@
 
 // const handleSubmit = async () => {
 //   try {
-//     await axios.post("http://localhost:5000/api/invoices", {
+//     await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/invoices", {
 //       customer: form.customer,
 //       customerId: form.customerId,
 //       warehouseId: form.warehouse,
@@ -1483,12 +1483,12 @@ const Invoice = () => {
   /* ================= FETCH DATA ================= */
 
   const fetchInvoices = async () => {
-    const res = await axios.get("http://localhost:5000/api/invoices");
+    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/invoices");
     setInvoices(res.data);
   };
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("http://localhost:5000/api/warehouses");
+    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
     setWarehouses(res.data);
   };
 
@@ -1505,7 +1505,7 @@ const Invoice = () => {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:5000/api/invoices", {
+      await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/invoices", {
         customer: form.customer,
         customerId: form.customerId,
         phone: form.phone,
@@ -1618,7 +1618,7 @@ const Invoice = () => {
                   <button
                     onClick={() =>
                       window.open(
-                        `http://localhost:5000/api/invoices/${inv._id}/download`,
+                        `https://aevix-chem-backend-bksy.onrender.com/api/invoices/${inv._id}/download`,
                         "_blank"
                       )
                     }
