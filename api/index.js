@@ -51,7 +51,6 @@ app.use("/api/invoices", invoiceRoutes);
 app.use("/api/purchase-invoices", purchaseInvoiceRoutes);
 app.use("/api/warehouses", warehouseRoutes);
 app.use("/api/products", productRoutes);
-app.use('/uploads', express.static('uploads'));
 app.use('/api/inward-payments', inwardPaymentRoutes);
 app.use("/api/outward-payments", outwardPaymentRoutes);
 app.use("/api/credit-notes", creditNoteRoutes);
