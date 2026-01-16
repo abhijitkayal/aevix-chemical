@@ -819,7 +819,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Plus } from 'lucide-react';
-import SellProductModal from './SellProductModal';
+import SellProductModal from './sellProductModal';
 
 const Report = () => {
   const [open, setOpen] = useState(false);
