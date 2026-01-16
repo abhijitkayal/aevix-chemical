@@ -20,8 +20,9 @@ import RoleRoutes from "./routes/RoleRoutes.js";
 import leadsRoutes from "./routes/LeadRoutes.js";
 import OrderAcknowledgement from "./routes/Orderacknowledgement.js";
 import purchaseInvoiceRoutes from "./routes/PurchaseinvoiceRoutes.js";  
-// import authRoutes from './routes/Auth.js';
+import authRoutes from './routes/AuthRoutes.js';
 import clientRoutes from './routes/ClientRoutes.js';
+import saleRoutes from './routes/SaleRoutes.js';
 const app = express();
 
 app.use(cors());
@@ -33,8 +34,7 @@ mongoose
   .catch((err) => console.error(err));
 
 
-// app.use('/api/auth', authRoutes);
-// app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/purchase-invoices", purchaseInvoiceRoutes);
 app.use("/api/warehouses", warehouseRoutes);
@@ -59,6 +59,7 @@ app.use("/api/roles", RoleRoutes);
 app.use("/api/leads", leadsRoutes);
 app.use("/api/order-acknowledgements",OrderAcknowledgement);
 app.use("/api/clients", clientRoutes);
+app.use("/api/sales", saleRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");

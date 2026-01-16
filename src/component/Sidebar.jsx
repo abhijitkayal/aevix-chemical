@@ -31,7 +31,7 @@ const tabs = [
       { name: "Purchases Invoice", path: "/billing/purchase-invoices" },
       { name: "Quotations", path: "/billing/quotations" },
       { name: "Ledgers", path: "/billing/ledgers" },
-      { name: "Reports", path: "/billing/reports" },
+      { name: "Selling Product", path: "/billing/reports" },
       { name: "Proforma", path: "/billing/proforma" },
       { name: "Delivery Challan", path: "/billing/delivery-challan" },
       { name: "Order Acknowledgement", path: "/billing/order-acknowledgement" },
