@@ -26,8 +26,10 @@ const Login = () => {
       console.log('Logged user:', res.data.user);
       setMessage(res.data.message);
 
+      // ✅ Store user in localStorage
+      localStorage.setItem('user', JSON.stringify(res.data.user));
+
       // ✅ REDIRECT AFTER SUCCESS
-      // router.push('/overview');
       navigate('/dashboard/overview');
 
     } catch (err) {
