@@ -377,7 +377,7 @@ export default function Proforma() {
   };
 
   return (
-    <div className="p-6 mt-10 min-h-screen">
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
       <div className="flex justify-end mb-4">
         <button
