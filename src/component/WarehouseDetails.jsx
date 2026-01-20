@@ -23,12 +23,12 @@ export default function WarehouseDetails() {
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
     const fetchData = async () => {
-      const wRes = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
+      const wRes = await axios.get("https://aevix-chemical-xctw.onrender.com/api/warehouses");
       const selected = wRes.data.find((x) => x._id === id);
       setWarehouse(selected);
 
       const pRes = await axios.get(
-        `https://aevix-chem-backend-bksy.onrender.com/api/products/${id}`
+        `https://aevix-chemical-xctw.onrender.com/api/products/${id}`
       );
       setProducts(pRes.data);
     };

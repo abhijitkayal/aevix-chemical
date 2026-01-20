@@ -20,7 +20,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        `${API_URL}/api/auth/login`,
+        "https://aevix-chemical-xctw.onrender.com/api/auth/login",
         { email, password }
       );
 

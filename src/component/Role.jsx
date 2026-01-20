@@ -594,7 +594,7 @@ const Role = () => {
 
   /* ================= FETCH ROLES ================= */
   const fetchRoles = async () => {
-    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/roles");
+    const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/roles");
     setRoles(res.data);
   };
 
@@ -639,9 +639,9 @@ const Role = () => {
     e.preventDefault();
 
     if (isEdit) {
-      await axios.put(`https://aevix-chem-backend-bksy.onrender.com/api/roles/${editId}`, form);
+      await axios.put(`https://aevix-chemical-xctw.onrender.com/api/roles/${editId}`, form);
     } else {
-      await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/roles", form);
+      await axios.post("https://aevix-chemical-xctw.onrender.com/api/roles", form);
     }
 
     setShowModal(false);

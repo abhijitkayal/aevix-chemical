@@ -128,8 +128,8 @@ const Overview = () => {
           salesRes,
           purchaseRes,
         ] = await Promise.all([
-          axios.get('https://aevix-chem-backend-bksy.onrender.com/api/invoices'), // SALE
-          axios.get('https://aevix-chem-backend-bksy.onrender.com/api/purchase-invoices'), // PURCHASE
+          axios.get('https://aevix-chemical-xctw.onrender.com/api/invoices'), // SALE
+          axios.get('https://aevix-chemical-xctw.onrender.com/api/purchase-invoices'), // PURCHASE
         ]);
 
         setSaleCard(

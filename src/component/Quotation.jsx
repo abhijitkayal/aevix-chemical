@@ -936,7 +936,7 @@ export default function Quotation() {
 
   const fetchQuotations = async () => {
     const res = await axios.get(
-      "https://aevix-chem-backend-bksy.onrender.com/api/quotations"
+      "https://aevix-chemical-xctw.onrender.com/api/quotations"
     );
     setQuotations(res.data);
   };
@@ -968,7 +968,7 @@ export default function Quotation() {
     }
 
     const res = await axios.get(
-      `https://aevix-chem-backend-bksy.onrender.com/api/leads?search=${query}`
+      `https://aevix-chemical-xctw.onrender.com/api/leads?search=${query}`
     );
 
     setCustomerSuggestions(res.data);
@@ -1006,7 +1006,7 @@ export default function Quotation() {
 
   const submitQuotation = async () => {
     await axios.post(
-      "https://aevix-chem-backend-bksy.onrender.com/api/quotations",
+      "https://aevix-chemical-xctw.onrender.com/api/quotations",
       form
     );
 

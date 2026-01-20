@@ -644,6 +644,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, Eye, Edit, Trash } from "lucide-react";
+import { API_URL } from "../config/api";
 
 const AgentCommission = () => {
   const [commissions, setCommissions] = useState([]);
@@ -665,7 +666,7 @@ const AgentCommission = () => {
 
   /* ================= FETCH DATA ================= */
   const fetchCommissions = async () => {
-    const res = await axios.get("${API_URL}/api/commissions");
+    const res = await axios.get(`${API_URL}/api/commissions`);
     setCommissions(res.data);
   };
 

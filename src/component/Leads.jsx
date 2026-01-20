@@ -175,7 +175,7 @@
 
 //   /* FETCH LEADS */
 //   const fetchLeads = async () => {
-//     const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/leads");
+//     const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/leads");
 //     setLeads(res.data);
 //   };
 
@@ -189,7 +189,7 @@
 
 //   const handleSubmit = async (e) => {
 //     e.preventDefault();
-//     await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/leads", form);
+//     await axios.post("https://aevix-chemical-xctw.onrender.com/api/leads", form);
 //     setShowModal(false);
 //     setForm({
 //       name: "",
@@ -367,6 +367,7 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
+import { API_URL } from "../config/api";
 
 export default function Leads() {
   const [leads, setLeads] = useState([]);
@@ -387,7 +388,7 @@ export default function Leads() {
   /* ================= FETCH LEADS ================= */
 
   const fetchLeads = async () => {
-    const res = await axios.get("${API_URL}/api/leads");
+    const res = await axios.get(`${API_URL}/api/leads`);
     setLeads(res.data);
   };
 

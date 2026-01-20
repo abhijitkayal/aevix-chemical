@@ -350,7 +350,7 @@ export default function OrderAcknowledgement() {
   const printRef = useRef();
 
   const fetchData = async () => {
-    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/order-acknowledgements");
+    const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/order-acknowledgements");
     setData(res.data);
   };
 

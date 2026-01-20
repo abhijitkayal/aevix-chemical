@@ -51,7 +51,7 @@
 //   useEffect(() => {
 //     const fetchInvoices = async () => {
 //       try {
-//         const res = await axios.get('https://aevix-chem-backend-bksy.onrender.com/api/invoices');
+//         const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/invoices');
 //         console.log(res.data);
 //         const invoices = res.data || [];
 

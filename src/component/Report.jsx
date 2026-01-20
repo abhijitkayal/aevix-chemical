@@ -829,7 +829,7 @@ const Report = () => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('https://aevix-chem-backend-bksy.onrender.com/api/sales');
+      const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/sales');
       setSales(res.data);
     } catch (error) {
       console.error('Failed to fetch sales', error);

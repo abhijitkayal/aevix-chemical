@@ -251,6 +251,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X, Edit, Trash } from "lucide-react";
+import { API_URL } from "../config/api";
 
 export default function Proforma() {
   const [open, setOpen] = useState(false);
@@ -290,7 +291,7 @@ export default function Proforma() {
 
   /* ================= FETCH PROFORMA ================= */
   const fetchProforma = async () => {
-    const res = await axios.get("${API_URL}/api/proforma");
+    const res = await axios.get(`${API_URL}/api/proforma`);
     setProforma(res.data);
   };
 
@@ -352,7 +353,7 @@ export default function Proforma() {
         form
       );
     } else {
-      await axios.post("${API_URL}/api/proforma", form);
+      await axios.post(`${API_URL}/api/proforma`, form);
     }
 
     setForm(emptyForm);
