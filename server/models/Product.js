@@ -16,7 +16,9 @@ const ProductSchema = new mongoose.Schema(
       required: true,
     },
     unit: String,
+   
     price: Number,
+    warehouse:String,
   },
   { timestamps: true }
 );

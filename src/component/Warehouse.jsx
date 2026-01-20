@@ -383,7 +383,7 @@ export default function Warehouses() {
 
   /* ---------------- UI ---------------- */
   return (
-    <div className="p-6 mt-15 min-h-screen bg-gray-100">
+    <div className="p-6 mt-15 min-h-screen">
 
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">

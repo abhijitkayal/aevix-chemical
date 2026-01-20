@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Delete, Edit } from 'lucide-react';
@@ -48,6 +46,14 @@ const Ledger = () => {
     fetchClients();
     fetchInvoices();
   }, []);
+
+  // Debug: Log invoices when they change
+  useEffect(() => {
+    if (invoices.length > 0) {
+      console.log('Invoices loaded:', invoices);
+      console.log('Sample invoice:', invoices[0]);
+    }
+  }, [invoices]);
 
   /* ======================
      Handle input
@@ -128,12 +134,17 @@ const Ledger = () => {
     const monthlyInvoices = invoices.filter(invoice => {
       if (!invoice.date) return false;
       
+      // Handle both string and Date formats
       const invoiceDate = new Date(invoice.date);
       const invoiceYear = invoiceDate.getFullYear();
       const invoiceMonth = String(invoiceDate.getMonth() + 1).padStart(2, '0');
       
+      // Match by customer name (case insensitive) and date
+      const customerMatch = invoice.customer && 
+        invoice.customer.toLowerCase().trim() === clientName.toLowerCase().trim();
+      
       return (
-        invoice.customer === clientName &&
+        customerMatch &&
         String(invoiceYear) === year &&
         invoiceMonth === monthNum
       );
@@ -161,28 +172,31 @@ const Ledger = () => {
       const monthlyData = getMonthlyInvoiceQuantity(client.clientName, selectedMonth);
       const ledgerQuantity = parseFloat(client.totalQuantity) || 0;
       const invoiceQuantity = monthlyData.totalQuantity;
+      const percentage = ledgerQuantity > 0 ? ((invoiceQuantity / ledgerQuantity) * 100).toFixed(1) : 0;
 
-      if (monthlyData.invoiceCount > 0) {
+      if (monthlyData.invoiceCount > 0 || ledgerQuantity > 0) {
         if (invoiceQuantity > ledgerQuantity) {
-          // Exceeded
+          // Exceeded ledger quantity
           newAlerts.push({
             type: 'exceeded',
             client: client.clientName,
             ledgerQuantity,
             invoiceQuantity,
             difference: invoiceQuantity - ledgerQuantity,
+            percentage,
             unit: client.unit || '',
             invoiceCount: monthlyData.invoiceCount,
             month: selectedMonth
           });
-        } else {
-          // Not exceeded
+        } else if (invoiceQuantity > 0) {
+          // Within ledger quantity
           newAlerts.push({
             type: 'safe',
             client: client.clientName,
             ledgerQuantity,
             invoiceQuantity,
             remaining: ledgerQuantity - invoiceQuantity,
+            percentage,
             unit: client.unit || '',
             invoiceCount: monthlyData.invoiceCount,
             month: selectedMonth
@@ -204,28 +218,36 @@ const Ledger = () => {
     const invoiceQuantity = monthlyData.totalQuantity;
 
     if (monthlyData.invoiceCount === 0) {
-      return { type: 'none', text: 'No invoices' };
+      return { 
+        type: 'none', 
+        text: 'No invoices',
+        invoiceQuantity: 0,
+        ledgerQuantity,
+        percentage: 0
+      };
     }
 
+    // Calculate percentage based on ledger quantity (monthly target)
+    const percentage = ledgerQuantity > 0 
+      ? ((invoiceQuantity / ledgerQuantity) * 100).toFixed(1)
+      : 0;
+
     if (invoiceQuantity > ledgerQuantity) {
-      const percentage = ledgerQuantity > 0 
-        ? ((invoiceQuantity - ledgerQuantity) / ledgerQuantity * 100).toFixed(1)
-        : 0;
       return { 
         type: 'exceeded', 
-        text: `Exceeded by ${(invoiceQuantity - ledgerQuantity).toFixed(2)}`,
+        text: `${percentage}% (Over by ${(invoiceQuantity - ledgerQuantity).toFixed(2)})`,
         percentage,
-        invoiceQuantity
+        invoiceQuantity,
+        ledgerQuantity,
+        exceeded: invoiceQuantity - ledgerQuantity
       };
     } else {
-      const percentage = ledgerQuantity > 0 
-        ? ((invoiceQuantity / ledgerQuantity) * 100).toFixed(1)
-        : 0;
       return { 
         type: 'safe', 
         text: `${percentage}% used`,
         percentage,
         invoiceQuantity,
+        ledgerQuantity,
         remaining: ledgerQuantity - invoiceQuantity
       };
     }
@@ -300,18 +322,21 @@ const Ledger = () => {
                         <h3 className="font-semibold text-gray-800 text-lg">{alert.client}</h3>
                         <div className="mt-2 space-y-1 text-sm">
                           <p className="text-gray-700">
-                            <strong>Ledger Quantity:</strong> {alert.ledgerQuantity} {alert.unit}
+                            <strong>Ledger Quantity (Monthly Target):</strong> {alert.ledgerQuantity} {alert.unit}
                           </p>
                           <p className="text-gray-700">
-                            <strong>Invoice Quantity (Month):</strong> {alert.invoiceQuantity.toFixed(2)} {alert.unit}
+                            <strong>Invoice Quantity (This Month):</strong> {alert.invoiceQuantity.toFixed(2)} {alert.unit}
                           </p>
                           <p className="text-gray-700">
                             <strong>Total Invoices:</strong> {alert.invoiceCount}
                           </p>
+                          <p className="text-gray-700">
+                            <strong>Usage Percentage:</strong> {alert.percentage}%
+                          </p>
                           
                           {alert.type === 'exceeded' ? (
                             <p className="text-red-700 font-semibold mt-2">
-                              ⚠️ EXCEEDED by {alert.difference.toFixed(2)} {alert.unit}
+                              ⚠️ EXCEEDED LEDGER by {alert.difference.toFixed(2)} {alert.unit}
                             </p>
                           ) : (
                             <p className="text-green-700 font-semibold mt-2">
@@ -372,7 +397,7 @@ const Ledger = () => {
                 <input
                   type="number"
                   name="totalQuantity"
-                  placeholder="Total Quantity"
+                  placeholder="Ledger Quantity (Monthly Target)"
                   className="input border-2 rounded px-2 py-2 w-full"
                   value={form.totalQuantity}
                   onChange={handleChange}
@@ -386,6 +411,7 @@ const Ledger = () => {
                   <option>Pieces</option>
                 </select>
               </div>
+              <p className="text-xs text-gray-500 mt-1">This quantity serves as the monthly target for this client</p>
             </div>
 
             <div className="flex justify-end gap-2 mt-6">
@@ -413,9 +439,9 @@ const Ledger = () => {
               <th className="p-2 border">Phone</th>
               <th className="p-2 border">Email</th>
               <th className="p-2 border">Location</th>
-              <th className="p-2 border">Ledger Qty</th>
+              <th className="p-2 border">Ledger Qty (Target)</th>
               <th className="p-2 border">Monthly Invoice Qty</th>
-              <th className="p-2 border ">Status</th>
+              <th className="p-2 border">Status (% Used)</th>
               <th className="p-2 border">Actions</th>
             </tr>
           </thead>
@@ -431,13 +457,13 @@ const Ledger = () => {
                   <td className="p-2 border">{c.phone}</td>
                   <td className="p-2 border">{c.email}</td>
                   <td className="p-2 border">{c.location}</td>
-                  <td className="p-2 border">
+                  <td className="p-2 border font-semibold text-blue-700">
                     {c.totalQuantity} {c.unit}
                   </td>
                   <td className="p-2 border font-medium">
                     {status.type !== 'none' ? (
                       <span className="font-medium">
-                        {status.invoiceQuantity.toFixed(2)} {c.unit}
+                        {status.invoiceQuantity?.toFixed(2) || '0.00'} {c.unit}
                       </span>
                     ) : (
                       <span className="text-gray-400">-</span>

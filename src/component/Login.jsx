@@ -19,7 +19,7 @@ const Login = () => {
 
     try {
       const res = await axios.post(
-        'https://aevix-chem-backend-bksy.onrender.com/api/auth/login',
+        'http://localhost:5000/api/auth/login',
         { email, password }
       );
 
@@ -28,6 +28,7 @@ const Login = () => {
 
       // ✅ Store user in localStorage
       localStorage.setItem('user', JSON.stringify(res.data.user));
+      localStorage.setItem('loginEmail', email); // Store email for profile fetch
 
       // ✅ REDIRECT AFTER SUCCESS
       navigate('/dashboard/overview');

@@ -712,11 +712,14 @@ const User = () => {
     phone: "",
     role: "",
     employeeId: "",
+    password: "",
   });
 
-  /* FETCH USERS */
+  /* ================= FETCH USERS ================= */
   const fetchUsers = async () => {
-    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/users");
+    const res = await axios.get(
+      "https://aevix-chem-backend-bksy.onrender.com/api/users"
+    );
     setUsers(res.data);
   };
 
@@ -724,29 +727,55 @@ const User = () => {
     fetchUsers();
   }, []);
 
-  /* HANDLERS */
+  /* ================= HANDLERS ================= */
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
+  if (!isEdit && !form.password) {
+    alert("Password is required");
+    return;
+  }
+
+  const payload = { ...form };
+
+  if (isEdit && !payload.password) {
+    delete payload.password;
+  }
+
+  try {
     if (isEdit) {
       await axios.put(
-        `https://aevix-chem-backend-bksy.onrender.com/api/users/${editId}`,
-        form
+        `http://localhost:5000/api/users/${editId}`,
+        payload
       );
     } else {
-      await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/users", form);
+      await axios.post(
+        "http://localhost:5000/api/users",
+        payload
+      );
     }
 
     resetForm();
     fetchUsers();
-  };
+  } catch (err) {
+    alert(err.response?.data?.message || "User creation failed");
+    console.error(err);
+  }
+};
 
   const handleEdit = (user) => {
-    setForm(user);
+    setForm({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
+      employeeId: user.employeeId,
+      password: "",
+    });
     setEditId(user._id);
     setIsEdit(true);
     setShowModal(true);
@@ -754,7 +783,9 @@ const User = () => {
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
-    await axios.delete(`https://aevix-chem-backend-bksy.onrender.com/api/users/${id}`);
+    await axios.delete(
+      `http://localhost:5000/api/users/${id}`
+    );
     fetchUsers();
   };
 
@@ -765,6 +796,7 @@ const User = () => {
       phone: "",
       role: "",
       employeeId: "",
+      password: "",
     });
     setIsEdit(false);
     setEditId(null);
@@ -775,23 +807,19 @@ const User = () => {
     <div className="p-6 min-h-screen mt-10">
       {/* HEADER */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-black">User Management</h1>
+        <h1 className="text-3xl font-bold">User Management</h1>
         <button
           onClick={() => setShowModal(true)}
           className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
         >
-          <Plus size={18} />
-          Add User
+          <Plus size={18} /> Add User
         </button>
       </div>
 
-      {/* USERS */}
+      {/* USER LIST */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {users.map((u) => (
-          <div
-            key={u._id}
-            className="bg-white border rounded-lg p-4 hover:shadow"
-          >
+          <div key={u._id} className="bg-white border rounded-lg p-4">
             <div className="flex justify-between mb-2">
               <h3 className="font-semibold text-lg">{u.name}</h3>
               <span className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded">
@@ -809,7 +837,6 @@ const User = () => {
               <p>Employee ID: {u.employeeId}</p>
             </div>
 
-            {/* ACTIONS */}
             <div className="flex gap-3 mt-4">
               <button
                 onClick={() => handleEdit(u)}
@@ -817,7 +844,6 @@ const User = () => {
               >
                 <Edit size={14} /> Edit
               </button>
-
               <button
                 onClick={() => handleDelete(u._id)}
                 className="flex items-center gap-1 text-red-600 text-sm"
@@ -833,69 +859,42 @@ const User = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md p-6 rounded-xl relative">
-            <X
-              className="absolute right-4 top-4 cursor-pointer"
-              onClick={resetForm}
-            />
+            <X className="absolute right-4 top-4 cursor-pointer" onClick={resetForm} />
 
             <h2 className="text-xl font-bold mb-4">
               {isEdit ? "Edit User" : "Create User"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                name="name"
-                placeholder="Name"
-                className="w-full border px-3 py-2 rounded"
-                value={form.name}
-                onChange={handleChange}
-                required
-              />
+              <input name="name" placeholder="Name" className="w-full border px-3 py-2 rounded"
+                value={form.name} onChange={handleChange} required />
 
-              <input
-                name="email"
-                type="email"
-                placeholder="Email"
-                className="w-full border px-3 py-2 rounded"
-                value={form.email}
-                onChange={handleChange}
-                required
-              />
+              <input name="email" type="email" placeholder="Email" className="w-full border px-3 py-2 rounded"
+                value={form.email} onChange={handleChange} required />
 
-              <input
-                name="phone"
-                placeholder="Phone"
+              <input name="password" type="password"
+                placeholder={isEdit ? "Leave blank to keep password" : "Password"}
                 className="w-full border px-3 py-2 rounded"
-                value={form.phone}
-                onChange={handleChange}
-              />
+                value={form.password} onChange={handleChange}
+                required={!isEdit} />
 
-              <select
-                name="role"
-                className="w-full border px-3 py-2 rounded"
-                value={form.role}
-                onChange={handleChange}
-                required
-              >
+              <input name="phone" placeholder="Phone" className="w-full border px-3 py-2 rounded"
+                value={form.phone} onChange={handleChange} />
+
+              <select name="role" className="w-full border px-3 py-2 rounded"
+                value={form.role} onChange={handleChange} required>
                 <option value="">Select Role</option>
                 <option value="Sales">Sales</option>
                 <option value="Stock Manager">Stock Manager</option>
                 <option value="Employee">Employee</option>
               </select>
 
-              <input
-                name="employeeId"
-                placeholder="Employee ID"
+              <input name="employeeId" placeholder="Employee ID"
                 className="w-full border px-3 py-2 rounded"
-                value={form.employeeId}
-                onChange={handleChange}
-                required
-              />
+                value={form.employeeId} onChange={handleChange} required />
 
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg"
-              >
+              <button type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg">
                 {isEdit ? "Update User" : "Save User"}
               </button>
             </form>

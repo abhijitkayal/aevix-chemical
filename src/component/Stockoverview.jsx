@@ -822,10 +822,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus,Pencil, Eye, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function StockOverview() {
+  const navigate = useNavigate();
   const [stocks, setStocks] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     itemCode: "",
@@ -842,12 +845,45 @@ export default function StockOverview() {
   const [warehouses, setWarehouses] = useState([]);
   const [editingId, setEditingId] = useState(null);
 
+  /* ================= GET WAREHOUSE NAME ================= */
+  const getWarehouseName = (warehouseId) => {
+    if (!warehouseId) {
+      console.log('No warehouse ID provided');
+      return 'N/A';
+    }
+    
+    console.log('Looking for warehouse:', warehouseId, 'Type:', typeof warehouseId);
+    console.log('Available warehouses:', warehouses.map(w => ({ id: w._id, name: w.warehouse })));
+    
+    // Try to find by exact match on warehouse name or ID
+    const warehouse = warehouses.find(wh => 
+      wh._id === warehouseId || 
+      wh.warehouse === warehouseId ||
+      wh._id === String(warehouseId) ||
+      wh.warehouse === String(warehouseId)
+    );
+    
+    console.log('Found warehouse:', warehouse);
+    
+    if (warehouse) {
+      return warehouse.warehouse;
+    }
+    
+    // If not found, return the original value or N/A
+    return warehouseId || 'N/A';
+  };
+
 
 
   /* ================= FETCH STOCK ================= */
   const fetchStocks = async () => {
     try {
-      const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/stocks");
+      const res = await axios.get(`https://aevix-chem-backend-bksy.onrender.com/api/products/`);
+      console.log('Products fetched:', res.data);
+      if (res.data && res.data.length > 0) {
+        console.log('Full first product structure:', res.data[0]);
+        console.log('All product keys:', Object.keys(res.data[0]));
+      }
       setStocks(res.data);
     } catch (err) {
       console.error(err);
@@ -863,22 +899,18 @@ export default function StockOverview() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const handleEdit = (item) => {
-  setForm({
-    itemCode: item.itemCode,
-    itemName: item.itemName,
-    category: item.category,
-    currentStock: item.currentStock,
-    unit: item.unit,
-    unitPrice: item.unitPrice,
-    reorderLevel: item.reorderLevel,
-    warehouse: item.warehouse,
-    supplier: item.supplier,
-    expiryDate: item.expiryDate || "",
-  });
-
-  setEditingId(item._id);
-  setShowModal(true);
-};
+    // Navigate to warehouse detail page with the warehouse ID
+    // Extract the warehouse ID (handle both object and string cases)
+    let warehouseId;
+    if (typeof item.warehouseId === 'object' && item.warehouseId !== null) {
+      warehouseId = item.warehouseId._id || item.warehouseId;
+    } else {
+      warehouseId = item.warehouseId;
+    }
+    
+    console.log('Navigating to warehouse:', warehouseId);
+    navigate(`/warehouse/${warehouseId}`);
+  };
 
 
   /* ================= SUBMIT ================= */
@@ -928,17 +960,30 @@ const handleSubmit = async () => {
   try {
     const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/warehouses");
     setWarehouses(res.data);
-    console.log(res.data);
+    console.log('Warehouses fetched:', res.data);
   } catch (err) {
-    console.error(err);
+    console.error('Error fetching warehouses:', err);
   }
 };
 
 useEffect(() => {
-  // fetchStocks();
-  fetchWarehouses();
+  const loadData = async () => {
+    setLoading(true);
+    await fetchWarehouses();
+    await fetchStocks();
+    setLoading(false);
+  };
+  loadData();
 }, []);
 
+
+  if (loading) {
+    return (
+      <div className="p-6 mt-10 flex items-center justify-center">
+        <p className="text-lg">Loading stock data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 mt-10 space-y-6">
@@ -958,9 +1003,9 @@ useEffect(() => {
         <table className="w-full text-sm">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-3 text-left">Item Code</th>
+              {/* <th className="p-3 text-left">Item Code</th> */}
               <th className="p-3 text-left">Item Name</th>
-              <th className="p-3 text-left">Category</th>
+              {/* <th className="p-3 text-left">Category</th> */}
               <th className="p-3 text-center">Stock</th>
               <th className="p-3 text-right">Unit Price</th>
               <th className="p-3 text-right">Warehouse</th>
@@ -971,16 +1016,16 @@ useEffect(() => {
           <tbody>
             {stocks.map((item) => (
               <tr key={item._id} className="border-b hover:bg-gray-50">
-                <td className="p-3 font-mono text-blue-600">
+                {/* <td className="p-3 font-mono text-blue-600">
                   {item.itemCode}
-                </td>
-                <td className="p-3 font-semibold">{item.itemName}</td>
-                <td className="p-3">{item.category}</td>
+                </td> */}
+                <td className="p-3 font-semibold">{item.productName}</td>
+                {/* <td className="p-3">{item.category}</td> */}
                 <td className="p-3 text-center">
-                  {item.currentStock} {item.unit}
+                  {item.quantity} {item.unit}
                 </td>
-                <td className="p-3 text-right">₹{item.unitPrice}</td>
-                <td className="p-3 text-right">{item.warehouse}</td>
+                <td className="p-3 text-center">₹{item.price}</td>
+                <td className="p-3 text-center">{item.warehouse}</td>
                 <td className="p-3 text-center">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-bold ${

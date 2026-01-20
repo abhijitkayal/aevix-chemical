@@ -1,6 +1,7 @@
 import express from 'express';
 const router = express.Router();
-import User from '../models/Authuser.js';
+import AuthUser from '../models/Authuser.js';
+import User from '../models/User.js'
 
 /* ======================
    TEST ENDPOINT
@@ -22,41 +23,72 @@ router.post('/test-body', (req, res) => {
 /* ======================
    LOGIN WITH EMAIL
 ====================== */
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate
+    // Validate input
     if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password required' });
+      return res.status(400).json({
+        message: "Email and password required",
+      });
     }
 
-    // Check user exists
-    const user = await User.findOne({ email });
+    /* ======================
+       1️⃣ Check AuthUser
+    ====================== */
+    let user = await AuthUser.findOne({ email });
+
+    /* ======================
+       2️⃣ If not found, check User
+    ====================== */
+    let userType = "authuser";
 
     if (!user) {
-      return res.status(401).json({ message: 'User not found' });
+      user = await User.findOne({ email });
+      userType = "user";
     }
 
-    // Check password
+    /* ======================
+       3️⃣ If not found in BOTH
+    ====================== */
+    if (!user) {
+      return res.status(401).json({
+        message: "User not found",
+      });
+    }
+
+    /* ======================
+       4️⃣ Check password
+    ====================== */
     if (user.password !== password) {
-      return res.status(401).json({ message: 'Invalid password' });
+      return res.status(401).json({
+        message: "Invalid password",
+      });
     }
 
-    // Success
+    /* ======================
+       5️⃣ LOGIN SUCCESS
+    ====================== */
     res.json({
-      message: 'Login successful',
+      message: "Login successful",
+      userType, // "authuser" or "user"
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+        role: user.role || "N/A",
+      },
     });
   } catch (err) {
-    console.error('Login error:', err);
-    res.status(500).json({ message: 'Server error', error: err.message });
+    console.error("Login error:", err);
+    res.status(500).json({
+      message: "Server error",
+      error: err.message,
+    });
   }
 });
+
 
 /* ======================
    REGISTER NEW USER

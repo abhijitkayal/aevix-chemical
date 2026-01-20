@@ -248,140 +248,252 @@
 
 // export default Proforma;
 
-
-
-;
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, X } from "lucide-react";
-import React from "react";
+import { Plus, X, Edit, Trash } from "lucide-react";
+
 export default function Proforma() {
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [proforma, setProforma] = useState([]);
 
-  const [form, setForm] = useState({
+  /* ================= AUTOCOMPLETE ================= */
+  const [leadSuggestions, setLeadSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  /* ================= FORM ================= */
+  const emptyForm = {
     customerName: "",
-    address: "",
-    contactPerson: "",
+    billingAddress: "",
+    shippingAddress: "",
     phone: "",
     gstin: "",
     placeOfSupply: "",
+
     proformaNo: "",
     proformaDate: "",
+    validity: "",
+
+    quotationNo: "",
+    purchaseOrderNo: "",
+    purchaseOrderDate: "",
+
+    salesAccountName: "",
+
     challanNo: "",
     challanDate: "",
     lrNo: "",
     deliveryMode: "",
-  });
-
-  const handleChange = e =>
-    setForm({ ...form, [e.target.name]: e.target.value });
-
-  const submit = async () => {
-    const res = await axios.post(
-      "https://aevix-chem-backend-bksy.onrender.com/api/proforma",
-      form
-    );
-    setProforma(res.data);
-    setOpen(false);
   };
-   const fetchInvoices = async () => {
-      const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/proforma");
-      setProforma(res.data);
-      console.log(res.data);
-      console.log("Fetched Proforma Data",proforma);
-    };
-    useEffect(() => {
-      fetchInvoices();
-    }, []);
+
+  const [form, setForm] = useState(emptyForm);
+
+  /* ================= FETCH PROFORMA ================= */
+  const fetchProforma = async () => {
+    const res = await axios.get("http://localhost:5000/api/proforma");
+    setProforma(res.data);
+  };
+
+  useEffect(() => {
+    fetchProforma();
+  }, []);
+
+  /* ================= LEAD SEARCH ================= */
+  const fetchLeadSuggestions = async (query) => {
+    if (query.length < 1) {
+      setLeadSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get(
+        `http://localhost:5000/api/leads?search=${query}`
+      );
+      setLeadSuggestions(res.data);
+      setShowSuggestions(true);
+    } catch (err) {
+      console.error("Lead search failed", err);
+    }
+  };
+
+  /* ================= CHANGE ================= */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setForm({ ...form, [name]: value });
+
+    if (name === "customerName") {
+      fetchLeadSuggestions(value);
+    }
+  };
+
+  /* ================= SELECT LEAD ================= */
+  const selectLead = (lead) => {
+    setForm({
+      ...form,
+      customerName: lead.customerName || "",
+      billingAddress: lead.address || "",
+      shippingAddress: lead.address || "",
+      phone: lead.phone || "",
+      gstin: lead.gstin || "",
+      placeOfSupply: lead.placeOfSupply || "",
+    });
+
+    setLeadSuggestions([]);
+    setShowSuggestions(false);
+  };
+
+  /* ================= SUBMIT ================= */
+  const submit = async () => {
+    if (editingId) {
+      await axios.put(
+        `http://localhost:5000/api/proforma/${editingId}`,
+        form
+      );
+    } else {
+      await axios.post("http://localhost:5000/api/proforma", form);
+    }
+
+    setForm(emptyForm);
+    setEditingId(null);
+    setOpen(false);
+    fetchProforma();
+  };
+
+  /* ================= EDIT ================= */
+  const editProforma = (pf) => {
+    setForm(pf);
+    setEditingId(pf._id);
+    setOpen(true);
+  };
+
+  /* ================= DELETE ================= */
+  const deleteProforma = async (id) => {
+    if (!confirm("Delete this proforma?")) return;
+    await axios.delete(`http://localhost:5000/api/proforma/${id}`);
+    fetchProforma();
+  };
 
   return (
-    <div className="p-6 mt-15 min-h-screen">
-      {/* RIGHT BUTTON */}
+    <div className="p-6 mt-10 min-h-screen">
+      {/* HEADER */}
       <div className="flex justify-end mb-4">
         <button
-          onClick={() => setOpen(true)}
-          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg"
+          onClick={() => {
+            setForm(emptyForm);
+            setEditingId(null);
+            setOpen(true);
+          }}
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
         >
-          <Plus size={18} />
-          Create Proforma
+          <Plus size={18} /> Create Proforma
         </button>
       </div>
 
-      {/* FORM MODAL */}
+      {/* LIST */}
+      {proforma.map((pf) => (
+        <div key={pf._id} className="bg-white p-5 rounded-xl shadow mb-4">
+          <div className="flex justify-between">
+            {/* <h2 className="font-bold text-lg">
+              Proforma #{pf.proformaNo}
+            </h2> */}
+
+            <div className="flex gap-2">
+              <button onClick={() => editProforma(pf)}>
+                <Edit size={18} />
+              </button>
+              <button onClick={() => deleteProforma(pf._id)}>
+                <Trash size={18} className="text-red-500" />
+              </button>
+            </div>
+          </div>
+
+          <p><b>Customer:</b> {pf.customerName}</p>
+          <p><b>Billing:</b> {pf.billingAddress}</p>
+          <p><b>Shipping:</b> {pf.shippingAddress}</p>
+          <p><b>Phone:</b> {pf.phone}</p>
+          <p><b>GSTIN:</b> {pf.gstin}</p>
+          <p><b>Validity:</b> {pf.validity}</p>
+          <p><b>Sales A/C:</b> {pf.salesAccountName}</p>
+        </div>
+      ))}
+
+      {/* MODAL */}
       {open && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
           <div className="bg-white w-full max-w-5xl p-6 rounded-xl relative">
             <X
               className="absolute right-4 top-4 cursor-pointer"
               onClick={() => setOpen(false)}
             />
 
-            <h2 className="text-xl font-bold mb-4">Create Proforma</h2>
+            <h2 className="font-bold text-xl mb-4">
+              {editingId ? "Edit Proforma" : "Create Proforma"}
+            </h2>
 
-            <div className="grid grid-cols-2 gap-6">
-              {/* CUSTOMER INFO */}
-              <div className="pr-2">
-                <h3 className="font-bold mb-2">Customer Information</h3>
-                <div className="grid grid-cols-2 gap-2">
-                <input name="customerName" placeholder="M/S *" className="input mt-2 border-2 rounded  px-2" onChange={handleChange} />
-                <textarea name="address" placeholder="Address" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="contactPerson" placeholder="Contact Person" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="phone" placeholder="Phone No" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="gstin" placeholder="GSTIN / PAN" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="placeOfSupply" placeholder="Place of Supply" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-              </div>
+            <div className="grid grid-cols-2 gap-4">
+
+              {/* CUSTOMER NAME WITH AUTOCOMPLETE */}
+              <div className="relative">
+                <input
+                  name="customerName"
+                  placeholder="Customer Name"
+                  className="border-2 p-2 rounded w-full"
+                  value={form.customerName}
+                  onChange={handleChange}
+                  autoComplete="off"
+                />
+
+                {showSuggestions && leadSuggestions.length > 0 && (
+                  <ul className="absolute z-50 bg-white border w-full rounded shadow max-h-48 overflow-y-auto">
+                    {leadSuggestions.map((lead) => (
+                      <li
+                        key={lead._id}
+                        onClick={() => selectLead(lead)}
+                        className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                      >
+                        <p className="font-medium">{lead.customerName}</p>
+                        <p className="text-xs text-gray-500">
+                          {lead.phone} • {lead.gstin}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </div>
 
-              {/* PROFORMA DETAIL */}
-              <div>
-                <h3 className="font-semibold mb-2">Proforma Detail</h3>
-                <div className="grid grid-cols-2 gap-2">
-                <input name="proformaNo" placeholder="Proforma No *" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input type="date" name="proformaDate" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="challanNo" placeholder="Challan No" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input type="date" name="challanDate" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="lrNo" placeholder="L.R. No" className="input mt-2 border-2 rounded py-2 px-2" onChange={handleChange} />
-                <select name="deliveryMode" className="input border-2 mt-2" onChange={handleChange}>
-                  <option value="">Select Delivery Mode</option>
-                  <option>Road</option>
-                  <option>Courier</option>
-                  <option>Transport</option>
-                </select>
-              </div>
-              </div>
+              <input name="phone" placeholder="Phone" className="border-2 p-2 rounded" onChange={handleChange} value={form.phone} />
+
+              <textarea name="billingAddress" className="border-2 p-2 rounded" placeholder="Billing Address" onChange={handleChange} value={form.billingAddress} />
+              <textarea name="shippingAddress" className="border-2 p-2 rounded" placeholder="Shipping Address" onChange={handleChange} value={form.shippingAddress} />
+
+              <input name="gstin" className="border-2 p-2 rounded" placeholder="GSTIN" onChange={handleChange} value={form.gstin} />
+              <input name="placeOfSupply" className="border-2 p-2 rounded" placeholder="Place of Supply" onChange={handleChange} value={form.placeOfSupply} />
+
+              <input name="proformaNo" className="border-2 p-2 rounded" placeholder="Proforma No" onChange={handleChange} value={form.proformaNo} />
+              <input type="date" className="border-2 p-2 rounded" name="proformaDate" onChange={handleChange} value={form.proformaDate} />
+
+              <input name="validity" className="border-2 p-2 rounded" placeholder="Validity (e.g. 15 days)" onChange={handleChange} value={form.validity} />
+              <input name="quotationNo" className="border-2 p-2 rounded" placeholder="Quotation No" onChange={handleChange} value={form.quotationNo} />
+
+              <input name="purchaseOrderNo" className="border-2 p-2 rounded" placeholder="PO No" onChange={handleChange} value={form.purchaseOrderNo} />
+              <input type="date" className="border-2 p-2 rounded" name="purchaseOrderDate" onChange={handleChange} value={form.purchaseOrderDate} />
+
+              <input name="salesAccountName" className="border-2 p-2 rounded" placeholder="Sales Account Name" onChange={handleChange} value={form.salesAccountName} />
             </div>
 
             <div className="flex justify-end mt-6">
               <button
                 onClick={submit}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg"
+                className="bg-blue-600 text-white px-6 py-2 rounded"
               >
-                Save Proforma
+                Save
               </button>
             </div>
           </div>
         </div>
       )}
-
-
-      {proforma.map((pf)=>(
-        <div className="bg-white max-w-4xl mx-auto p-6 rounded-xl shadow">
-          <h1 className="text-2xl font-bold mb-4">PROFORMA INVOICE</h1>
-          <p><b>M/S:</b> {pf?.customerName}</p>
-          <p><b>Address:</b> {pf?.address}</p>
-          <p><b>Phone:</b> {pf?.phone}</p>
-          <p><b>GSTIN:</b> {pf?.gstin}</p>
-
-          <hr className="my-4" />
-
-          <p><b>Proforma No:</b> {pf?.proformaNo}</p>
-          <p><b>Date:</b> {pf?.proformaDate}</p>
-          <p><b>Delivery:</b> {pf?.deliveryMode}</p>
-          <p><b>Place of Supply:</b> {pf?.placeOfSupply}</p>
-        </div>
-      ))}
-
     </div>
   );
 }

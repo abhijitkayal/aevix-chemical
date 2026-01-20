@@ -15,6 +15,30 @@ router.post("/", async (req, res) => {
     });
   }
 });
+router.put("/:id", async (req, res) => {
+  try {
+    const updated = await Product.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    res.json({
+      message: "Product updated successfully",
+      product: updated,
+    });
+  } catch (err) {
+    res.status(500).json({
+      message: "Product update failed",
+      error: err.message,
+    });
+  }
+});
+
 
 /* GET PRODUCTS BY WAREHOUSE */
 router.get("/:warehouseId", async (req, res) => {

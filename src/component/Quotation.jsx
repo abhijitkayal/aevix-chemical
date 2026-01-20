@@ -901,9 +901,8 @@
 // };
 
 // export default Quotation;
+"use client";
 
-
-;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
@@ -912,16 +911,19 @@ export default function Quotation() {
   const [open, setOpen] = useState(false);
   const [quotations, setQuotations] = useState([]);
 
+  const [customerSuggestions, setCustomerSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
   const [form, setForm] = useState({
     supplyType: "Outward",
     customerName: "",
-    address: "",
-    contactPerson: "",
     phone: "",
     gstin: "",
-    revCharge: "No",
     placeOfSupply: "",
-    quotationType: "",
+
+    billingAddress: "",
+    shippingAddress: "",
+
     quotationNo: "",
     quotationDate: "",
     challanNo: "",
@@ -930,9 +932,12 @@ export default function Quotation() {
     deliveryMode: "",
   });
 
-  /* -------------------- FETCH DATA -------------------- */
+  /* ================= FETCH QUOTATIONS ================= */
+
   const fetchQuotations = async () => {
-    const res = await axios.get("https://aevix-chem-backend-bksy.onrender.com/api/quotations");
+    const res = await axios.get(
+      "https://aevix-chem-backend-bksy.onrender.com/api/quotations"
+    );
     setQuotations(res.data);
   };
 
@@ -940,26 +945,80 @@ export default function Quotation() {
     fetchQuotations();
   }, []);
 
-  /* -------------------- HANDLE CHANGE -------------------- */
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setForm({ ...form, [name]: value });
+  /* ================= AUTO QUOTATION NO ================= */
+
+  const generateQuotationNo = (list) => {
+    if (!list || list.length === 0) return "001";
+
+    const last = list
+      .map((q) => parseInt(q.quotationNo))
+      .filter((n) => !isNaN(n))
+      .sort((a, b) => b - a)[0];
+
+    return String((last || 0) + 1).padStart(3, "0");
   };
 
-  /* -------------------- SUBMIT -------------------- */
+  /* ================= CUSTOMER SEARCH ================= */
+
+  const fetchCustomerSuggestions = async (query) => {
+    if (query.length < 2) {
+      setCustomerSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    const res = await axios.get(
+      `https://aevix-chem-backend-bksy.onrender.com/api/leads?search=${query}`
+    );
+
+    setCustomerSuggestions(res.data);
+    setShowSuggestions(true);
+  };
+
+  const handleCustomerSelect = (cust) => {
+    setForm({
+      ...form,
+      customerName: cust.customerName,
+      phone: cust.phone || "",
+      gstin: cust.gstin || "",
+      placeOfSupply: cust.placeOfSupply || "",
+      billingAddress: cust.address || "",
+      shippingAddress: cust.address || "",
+    });
+
+    setShowSuggestions(false);
+    setCustomerSuggestions([]);
+  };
+
+  /* ================= HANDLE CHANGE ================= */
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setForm({ ...form, [name]: value });
+
+    if (name === "customerName") {
+      fetchCustomerSuggestions(value);
+    }
+  };
+
+  /* ================= SUBMIT ================= */
+
   const submitQuotation = async () => {
-    await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/quotations", form);
+    await axios.post(
+      "https://aevix-chem-backend-bksy.onrender.com/api/quotations",
+      form
+    );
+
     setOpen(false);
     setForm({
       supplyType: "Outward",
       customerName: "",
-      address: "",
-      contactPerson: "",
       phone: "",
       gstin: "",
-      revCharge: "No",
       placeOfSupply: "",
-      quotationType: "",
+      billingAddress: "",
+      shippingAddress: "",
       quotationNo: "",
       quotationDate: "",
       challanNo: "",
@@ -967,8 +1026,11 @@ export default function Quotation() {
       lrNo: "",
       deliveryMode: "",
     });
+
     fetchQuotations();
   };
+
+  /* ================= UI ================= */
 
   return (
     <div className="p-6 mt-10 min-h-screen">
@@ -977,7 +1039,13 @@ export default function Quotation() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Quotation</h1>
         <button
-          onClick={() => setOpen(true)}
+          onClick={() => {
+            setForm((prev) => ({
+              ...prev,
+              quotationNo: generateQuotationNo(quotations),
+            }));
+            setOpen(true);
+          }}
           className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg"
         >
           <Plus size={18} />
@@ -985,63 +1053,32 @@ export default function Quotation() {
         </button>
       </div>
 
-      {/* TABLE */}
-      {/* <div className="rounded-lg shadow overflow-x-auto"> */}
-        {/* <table className="w-full">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-3 text-left">Quotation No</th>
-              <th className="p-3 text-left">Customer</th>
-              <th className="p-3 text-left">Date</th>
-              <th className="p-3 text-left">Supply Type</th>
-              <th className="p-3 text-left">Delivery</th>
-            </tr>
-          </thead>
-          <tbody>
-            {quotations.map((q) => (
-              <tr key={q._id} className="border-t">
-                <td className="p-3">{q.quotationNo}</td>
-                <td className="p-3">{q.customerName}</td>
-                <td className="p-3">{q.quotationDate}</td>
-                <td className="p-3">{q.supplyType}</td>
-                <td className="p-3">{q.deliveryMode}</td>
-              </tr>
-            ))}
-            {quotations.length === 0 && (
-              <tr>
-                <td colSpan="5" className="p-6 text-center text-gray-500">
-                  No quotations found
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table> */}
-
-        {quotations.map((q) => (
+      {/* LIST */}
+      {quotations.map((q) => (
         <div key={q._id} className="bg-white grid grid-cols-2 p-4 rounded shadow mb-4">
           <div>
-            <h2 className="text-lg font-bold underline">Customer Details</h2>
-          <p><b>Address:</b>{q.address}</p>
-          <p><b>Customer:</b> {q.customerName}</p>
-          <p><b>Phone:</b> {q.phone}</p>
-          <p><b>GST In:</b> {q.gstin}</p>
+            <h2 className="font-bold underline">Customer Details</h2>
+            <p><b>Customer:</b> {q.customerName}</p>
+            <p><b>Phone:</b> {q.phone}</p>
+            <p><b>GSTIN:</b> {q.gstin}</p>
+            <p><b>Billing Address:</b> {q.billingAddress}</p>
+            <p><b>Shipping Address:</b> {q.shippingAddress}</p>
           </div>
+
           <div>
-            <h2 className="text-lg underline font-bold">Quotation Details</h2>
-          <p><b>Quotation No:</b> {q.quotationNo}</p>
-          <p><b>LR No:</b> {q.lrNo}</p>
-          <p><b>Date:</b> {q.quotationDate}</p>
-          <p><b>Delivery Mode:</b> {q.deliveryMode}</p>
+            <h2 className="font-bold underline">Quotation Details</h2>
+            <p><b>Quotation No:</b> {q.quotationNo}</p>
+            <p><b>Date:</b> {q.quotationDate}</p>
+            <p><b>LR No:</b> {q.lrNo}</p>
+            <p><b>Delivery Mode:</b> {q.deliveryMode}</p>
           </div>
         </div>
       ))}
-      {/* </div> */}
 
       {/* MODAL */}
       {open && (
         <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
           <div className="bg-white w-full max-w-6xl rounded-xl p-6 relative">
-
             <X
               className="absolute right-4 top-4 cursor-pointer"
               onClick={() => setOpen(false)}
@@ -1055,189 +1092,164 @@ export default function Quotation() {
                   Customer Information
                 </h2>
 
-                {/* SUPPLY TYPE */}
                 <div className="flex gap-4 mb-3">
-                  <label className="flex items-center gap-2">
+                  <label>
                     <input
                       type="radio"
                       name="supplyType"
                       value="Outward"
                       checked={form.supplyType === "Outward"}
                       onChange={handleChange}
-                    />
-                    Outward
+                    /> Outward
                   </label>
-
-                  <label className="flex items-center gap-2">
+                  <label>
                     <input
                       type="radio"
                       name="supplyType"
                       value="Inward"
                       checked={form.supplyType === "Inward"}
                       onChange={handleChange}
-                    />
-                    Inward
+                    /> Inward
                   </label>
                 </div>
-              <div className="grid grid-cols-1 gap-3">
-                <input
-                  name="customerName"
-                  placeholder="M/S *"
-                  className="input border-2 rounded px-2 py-2"
+
+                {/* CUSTOMER AUTOCOMPLETE */}
+                <div className="relative">
+                  <input
+                    name="customerName"
+                    placeholder="Customer Name"
+                    className="border-2 rounded px-2 py-2 w-full"
+                    value={form.customerName}
+                    onChange={handleChange}
+                    autoComplete="off"
+                  />
+
+                  {showSuggestions && customerSuggestions.length > 0 && (
+                    <ul className="absolute z-50 bg-white border w-full rounded shadow mt-1 max-h-48 overflow-y-auto">
+                      {customerSuggestions.map((cust) => (
+                        <li
+                          key={cust._id}
+                          onClick={() => handleCustomerSelect(cust)}
+                          className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                        >
+                          <p className="font-medium">{cust.customerName}</p>
+                          <p className="text-xs text-gray-500">
+                            {cust.phone} • {cust.placeOfSupply}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
+                <textarea
+                  name="billingAddress"
+                  placeholder="Billing Address"
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
+                  value={form.billingAddress}
                   onChange={handleChange}
-                  value={form.customerName}
                 />
 
                 <textarea
-                  name="address"
-                  placeholder="Address"
-                  className="input mt-2 border-2 rounded px-2 py-2"
+                  name="shippingAddress"
+                  placeholder="Shipping Address"
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
+                  value={form.shippingAddress}
                   onChange={handleChange}
-                  value={form.address}
                 />
+
+                <div className="grid grid-cols-2 gap-3 mt-2">
+                  <input
+                    name="phone"
+                    placeholder="Phone"
+                    className="border-2 rounded px-2 py-2"
+                    value={form.phone}
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="gstin"
+                    placeholder="GSTIN / PAN"
+                    className="border-2 rounded px-2 py-2"
+                    value={form.gstin}
+                    onChange={handleChange}
+                  />
                 </div>
-              <div className="grid grid-cols-2 gap-3">
-                <input
-                  name="contactPerson"
-                  placeholder="Contact Person"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
-                  value={form.contactPerson}
-                />
-
-                <input
-                  name="phone"
-                  placeholder="Phone No"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
-                  value={form.phone}
-                />
-              </div>
-              <div className="grid grid-cols-2">
-                <input
-                  name="gstin"
-                  placeholder="GSTIN / PAN"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
-                  value={form.gstin}
-                />
-
-                {/* <select
-                  name="revCharge"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
-                  value={form.revCharge}
-                >
-                  <option>No</option>
-                  <option>Yes</option>
-                </select> */}
 
                 <input
                   name="placeOfSupply"
                   placeholder="Place of Supply"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
                   value={form.placeOfSupply}
+                  onChange={handleChange}
                 />
-                </div>
               </div>
 
-              {/* QUOTATION DETAILS */}
+              {/* QUOTATION INFO */}
               <div>
-                <h2 className="font-semibold text-lg mb-4">
-                  Quotation Detail
-                </h2>
-{/* 
-                <select
-                  name="quotationType"
-                  className="input border-2 rounded px-2 py-2"
-                  onChange={handleChange}
-                  value={form.quotationType}
-                >
-                  <option value="">Select Type</option>
-                  <option>Local</option>
-                  <option>Interstate</option>
-                </select> */}
-              <div className="grid grid-cols-2 gap-3 mt-2">
+                <h2 className="font-semibold text-lg mb-4">Quotation Details</h2>
+
                 <input
-                  name="quotationNo"
-                  placeholder="Quotation No"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  className="border-2 rounded px-2 py-2 w-full bg-gray-100"
                   value={form.quotationNo}
+                  readOnly
                 />
 
-                <div className="flex flex-col mt-2">
-  <label className="text-sm font-medium text-gray-700 mb-1">
-    Quotation Date <span className="text-red-500">*</span>
-  </label>
+                <input
+                  type="date"
+                  name="quotationDate"
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
+                  value={form.quotationDate}
+                  onChange={handleChange}
+                />
 
-  <input
-    type="date"
-    name="quotationDate"
-    className="border-2 rounded px-2 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-    onChange={handleChange}
-    value={form.quotationDate}
-  />
-</div>
-
-              </div>
-              <div className="grid grid-cols-2 gap-3">
                 <input
                   name="challanNo"
                   placeholder="Challan No"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
                   value={form.challanNo}
+                  onChange={handleChange}
                 />
-              <div className="flex flex-col mt-2">
-                <label className="text-sm font-medium text-gray-700 mb-1">
-   Challan Date <span className="text-red-500">*</span>
-  </label>
+
                 <input
                   type="date"
                   name="challanDate"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
                   value={form.challanDate}
+                  onChange={handleChange}
                 />
-                </div>
-                </div>
-                <div className="grid grid-cols-1 gap-2">
+
                 <input
                   name="lrNo"
-                  placeholder="L.R. No"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  placeholder="LR No"
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
                   value={form.lrNo}
+                  onChange={handleChange}
                 />
 
                 <select
                   name="deliveryMode"
-                  className="input mt-2 border-2 rounded px-2 py-2"
-                  onChange={handleChange}
+                  className="border-2 rounded px-2 py-2 w-full mt-2"
                   value={form.deliveryMode}
+                  onChange={handleChange}
                 >
                   <option value="">Select Delivery Mode</option>
                   <option>Road</option>
                   <option>Courier</option>
                   <option>Transport</option>
                 </select>
-                </div>
               </div>
             </div>
 
-            {/* ACTIONS */}
             <div className="flex justify-end gap-3 mt-6">
               <button
                 onClick={() => setOpen(false)}
-                className="px-4 py-2 border rounded"
+                className="border px-4 py-2 rounded"
               >
                 Cancel
               </button>
               <button
                 onClick={submitQuotation}
-                className="px-4 py-2 bg-blue-600 text-white rounded"
+                className="bg-blue-600 text-white px-4 py-2 rounded"
               >
                 Save Quotation
               </button>

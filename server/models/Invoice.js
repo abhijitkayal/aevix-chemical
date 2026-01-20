@@ -122,22 +122,32 @@ const invoiceSchema = new mongoose.Schema(
       },
     },
     shippingDetails: {
-  shippingDate: {
-    type: Date,
-  },
-  grossWeight: {
-    type: String, // or Number if you prefer
-    trim: true,
-  },
-  netWeight: {
-    type: String, // or Number
-    trim: true,
-  },
-  additionalNote: {
-    type: String,
-    trim: true,
-  },
-},
+      shippingDate: {
+        type: Date,
+      },
+      grossWeight: {
+        type: String, // or Number if you prefer
+        trim: true,
+      },
+      netWeight: {
+        type: String, // or Number
+        trim: true,
+      },
+      additionalNote: {
+        type: String,
+        trim: true,
+      },
+    },
+
+    /* ================= PAYMENT DETAILS ================= */
+    payment: {
+      paymentDate: String,
+      paymentType: String, // Cash / UPI / Bank / Cheque
+      totalAmount: Number,
+      paidAmount: Number,
+      remainingAmount: Number,
+      note: String,
+    },
 
   },
   { timestamps: true }

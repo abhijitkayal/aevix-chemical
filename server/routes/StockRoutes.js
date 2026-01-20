@@ -8,7 +8,14 @@ const router = express.Router();
 /* ADD STOCK */
 router.post("/", async (req, res) => {
   try {
-    const stock = new Stock(req.body);
+    const { currentStock, reorderLevel } = req.body;
+
+    // Calculate status
+    let status = "Good";
+    if (currentStock <= reorderLevel * 0.5) status = "Critical";
+    else if (currentStock <= reorderLevel) status = "Low";
+
+    const stock = new Stock({ ...req.body, status });
     await stock.save();
     res.status(201).json(stock);
   } catch (err) {

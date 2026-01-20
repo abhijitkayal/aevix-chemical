@@ -23,6 +23,8 @@ import purchaseInvoiceRoutes from "./routes/PurchaseinvoiceRoutes.js";
 import authRoutes from './routes/AuthRoutes.js';
 import clientRoutes from './routes/ClientRoutes.js';
 import saleRoutes from './routes/SaleRoutes.js';
+import CommissionRoutes from './routes/CommissionRoutes.js';
+import profileRoutes from './routes/ProfileRoutes.js';
 const app = express();
 
 app.use(cors());
@@ -60,6 +62,8 @@ app.use("/api/leads", leadsRoutes);
 app.use("/api/order-acknowledgements",OrderAcknowledgement);
 app.use("/api/clients", clientRoutes);
 app.use("/api/sales", saleRoutes);
+app.use("/api/commissions", CommissionRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");

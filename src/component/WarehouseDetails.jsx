@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Edit } from "lucide-react";
 
 export default function WarehouseDetails() {
   const { id } = useParams();
@@ -14,7 +15,10 @@ export default function WarehouseDetails() {
     quantity: "",
     unit: "",
     price: "",
+    warehouse:"",
   });
+  const [editingProductId, setEditingProductId] = useState(null);
+
 
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
@@ -34,36 +38,52 @@ export default function WarehouseDetails() {
 
   /* ---------------- ADD PRODUCT ---------------- */
   const addProduct = async () => {
-    if (
-      !form.productName ||
-      !form.quantity ||
-      !form.unit ||
-      !form.price
-    ) {
-      alert("Please fill all fields");
-      return;
-    }
+  if (!form.productName || !form.quantity || !form.unit || !form.price) {
+    alert("Please fill all fields");
+    return;
+  }
 
-    await axios.post("https://aevix-chem-backend-bksy.onrender.com/api/products", {
-      warehouseId: id,
-      productName: form.productName,
-      quantity: Number(form.quantity),
-      unit: form.unit,
-      price: Number(form.price),
-    });
-
-    setForm({ productName: "", quantity: "", unit: "", price: "" });
-    setShowForm(false);
-
-    const res = await axios.get(
-      `https://aevix-chem-backend-bksy.onrender.com/api/products/${id}`
-    );
-    setProducts(res.data);
+  const payload = {
+    warehouseId: id,
+    productName: form.productName,
+    quantity: Number(form.quantity),
+    unit: form.unit,
+    price: Number(form.price),
+    warehouse: form.warehouse || warehouse.warehouse,
   };
+
+  if (editingProductId) {
+    // ✅ UPDATE PRODUCT
+    await axios.put(
+      `http://localhost:5000/api/products/${editingProductId}`,
+      payload
+    );
+  } else {
+    // ✅ ADD PRODUCT
+    await axios.post("http://localhost:5000/api/products", payload);
+  }
+
+  setForm({
+    productName: "",
+    quantity: "",
+    unit: "",
+    price: "",
+    warehouse: "",
+  });
+
+  setEditingProductId(null);
+  setShowForm(false);
+
+  const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+  setProducts(res.data);
+};
+
+  
 
   if (!warehouse) {
     return <p className="p-6">Loading warehouse...</p>;
   }
+  
 
   return (
     <div className="p-6 min-h-screen mt-15">
@@ -84,31 +104,53 @@ export default function WarehouseDetails() {
       </div>
 
       {/* PRODUCT LIST */}
-      <div className="bg-white rounded-lg p-4 mb-6">
-        <h2 className="text-lg font-semibold mb-3">Products</h2>
+      <div className=" rounded-lg p-4 mb-6">
+        {/* <h2 className="text-lg font-semibold mb-3">Products</h2> */}
 
         {products.length === 0 ? (
           <p className="text-gray-500">No products available</p>
         ) : (
           <table className="w-full border text-sm">
-            <thead className="bg-gray-100">
+            <thead className="bg-indigo-600 text-white">
               <tr>
                 <th className="p-2 text-left">Product</th>
                 <th className="p-2 text-right">Qty</th>
                 <th className="p-2">Unit</th>
                 <th className="p-2 text-right">Price</th>
+                <th className="p-2">Actions</th>
+                
               </tr>
             </thead>
-            <tbody>
-              {products.map((p) => (
-                <tr key={p._id} className="border-t">
-                  <td className="p-2">{p.productName}</td>
-                  <td className="p-2 text-right">{p.quantity}</td>
-                  <td className="p-2 text-center">{p.unit}</td>
-                  <td className="p-2 text-right">₹{p.price}</td>
-                </tr>
-              ))}
-            </tbody>
+           <tbody>
+  {products.map((p) => (
+    <tr key={p._id} className="border-t hover:bg-gray-50">
+      <td className="p-2">{p.productName}</td>
+      <td className="p-2 text-right">{p.quantity}</td>
+      <td className="p-2 text-center">{p.unit}</td>
+      <td className="p-2 text-right">₹{p.price}</td>
+
+      <td className="p-2 text-center">
+        <button
+          onClick={() => {
+            setForm({
+              productName: p.productName,
+              quantity: p.quantity,
+              unit: p.unit,
+              price: p.price,
+              warehouse: p.warehouse || warehouse.warehouse,
+            });
+            setEditingProductId(p._id);
+            setShowForm(true);
+          }}
+          className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+        >
+          <Edit size={14} />
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
+
           </table>
         )}
       </div>
@@ -156,6 +198,15 @@ export default function WarehouseDetails() {
               value={form.price}
               onChange={(e) =>
                 setForm({ ...form, price: e.target.value })
+              }
+            />
+             <input
+              
+              className="border p-2 rounded"
+              placeholder="Warehouse Name"
+              value={form.warehouse}
+              onChange={(e) =>
+                setForm({ ...form, warehouse: e.target.value })
               }
             />
           </div>

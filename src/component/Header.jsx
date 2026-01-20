@@ -101,11 +101,14 @@
 // export default Header
 
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import React from "react";
-import { Search, Bell, Sun, Moon, ScrollText } from "lucide-react";
+import { Search, Bell, Sun, Moon, ScrollText, AlertTriangle, TrendingDown, UserX } from "lucide-react";
 import { IoChatboxEllipsesOutline, IoSparklesOutline } from "react-icons/io5";
 import sun from '../assets/sun-icon-on-white-background-vector.jpg';
+import { useNotifications } from '../context/NotificationContext';
+import axios from "axios";
+// import { profile } from "console";
 
 
 const ICON_BUTTON_BASE_CLASS =
@@ -118,11 +121,20 @@ const Header = () => {
   const [showNotificationsPopup, setShowNotificationsPopup] = useState(false);
   const [messageText, setMessageText] = useState("");
   
-  const profileData =  {
-    imageUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-    name: "abhi",
-    email: "kayal",
-  } 
+  // Get notifications from context
+  const { notifications, unreadCount, markAsRead, markAllAsRead, clearReadNotifications } = useNotifications();
+  
+//   const profileData =  {
+//     imageUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+//     name: "abhi",
+//     email: "kayal",
+//   } 
+ 
+const [profileData, setProfileData] = useState({
+  name: "",
+  email: "",
+});
+
 
   const handleSendMessage = () => {
     if (messageText.trim()) {
@@ -136,6 +148,34 @@ const Header = () => {
     console.log("AI Assistant button clicked!");
   };
 
+  useEffect(() => {
+  const fetchProfile = async () => {
+    try {
+      const email = localStorage.getItem("loginEmail");
+      console.log("Stored email:", email); // Debug log
+      
+      if (!email) {
+        console.log("No email found in localStorage");
+        return;
+      }
+
+      const res = await axios.get(
+        `http://localhost:5000/api/profile/${email}`
+      );
+
+      setProfileData({
+        name: res.data.name,
+        email: res.data.email,
+      });
+      console.log("Profile data fetched:", res.data);
+    } catch (err) {
+      console.error("Profile fetch error:", err.response?.data || err.message);
+    }
+  };
+
+  fetchProfile();
+}, []);
+
   // Reusable hover class function
   const getHoverClass = (extraClasses = "") =>
     `${extraClasses} hover:bg-gray-100`;
@@ -147,7 +187,7 @@ const Header = () => {
       >
         {/* Left Section: Hello & Dark Mode Toggle */}
         <div className="gap-4 flex mx-2 items-center">
-          <h2 className="text-lg font-semibold">👋 Hello, John!</h2>
+          <h2 className="text-lg font-semibold">👋 Hello, {profileData?.name}</h2>
           {/* <button
             onClick={() => setDarkMode(!darkMode)}
             // Applying the base class and consistent hover effect
@@ -213,13 +253,15 @@ const Header = () => {
           {/* Notifications Button - Now consistent */}
           <p
             onClick={() => setShowNotificationsPopup(true)}
-            className={`${ICON_BUTTON_BASE_CLASS} relative ${getHoverClass()}`}
+            className={`${ICON_BUTTON_BASE_CLASS} bg-white relative ${getHoverClass()}`}
             title="Notifications"
           >
             <Bell size={24} className="text-gray-700" />
-            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1 rounded-full">
-              4
-            </span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs px-1.5 rounded-full min-w-[18px] text-center">
+                {unreadCount}
+              </span>
+            )}
           </p>
           
           {/* Profile Area */}
@@ -227,15 +269,15 @@ const Header = () => {
             className={`flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors duration-300 ${getHoverClass()}`} // Applied hover to the entire profile div
             onClick={() => setShowProfilePopup(true)}
           >
-            <img
+            {/* <img
               src={profileData.imageUrl}
               alt="profile"
               className="w-8 h-8 rounded-full"
-            />
+            /> */}
             <div>
-              <p className="text-sm font-medium">John Prince</p>
+              <p className="text-sm font-medium">{profileData?.name}</p>
               <p className="text-xs text-gray-500">
-                princejohn04@gmail.com
+                {profileData?.email}
               </p>
             </div>
             {/* <div>
@@ -312,22 +354,115 @@ const Header = () => {
       )}
 
       {showNotificationsPopup && (
-        // ... (notifications popup content)
-        <div className="fixed inset-0 bg-opacity-100 backdrop-blur-sm flex justify-center items-center z-50">
-            <div className="rounded-lg p-6 w-96 relative bg-white text-gray-900">
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex justify-center items-center z-50">
+            <div className="rounded-lg p-6 w-[500px] max-h-[600px] relative bg-white text-gray-900 shadow-2xl">
                 <button
                     onClick={() => setShowNotificationsPopup(false)}
-                    className="absolute top-3 right-3 text-red-500 text-xl font-bold"
+                    className="absolute top-3 right-3 text-red-500 text-xl font-bold hover:text-red-700"
                 >
                     ✕
                 </button>
                 <div className="flex flex-col space-y-4">
-                    <h3 className="text-lg font-semibold">Notifications</h3>
-                    <div className="space-y-2">
-                        <p className="text-sm">4 new notifications.</p>
-                        <p className="text-sm text-gray-400">
-                            (Add your notifications list or content here)
-                        </p>
+                    <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold">Notifications</h3>
+                        {unreadCount > 0 && (
+                            <button
+                                onClick={markAllAsRead}
+                                className="text-xs text-blue-500 hover:text-blue-700"
+                            >
+                                Mark all as read
+                            </button>
+                        )}
+                    </div>
+                    
+                    <div className="space-y-2 max-h-[450px] overflow-y-auto">
+                        {notifications.length === 0 ? (
+                            <div className="text-center py-8">
+                                <Bell size={48} className="mx-auto text-gray-300 mb-2" />
+                                <p className="text-sm text-gray-400">No notifications</p>
+                            </div>
+                        ) : (
+                            <>
+                                {notifications.filter(n => !n.read).length > 0 && (
+                                    <div className="mb-4">
+                                        <p className="text-xs font-semibold text-gray-500 mb-2">UNREAD ({unreadCount})</p>
+                                        {notifications.filter(n => !n.read).map((notification) => (
+                                            <div
+                                                key={notification.id}
+                                                className={`p-3 rounded-lg mb-2 border-l-4 cursor-pointer transition-colors ${
+                                                    notification.severity === 'critical'
+                                                        ? 'bg-red-50 border-red-500 hover:bg-red-100'
+                                                        : 'bg-yellow-50 border-yellow-500 hover:bg-yellow-100'
+                                                }`}
+                                                onClick={() => markAsRead(notification.id)}
+                                            >
+                                                <div className="flex items-start gap-2">
+                                                    {notification.type === 'ledger_exceeded' ? (
+                                                        <UserX size={18} className="text-red-600 mt-0.5" />
+                                                    ) : notification.severity === 'critical' ? (
+                                                        <AlertTriangle size={18} className="text-red-600 mt-0.5" />
+                                                    ) : (
+                                                        <TrendingDown size={18} className="text-yellow-600 mt-0.5" />
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-semibold text-gray-900">
+                                                            {notification.title}
+                                                        </p>
+                                                        <p className="text-xs text-gray-700 mt-1">
+                                                            {notification.message}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {new Date(notification.timestamp).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                                
+                                {notifications.filter(n => n.read).length > 0 && (
+                                    <div>
+                                        <div className="flex items-center justify-between mb-2">
+                                            <p className="text-xs font-semibold text-gray-500">READ</p>
+                                            <button
+                                                onClick={clearReadNotifications}
+                                                className="text-xs text-red-500 hover:text-red-700"
+                                            >
+                                                Clear all
+                                            </button>
+                                        </div>
+                                        {notifications.filter(n => n.read).map((notification) => (
+                                            <div
+                                                key={notification.id}
+                                                className="p-3 rounded-lg mb-2 bg-gray-100 border-l-4 border-gray-300 opacity-60"
+                                            >type === 'ledger_exceeded' ? (
+                                                        <UserX size={18} className="text-gray-500 mt-0.5" />
+                                                    ) : notification.
+                                                <div className="flex items-start gap-2">
+                                                    {notification.severity === 'critical' ? (
+                                                        <AlertTriangle size={18} className="text-gray-500 mt-0.5" />
+                                                    ) : (
+                                                        <TrendingDown size={18} className="text-gray-500 mt-0.5" />
+                                                    )}
+                                                    <div className="flex-1">
+                                                        <p className="text-sm font-semibold text-gray-700">
+                                                            {notification.title}
+                                                        </p>
+                                                        <p className="text-xs text-gray-600 mt-1">
+                                                            {notification.message}
+                                                        </p>
+                                                        <p className="text-xs text-gray-500 mt-1">
+                                                            {new Date(notification.timestamp).toLocaleString()}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </>
+                        )}
                     </div>
                 </div>
             </div>

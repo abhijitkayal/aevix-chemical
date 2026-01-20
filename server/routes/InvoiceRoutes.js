@@ -1,6 +1,7 @@
 import express from "express";
 import Invoice from "../models/Invoice.js";
 import Product from "../models/Product.js";
+import Stock from "../models/Stock.js";
 import Warehouse from "../models/Warehouse.js";
 import Client from "../models/Client.js";
 import { generateInvoicePDF } from "../utils/Invoicepdf.js";
@@ -96,11 +97,7 @@ router.post("/", async (req, res) => {
     /* ======================
        4️⃣ LEDGER CHECK (ONLY IF CLIENT EXISTS)
     ====================== */
-    if (client && client.totalQuantity < quantity) {
-      return res.status(400).json({
-        message: `Ledger quantity insufficient. Available: ${client.totalQuantity}`,
-      });
-    }
+  
 
     /* ======================
        5️⃣ CREATE INVOICE
@@ -114,12 +111,35 @@ router.post("/", async (req, res) => {
     await product.save();
 
     /* ======================
+       6️⃣-B UPDATE STOCK COLLECTION (FOR NOTIFICATIONS)
+    ====================== */
+    // Try to find and update the corresponding stock item
+    const stockItem = await Stock.findOne({ 
+      itemName: { $regex: new RegExp(productName, 'i') }
+    });
+
+    if (stockItem) {
+      stockItem.currentStock -= quantity;
+      
+      // Recalculate status based on new stock level
+      let status = "Good";
+      if (stockItem.currentStock <= stockItem.reorderLevel * 0.5) {
+        status = "Critical";
+      } else if (stockItem.currentStock <= stockItem.reorderLevel) {
+        status = "Low";
+      }
+      stockItem.status = status;
+      
+      await stockItem.save();
+    }
+
+    /* ======================
        7️⃣ UPDATE CLIENT LEDGER (ONLY IF FOUND)
     ====================== */
     let ledgerUpdate = null;
 
     if (client) {
-      // client.totalQuantity -= quantity;
+      client.totalQuantity -= quantity;
       await client.save();
 
       ledgerUpdate = {
@@ -163,5 +183,79 @@ router.post("/", async (req, res) => {
     });
   }
 });
+
+/* ======================
+   UPDATE INVOICE PAYMENT
+====================== */
+router.put("/:id/payment", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const {
+      paymentDate,
+      paymentType,
+      totalAmount,
+      paidAmount,
+      remainingAmount,
+      note,
+    } = req.body;
+
+    const invoice = await Invoice.findById(id);
+
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    invoice.payment = {
+      paymentDate,
+      paymentType,
+      totalAmount,
+      paidAmount,
+      remainingAmount,
+      note,
+    };
+
+    await invoice.save();
+
+    res.json({
+      message: "Payment updated successfully",
+      payment: invoice.payment,
+    });
+  } catch (error) {
+    console.error("Payment update error:", error);
+    res.status(500).json({
+      message: "Server error while updating payment",
+      error: error.message,
+    });
+  }
+});
+/* ======================
+   UPDATE INVOICE
+====================== */
+router.put("/:id", async (req, res) => {
+  try {
+    const updatedInvoice = await Invoice.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+
+    if (!updatedInvoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.json({
+      message: "Invoice updated successfully",
+      invoice: updatedInvoice,
+    });
+  } catch (error) {
+    console.error("Invoice update error:", error);
+    res.status(500).json({
+      message: "Server error",
+      error: error.message,
+    });
+  }
+});
+
 
 export default router;

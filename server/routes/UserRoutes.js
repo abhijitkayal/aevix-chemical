@@ -1,39 +1,45 @@
-// const express = require("express");
-
-// const User = require("../models/User");
 import express from "express";
 import User from "../models/User.js";
+
 const router = express.Router();
+
 /* CREATE USER */
 router.post("/", async (req, res) => {
   try {
-    const user = new User(req.body);
-    await user.save();
-    res.status(201).json(user);
+    console.log("REQUEST BODY:", req.body); // 👈 ADD THIS
+
+    const user = await User.create(req.body);
+    res.json(user);
   } catch (err) {
-    res.status(400).json({ message: err.message });
+    console.error("USER CREATE ERROR:", err); // 👈 ADD THIS
+    res.status(400).json({
+      message: err.message,
+      error: err,
+    });
   }
 });
 
-/* GET ALL USERS */
+/* GET USERS */
 router.get("/", async (req, res) => {
-  try {
-    const users = await User.find().sort({ createdAt: -1 });
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  const users = await User.find().select("-password"); // hide password
+  res.json(users);
 });
 
 /* UPDATE USER */
 router.put("/:id", async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
+    const updateData = { ...req.body };
+
+    // Do not overwrite password if empty
+    if (!updateData.password) delete updateData.password;
+
+    const user = await User.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
-    res.json(updatedUser);
+
+    res.json(user);
   } catch (err) {
     res.status(400).json({ message: err.message });
   }
@@ -41,13 +47,8 @@ router.put("/:id", async (req, res) => {
 
 /* DELETE USER */
 router.delete("/:id", async (req, res) => {
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: "User deleted successfully" });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+  await User.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
 });
 
-// module.exports = router;
 export default router;

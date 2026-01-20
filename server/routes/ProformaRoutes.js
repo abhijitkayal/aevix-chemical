@@ -3,20 +3,32 @@ import Proforma from "../models/Proforma.js";
 
 const router = express.Router();
 
-/* CREATE PROFORMA */
+/* CREATE */
 router.post("/", async (req, res) => {
-  try {
-    const proforma = await Proforma.create(req.body);
-    res.status(201).json(proforma);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
+  const proforma = await Proforma.create(req.body);
+  res.json(proforma);
 });
 
-/* GET ALL PROFORMAS */
+/* READ */
 router.get("/", async (req, res) => {
   const data = await Proforma.find().sort({ createdAt: -1 });
   res.json(data);
+});
+
+/* UPDATE */
+router.put("/:id", async (req, res) => {
+  const updated = await Proforma.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    { new: true }
+  );
+  res.json(updated);
+});
+
+/* DELETE */
+router.delete("/:id", async (req, res) => {
+  await Proforma.findByIdAndDelete(req.params.id);
+  res.json({ success: true });
 });
 
 export default router;

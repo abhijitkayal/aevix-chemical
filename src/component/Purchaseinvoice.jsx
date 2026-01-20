@@ -153,7 +153,7 @@ const PurchaseInvoicePage = () => {
 
         <table className="w-full border">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-indigo-600 text-white">
               <th className="p-2 border">Vendor</th>
               <th className="p-2 border">Invoice No</th>
               <th className="p-2 border">Date</th>
@@ -163,10 +163,10 @@ const PurchaseInvoicePage = () => {
           <tbody>
             {invoices.map((inv) => (
               <tr key={inv._id}>
-                <td className="p-2 border">{inv.vendorName}</td>
-                <td className="p-2 border">{inv.invoiceNo}</td>
-                <td className="p-2 border">{inv.invoiceDate?.slice(0, 10)}</td>
-                <td className="p-2 border font-semibold">
+                <td className="p-2 border text-center">{inv.vendorName}</td>
+                <td className="p-2 border text-center">{inv.invoiceNo}</td>
+                <td className="p-2 border text-center">{inv.invoiceDate?.slice(0, 10)}</td>
+                <td className="p-2 border text-center font-semibold">
                   ₹ {inv.totalAmount?.toLocaleString('en-IN')}
                 </td>
               </tr>

@@ -2,15 +2,23 @@ import mongoose from "mongoose";
 
 const ProformaSchema = new mongoose.Schema(
   {
-    customerName: { type: String, required: true },
-    address: String,
-    contactPerson: String,
+    customerName: String,
+    billingAddress: String,
+    shippingAddress: String,
     phone: String,
     gstin: String,
     placeOfSupply: String,
 
-    proformaNo: { type: String, required: true },
-    proformaDate: { type: String, required: true },
+    proformaNo: String,
+    proformaDate: String,
+    validity: String,
+
+    quotationNo: String,
+    purchaseOrderNo: String,
+    purchaseOrderDate: String,
+
+    salesAccountName: String,
+
     challanNo: String,
     challanDate: String,
     lrNo: String,

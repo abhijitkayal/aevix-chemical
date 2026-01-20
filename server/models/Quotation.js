@@ -4,7 +4,9 @@ import mongoose from "mongoose";
 const QuotationSchema = new mongoose.Schema(
   {
     customerName: { type: String, required: true },
-    address: String,
+    // address: String,
+    billingaddress:String,
+    shippingaddress:String,
     contactPerson: String,
     phone: String,
     gstin: String,
