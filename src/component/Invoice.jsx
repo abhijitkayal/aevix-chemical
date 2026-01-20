@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Download, Pencil, Plus, X } from "lucide-react";
+import { API_URL } from "../config/api";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
@@ -78,7 +79,7 @@ const handlePaymentSave = async () => {
 
   try {
     await axios.put(
-      `http://localhost:5000/api/invoices/${selectedInvoice._id}/payment`,
+      `${API_URL}/api/invoices/${selectedInvoice._id}/payment`,
       {
         paymentDate: paymentForm.paymentDate,
         paymentType: paymentForm.paymentType,
@@ -107,7 +108,7 @@ const handlePaymentSave = async () => {
 
   try {
     const res = await axios.get(
-      `http://localhost:5000/api/leads?search=${query}`
+      `${API_URL}/api/leads?search=${query}`
     );
     setCustomerSuggestions(res.data);
     setShowSuggestions(true);
@@ -119,12 +120,12 @@ const handlePaymentSave = async () => {
 
 
   const fetchInvoices = async () => {
-    const res = await axios.get("http://localhost:5000/api/invoices");
+    const res = await axios.get(`${API_URL}/api/invoices`);
     setInvoices(res.data);
   };
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("http://localhost:5000/api/warehouses");
+    const res = await axios.get(`${API_URL}/api/warehouses`);
     setWarehouses(res.data);
   };
 
@@ -203,12 +204,12 @@ const handleSubmit = async () => {
     if (selectedInvoice) {
       // ✅ UPDATE
       await axios.put(
-        `http://localhost:5000/api/invoices/${selectedInvoice._id}`,
+        `${API_URL}/api/invoices/${selectedInvoice._id}`,
         payload
       );
     } else {
       // ✅ CREATE
-      await axios.post("http://localhost:5000/api/invoices", payload);
+      await axios.post(`${API_URL}/api/invoices`, payload);
     }
 
     setShowModal(false);
@@ -320,7 +321,7 @@ const handleSubmit = async () => {
   <button
     onClick={() =>
       window.open(
-        `http://localhost:5000/api/invoices/${inv._id}/download`,
+        `${API_URL}/api/invoices/${inv._id}/download`,
         "_blank"
       )
     }
