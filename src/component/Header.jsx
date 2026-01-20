@@ -108,6 +108,7 @@ import { IoChatboxEllipsesOutline, IoSparklesOutline } from "react-icons/io5";
 import sun from '../assets/sun-icon-on-white-background-vector.jpg';
 import { useNotifications } from '../context/NotificationContext';
 import axios from "axios";
+import { API_URL } from '../config/api';
 // import { profile } from "console";
 
 
@@ -160,7 +161,7 @@ const [profileData, setProfileData] = useState({
       }
 
       const res = await axios.get(
-        `http://localhost:5000/api/profile/${email}`
+        `${API_URL}/api/profile/${email}`
       );
 
       setProfileData({

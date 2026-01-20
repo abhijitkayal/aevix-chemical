@@ -387,7 +387,7 @@ export default function Leads() {
   /* ================= FETCH LEADS ================= */
 
   const fetchLeads = async () => {
-    const res = await axios.get("http://localhost:5000/api/leads");
+    const res = await axios.get("${API_URL}/api/leads");
     setLeads(res.data);
   };
 
@@ -424,12 +424,12 @@ export default function Leads() {
     if (editingId) {
       // UPDATE
       await axios.put(
-        `http://localhost:5000/api/leads/${editingId}`,
+        `${API_URL}/api/leads/${editingId}`,
         form
       );
     } else {
       // CREATE
-      await axios.post("http://localhost:5000/api/leads", form);
+      await axios.post("${API_URL}/api/leads", form);
     }
 
     setShowModal(false);
@@ -460,7 +460,7 @@ export default function Leads() {
   const handleDelete = async (id) => {
     if (!confirm("Are you sure you want to delete this customer?")) return;
 
-    await axios.delete(`http://localhost:5000/api/leads/${id}`);
+    await axios.delete(`${API_URL}/api/leads/${id}`);
     fetchLeads();
   };
 

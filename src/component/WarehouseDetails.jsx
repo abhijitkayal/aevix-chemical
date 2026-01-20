@@ -55,12 +55,12 @@ export default function WarehouseDetails() {
   if (editingProductId) {
     // ✅ UPDATE PRODUCT
     await axios.put(
-      `http://localhost:5000/api/products/${editingProductId}`,
+      `${API_URL}/api/products/${editingProductId}`,
       payload
     );
   } else {
     // ✅ ADD PRODUCT
-    await axios.post("http://localhost:5000/api/products", payload);
+    await axios.post("${API_URL}/api/products", payload);
   }
 
   setForm({
@@ -74,7 +74,7 @@ export default function WarehouseDetails() {
   setEditingProductId(null);
   setShowForm(false);
 
-  const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+  const res = await axios.get(`${API_URL}/api/products/${id}`);
   setProducts(res.data);
 };
 

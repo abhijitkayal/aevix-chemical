@@ -224,7 +224,7 @@ const InvoiceSummary = () => {
     const fetchInvoices = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/invoices"
+          "${API_URL}/api/invoices"
         );
 
         const invoices = res.data || [];

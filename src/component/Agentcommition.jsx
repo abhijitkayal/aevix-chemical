@@ -665,7 +665,7 @@ const AgentCommission = () => {
 
   /* ================= FETCH DATA ================= */
   const fetchCommissions = async () => {
-    const res = await axios.get("http://localhost:5000/api/commissions");
+    const res = await axios.get("${API_URL}/api/commissions");
     setCommissions(res.data);
   };
 
@@ -700,11 +700,11 @@ const AgentCommission = () => {
 
     if (editingId) {
       await axios.put(
-        `http://localhost:5000/api/commissions/${editingId}`,
+        `${API_URL}/api/commissions/${editingId}`,
         form
       );
     } else {
-      await axios.post("http://localhost:5000/api/commissions", form);
+      await axios.post("${API_URL}/api/commissions", form);
     }
 
     setShowForm(false);
@@ -723,7 +723,7 @@ const AgentCommission = () => {
   /* ================= DELETE ================= */
   const handleDelete = async (id) => {
     if (window.confirm("Delete this commission?")) {
-      await axios.delete(`http://localhost:5000/api/commissions/${id}`);
+      await axios.delete(`${API_URL}/api/commissions/${id}`);
       fetchCommissions();
     }
   };

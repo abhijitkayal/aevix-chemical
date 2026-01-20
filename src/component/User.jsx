@@ -749,12 +749,12 @@ const User = () => {
   try {
     if (isEdit) {
       await axios.put(
-        `http://localhost:5000/api/users/${editId}`,
+        `${API_URL}/api/users/${editId}`,
         payload
       );
     } else {
       await axios.post(
-        "http://localhost:5000/api/users",
+        "${API_URL}/api/users",
         payload
       );
     }
@@ -784,7 +784,7 @@ const User = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     await axios.delete(
-      `http://localhost:5000/api/users/${id}`
+      `${API_URL}/api/users/${id}`
     );
     fetchUsers();
   };

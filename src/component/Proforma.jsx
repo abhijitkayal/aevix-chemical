@@ -290,7 +290,7 @@ export default function Proforma() {
 
   /* ================= FETCH PROFORMA ================= */
   const fetchProforma = async () => {
-    const res = await axios.get("http://localhost:5000/api/proforma");
+    const res = await axios.get("${API_URL}/api/proforma");
     setProforma(res.data);
   };
 
@@ -308,7 +308,7 @@ export default function Proforma() {
 
     try {
       const res = await axios.get(
-        `http://localhost:5000/api/leads?search=${query}`
+        `${API_URL}/api/leads?search=${query}`
       );
       setLeadSuggestions(res.data);
       setShowSuggestions(true);
@@ -348,11 +348,11 @@ export default function Proforma() {
   const submit = async () => {
     if (editingId) {
       await axios.put(
-        `http://localhost:5000/api/proforma/${editingId}`,
+        `${API_URL}/api/proforma/${editingId}`,
         form
       );
     } else {
-      await axios.post("http://localhost:5000/api/proforma", form);
+      await axios.post("${API_URL}/api/proforma", form);
     }
 
     setForm(emptyForm);
@@ -371,7 +371,7 @@ export default function Proforma() {
   /* ================= DELETE ================= */
   const deleteProforma = async (id) => {
     if (!confirm("Delete this proforma?")) return;
-    await axios.delete(`http://localhost:5000/api/proforma/${id}`);
+    await axios.delete(`${API_URL}/api/proforma/${id}`);
     fetchProforma();
   };
 

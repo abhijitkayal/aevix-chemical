@@ -39,7 +39,7 @@ export const NotificationProvider = ({ children }) => {
   // Fetch low stock items and create notifications
   const fetchLowStockNotifications = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/stock');
+      const response = await axios.get('${API_URL}/api/stock');
       const stocks = response.data;
       
       // Filter low and critical stock items
