@@ -261,6 +261,11 @@ export default function Proforma() {
   /* ================= AUTOCOMPLETE ================= */
   const [leadSuggestions, setLeadSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [dateFilter, setDateFilter] = useState({
+  from: "",
+  to: "",
+});
+
 
   /* ================= FORM ================= */
   const emptyForm = {
@@ -328,6 +333,20 @@ export default function Proforma() {
       fetchLeadSuggestions(value);
     }
   };
+  const filteredProforma = proforma.filter((pf) => {
+  if (!dateFilter.from && !dateFilter.to) return true;
+  if (!pf.proformaDate) return false;
+
+  const pfDate = new Date(pf.proformaDate);
+  const from = dateFilter.from ? new Date(dateFilter.from) : null;
+  const to = dateFilter.to ? new Date(dateFilter.to) : null;
+
+  if (from && pfDate < from) return false;
+  if (to && pfDate > to) return false;
+
+  return true;
+});
+
 
   /* ================= SELECT LEAD ================= */
   const selectLead = (lead) => {
@@ -379,27 +398,63 @@ export default function Proforma() {
   return (
     <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-end mb-4">
+      
+        {/* DATE FILTER */}
+<div className="flex flex-wrap gap-4 mb-6 items-end">
+  <div>
+    <label className="text-sm font-medium">From Date</label>
+    <input
+      type="date"
+      className="border px-3 py-2 rounded w-full"
+      value={dateFilter.from}
+      onChange={(e) =>
+        setDateFilter({ ...dateFilter, from: e.target.value })
+      }
+    />
+  </div>
+
+  <div>
+    <label className="text-sm font-medium">To Date</label>
+    <input
+      type="date"
+      className="border px-3 py-2 rounded w-full"
+      value={dateFilter.to}
+      onChange={(e) =>
+        setDateFilter({ ...dateFilter, to: e.target.value })
+      }
+    />
+  </div>
+
+  <button
+    onClick={() => setDateFilter({ from: "", to: "" })}
+    className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+  >
+    Clear
+  </button>
+  <div className="flex justify-end mb-4">
+</div>
+
         <button
           onClick={() => {
             setForm(emptyForm);
             setEditingId(null);
             setOpen(true);
           }}
-          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2"
+          className="bg-green-600 text-white px-4 py-2 ml-25 rounded flex items-center gap-2"
         >
           <Plus size={18} /> Create Proforma
         </button>
       </div>
 
       {/* LIST */}
-      {proforma.map((pf) => (
+      {filteredProforma.map((pf) => (
         <div key={pf._id} className="bg-white p-5 rounded-xl shadow mb-4">
-          <div className="flex justify-between">
+          
+          <div className="flex justify-end">
             {/* <h2 className="font-bold text-lg">
               Proforma #{pf.proformaNo}
             </h2> */}
-
+              
             <div className="flex gap-2">
               <button onClick={() => editProforma(pf)}>
                 <Edit size={18} />
@@ -409,14 +464,15 @@ export default function Proforma() {
               </button>
             </div>
           </div>
-
-          <p><b>Customer:</b> {pf.customerName}</p>
+          <div>
+            <p><b>Customer:</b> {pf.customerName}</p>
           <p><b>Billing:</b> {pf.billingAddress}</p>
           <p><b>Shipping:</b> {pf.shippingAddress}</p>
           <p><b>Phone:</b> {pf.phone}</p>
-          <p><b>GSTIN:</b> {pf.gstin}</p>
+          <p><b>Date:</b> {pf.proformaDate}</p>
           <p><b>Validity:</b> {pf.validity}</p>
           <p><b>Sales A/C:</b> {pf.salesAccountName}</p>
+          </div>
         </div>
       ))}
 

@@ -206,7 +206,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import InvoiceSummary from './Invoicegraph';
 import Salesandpurchase from './Salesandpurchase';
-import SalesIndiaMap from './SalesIndiaMap';
+
+import StateWiseCharts from './Statewisecharts';
 
 /* ======================
    Safe Number Formatter
@@ -449,6 +450,7 @@ const Overview = () => {
           products={leastSelling}
         />
       </div>
+      <StateWiseCharts/>
 
       
     </div>

@@ -7,6 +7,10 @@ const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [dateFilter, setDateFilter] = useState({
+  from: "",
+  to: "",
+});
 
   const [form, setForm] = useState({
     customer: "",
@@ -97,6 +101,22 @@ const handlePaymentSave = async () => {
     console.error(err);
   }
 };
+const filteredInvoices = invoices.filter((inv) => {
+  if (!dateFilter.from && !dateFilter.to) return true;
+
+  const invoiceDate = new Date(inv.date);
+  const fromDate = dateFilter.from
+    ? new Date(dateFilter.from)
+    : null;
+  const toDate = dateFilter.to
+    ? new Date(dateFilter.to)
+    : null;
+
+  if (fromDate && invoiceDate < fromDate) return false;
+  if (toDate && invoiceDate > toDate) return false;
+
+  return true;
+});
 
 
   const fetchCustomerSuggestions = async (query) => {
@@ -235,6 +255,40 @@ const handleSubmit = async () => {
           <Plus size={18} /> Add Invoice
         </button>
       </div>
+      {/* DATE FILTER */}
+<div className="flex flex-wrap gap-4 mb-4 items-end">
+  <div>
+    <label className="text-sm font-medium">From Date</label>
+    <input
+      type="date"
+      className="border px-3 py-2 rounded w-full"
+      value={dateFilter.from}
+      onChange={(e) =>
+        setDateFilter({ ...dateFilter, from: e.target.value })
+      }
+    />
+  </div>
+
+  <div>
+    <label className="text-sm font-medium">To Date</label>
+    <input
+      type="date"
+      className="border px-3 py-2 rounded w-full"
+      value={dateFilter.to}
+      onChange={(e) =>
+        setDateFilter({ ...dateFilter, to: e.target.value })
+      }
+    />
+  </div>
+
+  <button
+    onClick={() => setDateFilter({ from: "", to: "" })}
+    className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+  >
+    Clear
+  </button>
+</div>
+
 
       {/* TABLE */}
       <div className="bg-white rounded-lg border overflow-x-auto">
@@ -251,7 +305,7 @@ const handleSubmit = async () => {
             </tr>
           </thead>
           <tbody>
-            {invoices.map((inv) => (
+            {filteredInvoices.map((inv) => (
               <tr key={inv._id} className="border-b hover:bg-gray-50">
                 <td className="p-3">{inv.date?.slice(0, 10)}</td>
                 <td className="p-3">{inv.customer}</td>

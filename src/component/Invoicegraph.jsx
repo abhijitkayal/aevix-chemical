@@ -224,10 +224,11 @@ const InvoiceSummary = () => {
     const fetchInvoices = async () => {
       try {
         const res = await axios.get(
-          "${API_URL}/api/invoices"
+          "http://localhost:5000/api/invoices"
         );
 
-        const invoices = res.data || [];
+        // Ensure invoices is an array
+        const invoices = Array.isArray(res.data) ? res.data : [];
         const months = getLastMonths(6);
 
         /* ======================
