@@ -180,6 +180,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { API_URL } from "../config/api";
 import {
   BarChart,
   Bar,
@@ -224,7 +225,7 @@ const InvoiceSummary = () => {
     const fetchInvoices = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/invoices"
+          `${API_URL}/api/invoices`
         );
 
         // Ensure invoices is an array

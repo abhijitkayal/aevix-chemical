@@ -27,7 +27,19 @@ import CommissionRoutes from './routes/CommissionRoutes.js';
 import profileRoutes from './routes/ProfileRoutes.js';
 const app = express();
 
-app.use(cors());
+// Configure CORS to allow Vercel frontend
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:5000',
+    'https://aevix-chemical.vercel.app', // Replace with your actual Vercel domain
+    /\.vercel\.app$/, // Allow all Vercel preview deployments
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 mongoose

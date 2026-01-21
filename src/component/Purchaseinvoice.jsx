@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { API_URL } from '../config/api';
 
 const emptyForm = {
   vendorName: '',
@@ -32,7 +33,7 @@ const PurchaseInvoicePage = () => {
      Fetch invoices
   ====================== */
   const fetchInvoices = async () => {
-    const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/purchase-invoices');
+    const res = await axios.get(`${API_URL}/api/purchase-invoices`);
     setInvoices(res.data);
   };
 
@@ -52,7 +53,7 @@ const PurchaseInvoicePage = () => {
   ====================== */
   const handleSubmit = async () => {
     await axios.post(
-      'https://aevix-chemical-xctw.onrender.com/api/purchase-invoices',
+      `${API_URL}/api/purchase-invoices`,
       {
         ...form,
         totalAmount: Number(form.totalAmount), // ensure number
