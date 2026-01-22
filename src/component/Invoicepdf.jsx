@@ -1,53 +1,100 @@
 import React, { forwardRef } from "react";
+import logo from '../assets/AEVIX LOGO BLACK.png'
 
 const InvoicePDF = forwardRef(({ invoice }, ref) => {
+  // Calculate amounts matching server-side logic
+  const qty = invoice.quantity || 0;
+  const rate = invoice.rate || 0;
+  const taxable = qty * rate;
+  const cgst = taxable * 0.09;
+  const sgst = taxable * 0.09;
+  const total = taxable + cgst + sgst;
+
+  const amountInWords = (num) => {
+    return `RUPEES ${num.toLocaleString("en-IN")} ONLY`;
+  };
+
+  const consignee = invoice.consignee || {};
+
   return (
     <div ref={ref} className="pdf-page">
       {/* HEADER */}
-      <div className="header">
-        <div>
-          <img src="/aevix-logo.png" width="120" />
-          <p className="company-name">AEVIX CHEMICAL INDIA LIMITED</p>
-          <p>115, Jojra North, Rohanda GP, Madhyamgram</p>
-          <p>Kolkata, West Bengal – 700135</p>
-          <p>GSTIN: 19ABBCA1860B1Z4</p>
+     <div className="flex justify-between items-start mb-6">
+  {/* LEFT SIDE (LOGO + DETAILS) */}
+  <div className="flex items-start gap-4 w-[65%]">
+    {/* LOGO */}
+    <img
+      src={logo}
+      alt="Company Logo"
+      className="w-[120px] object-contain"
+    />
+
+    {/* COMPANY DETAILS */}
+    <div className="text-sm leading-snug text-left mr-10">
+      <p className="font-bold text-base">AEVIX CHEMICAL</p>
+      <p>
+        115, VILL. UTTAR JOJRA, PO. ROHANDA, PS. MADHYAMGRAM,
+        KOLKATA, WEST BENGAL - 700135
+      </p>
+      <p>Telephone: 033 31556300</p>
+      <p>Kolkata, West Bengal - 700013</p>
+      <a
+        href="http://www.aevixchemical.com"
+        className="text-blue-600 underline"
+      >
+        Website: www.aevixchemical.com
+      </a>
+    </div>
+  </div>
+
+  {/* RIGHT SIDE (TAX INVOICE) */}
+  <div className="w-[40%] text-left">
+    <h2 className="text-lg font-bold mb-2">TAX INVOICE</h2>
+
+    <table className="w-full border border-black border-collapse text-sm">
+      <tbody>
+        <tr>
+          <td className="border border-black px-2 py-1 font-medium">
+            Invoice No
+          </td>
+          <td className="border border-black px-2 py-1">
+            {invoice.invoiceNo || invoice._id}
+          </td>
+        </tr>
+        <tr>
+          <td className="border border-black px-2 py-1 font-medium">
+            Invoice Date
+          </td>
+          <td className="border border-black px-2 py-1">
+            {new Date(invoice.date).toLocaleDateString("en-IN")}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+      {/* BUYER & CONSIGNEE */}
+      <div className="two-col">
+        <div className="buyer-section">
+          <h4>Details of Buyer | Billed to :</h4>
+          <p><strong>Name:</strong> {invoice.customer}</p>
+          <p><strong>Address:</strong> {invoice.address}</p>
+          <p><strong>Phone:</strong> {invoice.phone}</p>
+          <p><strong>GSTIN:</strong> {invoice.gstin}</p>
+          <p><strong>PAN:</strong> {invoice.pan}</p>
+          <p><strong>State:</strong> {invoice.state}</p>
+          <p><strong>Place of Supply:</strong> {invoice.placeOfSupply}</p>
         </div>
 
-        <div className="invoice-title">
-          <h1>TAX INVOICE</h1>
-          <table>
-            <tbody>
-              <tr><td>Date</td><td>{invoice.date}</td></tr>
-              <tr><td>Due Date</td><td>{invoice.dueDate}</td></tr>
-              <tr><td>Invoice No</td><td>{invoice.invoiceNo}</td></tr>
-              <tr><td>PI Number</td><td>{invoice.piNumber}</td></tr>
-              <tr><td>PI Date</td><td>{invoice.piDate}</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      {/* BILL TO / SHIP TO / SHIPPING */}
-      <div className="three-col">
-        <div>
-          <h4>BILL TO / CUSTOMER</h4>
-          <p>{invoice.customer}</p>
-          <p>{invoice.address}</p>
-          <p>GSTIN: {invoice.gstin}</p>
-        </div>
-
-        <div>
-          <h4>SHIP TO</h4>
-          <p>{invoice.customer}</p>
-          <p>{invoice.shippingAddress}</p>
-        </div>
-
-        <div>
-          <h4>SHIPPING DETAILS</h4>
-          <p>Shipping Date: {invoice.shippingDetails?.shippingDate}</p>
-          <p>Est Gross Weight: {invoice.shippingDetails?.grossWeight}</p>
-          <p>Est Net Weight: {invoice.shippingDetails?.netWeight}</p>
-          <p>Total Packages: {invoice.shippingDetails?.totalPackages}</p>
+        <div className="consignee-section">
+          <h4>Details of Consignee | Shipped to :</h4>
+          <p><strong>Name:</strong> {consignee.name || invoice.customer}</p>
+          <p><strong>Address:</strong> {consignee.address || invoice.address}</p>
+          <p><strong>Phone:</strong> {consignee.phone || invoice.phone}</p>
+          <p><strong>GSTIN:</strong> {consignee.gstin || invoice.gstin}</p>
+          <p><strong>State:</strong> {consignee.state || invoice.state}</p>
         </div>
       </div>
 
@@ -55,47 +102,63 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       <table className="items">
         <thead>
           <tr>
-            <th>PRODUCT NAME</th>
-            <th>UOM</th>
-            <th>DESCRIPTION</th>
+            <th>Sr</th>
+            <th>Product / Service</th>
             <th>HSN</th>
-            <th>QTY</th>
-            <th>UNIT PRICE</th>
-            <th>GST</th>
-            <th>TOTAL</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Taxable</th>
+            <th>CGST</th>
+            <th>SGST</th>
           </tr>
         </thead>
         <tbody>
           <tr>
+            <td>1</td>
             <td>{invoice.productName}</td>
-            <td>{invoice.unit}</td>
-            <td>{invoice.description}</td>
-            <td>{invoice.hsn}</td>
-            <td>{invoice.quantity}</td>
-            <td>{invoice.rate}</td>
-            <td>18%</td>
-            <td>{invoice.totalAmount}</td>
+            <td>{invoice.hsn || "-"}</td>
+            <td>{qty} {invoice.unit}</td>
+            <td>{rate.toFixed(2)}</td>
+            <td>{taxable.toFixed(2)}</td>
+            <td>{cgst.toFixed(2)}</td>
+            <td>{sgst.toFixed(2)}</td>
           </tr>
         </tbody>
       </table>
 
-      {/* TOTALS */}
-      <div className="totals">
-        <table>
-          <tbody>
-            <tr><td>Subtotal</td><td>{invoice.totalAmount}</td></tr>
-            <tr><td>GST (18%)</td><td>{invoice.totalAmount * 0.18}</td></tr>
-            <tr className="grand"><td>TOTAL</td><td>₹ {invoice.totalAmount * 1.18}</td></tr>
-          </tbody>
-        </table>
+      {/* TOTALS & BANK */}
+      <div className="bottom-section">
+        <div className="amount-words">
+          <h4>Total in Words</h4>
+          <p>{amountInWords(total)}</p>
+        </div>
+
+        <div className="tax-summary">
+          <table>
+            <tbody>
+              <tr><td>Taxable Amount</td><td>{taxable.toFixed(2)}</td></tr>
+              <tr><td>Add : CGST</td><td>{cgst.toFixed(2)}</td></tr>
+              <tr><td>Add : SGST</td><td>{sgst.toFixed(2)}</td></tr>
+              <tr className="grand"><td><strong>Total Amount</strong></td><td><strong>{total.toFixed(2)}</strong></td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      {/* FOOTER */}
-      <div className="footer">
-        <p><b>Account Name:</b> Aevix Chemical India Limited</p>
-        <p><b>Bank:</b> State Bank of India</p>
-        <p><b>IFSC:</b> SBIN0015197</p>
-        <p><b>In Words:</b> Rupees One Lakh Fifty Nine Thousand Three Hundred Only</p>
+      {/* BANK DETAILS & SIGNATURE */}
+      <div className="footer-section">
+        <div className="bank-details">
+          <h4>Bank Details</h4>
+          <p><strong>Bank:</strong> {invoice.bankDetails?.bankName || "State Bank of India"}</p>
+          <p><strong>Account No:</strong> {invoice.bankDetails?.accountNo || "-"}</p>
+          <p><strong>IFSC:</strong> {invoice.bankDetails?.ifsc || "SBIN0015197"}</p>
+        </div>
+
+        <div className="signature">
+          <p>Certified that the particulars given above are true and correct.</p>
+          <p><strong>For AEVIX CHEMICAL</strong></p>
+          <p style={{ marginTop: "40px" }}>Authorised Signatory</p>
+        </div>
       </div>
     </div>
   );

@@ -29,7 +29,52 @@ router.get("/", async (req, res) => {
 /* ======================
    DOWNLOAD INVOICE PDF
 ====================== */
+// router.get("/:id/download", async (req, res) => {
+//   try {
+//     const invoice = await Invoice.findById(req.params.id)
+//       .populate("warehouseId");
+
+//     if (!invoice) {
+//       return res.status(404).json({ message: "Invoice not found" });
+//     }
+
+//     generateInvoicePDF(invoice, res);
+//   } catch (err) {
+//     if (!res.headersSent) {
+//       res.status(500).json({ message: err.message });
+//     }
+//   }
+// });
+
+
+
+
 router.get("/:id/download", async (req, res) => {
+  try {
+    const invoice = await Invoice.findById(req.params.id);
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    const pdfBuffer = await generateInvoicePDF(invoice); // your existing logic
+
+    const isPreview = req.query.preview === "true";
+
+    res.setHeader("Content-Type", "application/pdf");
+    res.setHeader(
+      "Content-Disposition",
+      isPreview
+        ? "inline; filename=invoice.pdf"
+        : "attachment; filename=invoice.pdf"
+    );
+
+    res.send(pdfBuffer);
+  } catch (err) {
+    res.status(500).json({ message: "PDF generation failed" });
+  }
+});
+
+router.get("/:id", async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id)
       .populate("warehouseId");
@@ -38,13 +83,12 @@ router.get("/:id/download", async (req, res) => {
       return res.status(404).json({ message: "Invoice not found" });
     }
 
-    generateInvoicePDF(invoice, res);
+    res.json(invoice);
   } catch (err) {
-    if (!res.headersSent) {
-      res.status(500).json({ message: err.message });
-    }
+    res.status(500).json({ message: "Server error" });
   }
 });
+
 
 /* ======================
    CREATE INVOICE

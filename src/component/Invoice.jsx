@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Download, Pencil, Plus, X } from "lucide-react";
+import { Download, Edit, Eye, Pencil, Plus, X } from "lucide-react";
 import { API_URL } from "../config/api";
+import InvoicePDF from "./Invoicepdf";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
@@ -200,6 +201,9 @@ const handleCustomerSelect = (customer) => {
 };
 
 
+const [previewInvoice, setPreviewInvoice] = useState(null);
+
+
 const handleSubmit = async () => {
   try {
     const payload = {
@@ -383,6 +387,45 @@ const handleSubmit = async () => {
   >
     <Download size={14} />
   </button>
+ <button
+  onClick={() => setPreviewInvoice(inv)}
+  className="text-blue-600 underline"
+>
+  <Eye size={14} />
+</button>
+   {previewInvoice && (
+  <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    {/* CARD */}
+    <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded-lg shadow-lg relative">
+      
+      {/* HEADER */}
+      <div className="flex justify-between items-center p-4 border-b sticky top-0 bg-white z-10">
+        <h2 className="text-lg font-bold">Invoice Preview</h2>
+        <div className="flex gap-3">
+          <button
+            onClick={() => window.print()}
+            className="bg-black text-white px-3 py-1 rounded"
+          >
+            Print
+          </button>
+          <button
+            onClick={() => setPreviewInvoice(null)}
+            className="text-red-600 font-bold text-xl"
+          >
+            ✕
+          </button>
+        </div>
+      </div>
+
+      {/* PDF CONTENT */}
+      <div className="p-4">
+        <InvoicePDF invoice={previewInvoice} />
+      </div>
+    </div>
+  </div>
+)}
+
+
 </td>
 
               </tr>
@@ -716,7 +759,8 @@ const handleSubmit = async () => {
         </div>
       )}
     </div>
-    
+
+
   );
 };
 

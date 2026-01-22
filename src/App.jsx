@@ -152,6 +152,7 @@ import ProfitLoss from './component/P&L.jsx';
 import WarehouseDetails from './component/WarehouseDetails.jsx';
 import PurchaseInvoicePage from './component/Purchaseinvoice.jsx';
 import Login from './component/Login.jsx';
+import ViewInvoice from './component/ViewInvoice.jsx';
 
 function App() {
   const location = useLocation();
@@ -181,6 +182,7 @@ function App() {
 
                 {/* Billing */}
                 <Route path="/billing/invoices" element={<Invoice />} />
+                <Route path="/invoices/view/:id" element={<ViewInvoice />} />
                 <Route path="/billing/purchase-invoices" element={<PurchaseInvoicePage />} />
                 <Route path="/billing/quotations" element={<Quotation />} />
                 <Route path="/billing/ledgers" element={<Ledger />} />
