@@ -178,7 +178,7 @@ const Login = () => {
               <p
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute cursor-pointerright-3 top-9 text-gray-500"
+                className="absolute cursor-pointer right-3 top-9 text-gray-500"
               >
                 {showPassword ? "🙈" : "👁️"}
               </p>
