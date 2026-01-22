@@ -16,7 +16,7 @@ const ViewInvoice = () => {
 
   const fetchInvoice = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/api/invoices/${id}`);
+      const res = await axios.get(`https://aevix-chemical-xctw.onrender.com/api/invoices/${id}`);
       setInvoice(res.data);
     } catch (err) {
       alert("Failed to load invoice");

@@ -254,7 +254,7 @@ const [profileData, setProfileData] = useState({
           {/* Notifications Button - Now consistent */}
           <p
             onClick={() => setShowNotificationsPopup(true)}
-            className={`${ICON_BUTTON_BASE_CLASS} bg-white relative ${getHoverClass()}`}
+            className={`${ICON_BUTTON_BASE_CLASS} bg-white relative cursor-pointer ${getHoverClass()}`}
             title="Notifications"
           >
             <Bell size={24} className="text-gray-700" />
