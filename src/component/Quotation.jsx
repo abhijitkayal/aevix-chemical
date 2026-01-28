@@ -35,7 +35,7 @@ export default function Quotation() {
 
   const fetchQuotations = async () => {
     const res = await axios.get(
-      "https://aevix-chemical-4-9p3j.onrender.com/api/quotations"
+      "http://localhost:5000/api/quotations"
     );
     setQuotations(res.data);
   };
@@ -67,7 +67,7 @@ export default function Quotation() {
     }
 
     const res = await axios.get(
-      `https://aevix-chemical-4-9p3j.onrender.com/api/leads?search=${query}`
+      `http://localhost:5000/api/leads?search=${query}`
     );
 
     setCustomerSuggestions(res.data);
@@ -122,7 +122,7 @@ export default function Quotation() {
 
   const submitQuotation = async () => {
     await axios.post(
-      "https://aevix-chemical-4-9p3j.onrender.com/api/quotations",
+      "http://localhost:5000/api/quotations",
       form
     );
 

@@ -45,7 +45,7 @@ const [supplyType, setSupplyType] = useState("Outward");
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const saveChallan = async () => {
-    await axios.post("https://aevix-chemical-4-9p3j.onrender.com/api/delivery-challan", form);
+    await axios.post("http://localhost:5000/api/delivery-challan", form);
     setOpen(false);
     fetchData();
   };
@@ -64,7 +64,7 @@ const filteredData = data.filter((dc) => {
 });
 
   const fetchData = async () => {
-    const res = await axios.get("https://aevix-chemical-4-9p3j.onrender.com/api/delivery-challan");
+    const res = await axios.get("http://localhost:5000/api/delivery-challan");
     setData(res.data);
   };
 

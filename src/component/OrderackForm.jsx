@@ -85,7 +85,7 @@ export default function OrderAckForm({ onClose, onSuccess }) {
       delete dataToSend.product; // Remove product field
       
       console.log("Sending data:", dataToSend);
-      const response = await axios.post("https://aevix-chemical-4-9p3j.onrender.com/api/order-acknowledgements", dataToSend);
+      const response = await axios.post("http://localhost:5000/api/order-acknowledgements", dataToSend);
       console.log("Response:", response.data);
       onSuccess();
       onClose();

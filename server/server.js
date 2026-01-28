@@ -34,7 +34,7 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   process.env.FRONTEND_URL || 'https://aevix-chemical-frontend-theta.vercel.app',
-  'https://aevix-chemical-4-9p3j.onrender.com',
+  'http://localhost:5000',
 ];
 
 const corsOptions = {
