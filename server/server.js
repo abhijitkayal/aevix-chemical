@@ -30,19 +30,31 @@ import profileRoutes from './routes/ProfileRoutes.js';
 import batchRoutes from './routes/BatchRoutes.js';
 const app = express();
 
-// Configure CORS to allow Vercel frontend
+// Configure CORS to allow Vercel frontend and other trusted origins
+const allowedOrigins = [
+  'http://localhost:5173',
+  process.env.FRONTEND_URL || 'https://aevix-chemical.vercel.app',
+  'https://aevix-chemical-4-9p3j.onrender.com',
+];
+
 const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'https://aevix-chemical-4-9p3j.onrender.com',
-    'https://aevix-chemical.vercel.app', // Replace with your actual Vercel domain
-    /\.vercel\.app$/, // Allow all Vercel preview deployments
-  ],
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g., mobile apps, curl)
+    if (!origin) return callback(null, true);
+    // Allow explicit allowed origins
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    // Allow any Vercel preview deployment (ends with .vercel.app)
+    if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+    // Otherwise, block
+    return callback(new Error('CORS policy: origin not allowed'), false);
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
 };
 
+// Apply CORS and also handle preflight explicitly
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json());
 
 mongoose

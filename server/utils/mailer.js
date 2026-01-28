@@ -20,9 +20,9 @@
 import nodemailer from 'nodemailer';
 
 // Use environment variables for SMTP configuration. On Render set these in service settings.
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = process.env.SMTP_PORT ? Number(process.env.SMTP_PORT) : 587;
-const SMTP_SECURE = (process.env.SMTP_SECURE === 'true') || SMTP_PORT === 465;
+const SMTP_HOST = "smtp.gmail.com";
+const SMTP_PORT = 587;
+const SMTP_SECURE = false;
 const EMAIL_USER = "kayalabhi04@gmail.com";
 const EMAIL_PASS = "gigigoplfivuedrt";
 
