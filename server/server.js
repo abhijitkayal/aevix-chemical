@@ -33,7 +33,7 @@ const app = express();
 // Configure CORS to allow Vercel frontend and other trusted origins
 const allowedOrigins = [
   'http://localhost:5173',
-  process.env.FRONTEND_URL || 'https://aevix-chemical.vercel.app',
+  process.env.FRONTEND_URL || 'https://aevix-chemical-frontend-theta.vercel.app',
   'https://aevix-chemical-4-9p3j.onrender.com',
 ];
 
@@ -54,8 +54,9 @@ const corsOptions = {
 
 // Apply CORS and also handle preflight explicitly
 app.use(cors(corsOptions));
-// Use `/*` instead of `*` because path-to-regexp (used by Express) rejects bare `*` in newer versions
-app.options('/*', cors(corsOptions));
+// Use a RegExp path for OPTIONS to avoid path-to-regexp errors with '*' or '/*'
+app.use(cors());
+
 app.use(express.json());
 
 mongoose
