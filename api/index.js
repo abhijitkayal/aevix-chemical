@@ -69,20 +69,8 @@ app.use("/api/order-acknowledgements", OrderAcknowledgement);
 app.use("/api/clients", clientRoutes);
 app.use("/api/sales", saleRoutes);
 
-// Health check for Vercel routing (works even when /api/* is rewritten to this handler)
-app.get('/api/health', (req, res) => {
-  console.log('[health] handler invoked', req.method, req.url);
-  res.status(200).json({ ok: true, message: 'API is reachable', path: req.url });
-});
-
 // Export for Vercel serverless
 export default async function handler(req, res) {
-  console.log('[vercel] handler invoked', req.method, req.url);
-  try {
-    await connectToDatabase();
-    return app(req, res);
-  } catch (err) {
-    console.error('[vercel] handler error', err);
-    res.status(500).json({ message: 'Server error', error: err.message });
-  }
+  await connectToDatabase();
+  return app(req, res);
 }
