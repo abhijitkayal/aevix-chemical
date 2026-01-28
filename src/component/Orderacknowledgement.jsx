@@ -458,8 +458,10 @@ export default function OrderAcknowledgement() {
       </div>
 
       {/* PDF CONTENT */}
-      <div className="justify-center items-center">
-        <OrderAckPDF oa={selectedOA} />
+      <div className="flex justify-center items-center">
+        <div className="w-full flex justify-center">
+          <OrderAckPDF oa={selectedOA} />
+        </div>
       </div>
     </div>
   </div>

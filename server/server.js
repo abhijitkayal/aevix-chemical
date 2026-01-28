@@ -1,10 +1,8 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
-import dotenv from 'dotenv';
-
-// Load environment variables from .env when running locally
-dotenv.config();
+// Load environment variables from project root before other modules
+import './loadEnv.js';
 import warehouseRoutes from "./routes/WarehouseRoutes.js";
 import invoiceRoutes from "./routes/InvoiceRoutes.js";
 import productRoutes from "./routes/ProductRoutes.js";
