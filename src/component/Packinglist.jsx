@@ -403,13 +403,13 @@ export default function Packinglist() {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const savePacking = async () => {
-    await axios.post("http://localhost:5000/api/packing-list", form);
+    await axios.post("https://aevix-chemical-3-gnuu.onrender.com/api/packing-list", form);
     setOpen(false);
     fetchData();
   };
 
   const fetchData = async () => {
-    const res = await axios.get("http://localhost:5000/api/packing-list");
+    const res = await axios.get("https://aevix-chemical-3-gnuu.onrender.com/api/packing-list");
     setLists(res.data);
   };
 

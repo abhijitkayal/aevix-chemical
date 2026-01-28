@@ -718,7 +718,7 @@ const User = () => {
   /* ================= FETCH USERS ================= */
   const fetchUsers = async () => {
     const res = await axios.get(
-      "http://localhost:5000/api/users"
+      "https://aevix-chemical-3-gnuu.onrender.com/api/users"
     );
     setUsers(res.data);
   };

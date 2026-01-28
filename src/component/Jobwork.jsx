@@ -707,7 +707,7 @@ export default function Jobwork() {
   const [search, setSearch] = useState("");
 
   const fetchJobs = async () => {
-    const res = await axios.get("http://localhost:5000/api/jobworks");
+    const res = await axios.get("https://aevix-chemical-3-gnuu.onrender.com/api/jobworks");
     setJobWorks(res.data.data || []);
   };
 

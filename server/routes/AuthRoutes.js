@@ -162,8 +162,14 @@ router.post("/login", async (req, res) => {
         `,
       });
     } catch (mailErr) {
-      console.error('sendMail error:', mailErr);
-      return res.status(500).json({ message: 'Failed to send OTP email', error: mailErr.message });
+      // Log detailed error info for hosting provider logs (do not leak sensitive info to clients)
+      console.error('sendMail error: ', {
+        message: mailErr && mailErr.message,
+        code: mailErr && mailErr.code,
+        response: mailErr && mailErr.response,
+        stack: mailErr && mailErr.stack,
+      });
+      return res.status(500).json({ message: 'Failed to send OTP email', error: mailErr && mailErr.message ? mailErr.message : 'Unknown error' });
     }
 
     res.json({

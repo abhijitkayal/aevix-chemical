@@ -20,12 +20,12 @@ const Batch = () => {
   }, []);
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("http://localhost:5000/api/warehouses");
+    const res = await axios.get("https://aevix-chemical-3-gnuu.onrender.com/api/warehouses");
     setWarehouses(res.data);
   };
 
   const fetchBatches = async () => {
-    const res = await axios.get("http://localhost:5000/api/batches");
+    const res = await axios.get("https://aevix-chemical-3-gnuu.onrender.com/api/batches");
     setBatches(res.data);
   };
 
@@ -49,7 +49,7 @@ const Batch = () => {
   /* ================= SUBMIT ================= */
   const handleSubmit = async () => {
     try {
-      await axios.post("http://localhost:5000/api/batches", form);
+      await axios.post("https://aevix-chemical-3-gnuu.onrender.com/api/batches", form);
       alert("Batch created & stock updated");
 
       setForm({

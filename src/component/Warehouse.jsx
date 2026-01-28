@@ -27,8 +27,8 @@
 //     price: "",
 //   });
 
-//   const WAREHOUSE_API = "http://localhost:5000/api/warehouses";
-//   const PRODUCT_API = "http://localhost:5000/api/products";
+//   const WAREHOUSE_API = "https://aevix-chemical-3-gnuu.onrender.com/api/warehouses";
+//   const PRODUCT_API = "https://aevix-chemical-3-gnuu.onrender.com/api/products";
 
 //   /* -------------------- FETCH -------------------- */
 //   const fetchWarehouses = async () => {
@@ -331,7 +331,7 @@ export default function Warehouses() {
   /* ---------------- FETCH WAREHOUSES ---------------- */
   const fetchWarehouses = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/warehouses");
+      const res = await axios.get("https://aevix-chemical-3-gnuu.onrender.com/api/warehouses");
       setWarehouses(res.data);
     } catch (err) {
       console.error("Failed to fetch warehouses", err);
@@ -359,7 +359,7 @@ export default function Warehouses() {
     }
 
     try {
-      await axios.post("http://localhost:5000/api/warehouses", {
+      await axios.post("https://aevix-chemical-3-gnuu.onrender.com/api/warehouses", {
         warehouse: form.warehouse,
         location: form.location,
         totalItems: Number(form.totalItems),
