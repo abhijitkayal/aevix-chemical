@@ -54,7 +54,8 @@ const corsOptions = {
 
 // Apply CORS and also handle preflight explicitly
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+// Use `/*` instead of `*` because path-to-regexp (used by Express) rejects bare `*` in newer versions
+app.options('/*', cors(corsOptions));
 app.use(express.json());
 
 mongoose
