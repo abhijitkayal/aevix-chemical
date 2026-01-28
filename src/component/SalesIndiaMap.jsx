@@ -27,7 +27,7 @@ const SalesIndiaMap = () => {
   const [least, setLeast] = useState([]);
 
   useEffect(() => {
-    axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/sales').then((res) => {
+    axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/sales').then((res) => {
       const grouped = groupSalesByState(res.data);
 
       const sorted = Object.entries(grouped)

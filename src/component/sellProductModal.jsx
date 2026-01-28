@@ -36,7 +36,7 @@ const SellProductModal = ({ onClose }) => {
     setLoading(true);
 
     try {
-      await axios.post('https://aevix-chemical-3-gnuu.onrender.com/api/sales', {
+      await axios.post('https://aevix-chemical-4-9p3j.onrender.com/api/sales', {
         ...form,
         quantity: Number(form.quantity)
       });

@@ -830,7 +830,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "lucide-react";
 
-const API = "https://aevix-chemical-3-gnuu.onrender.com/api/credit-notes";
+const API = "https://aevix-chemical-4-9p3j.onrender.com/api/credit-notes";
 
 export default function CreditNote() {
   const [notes, setNotes] = useState([]);

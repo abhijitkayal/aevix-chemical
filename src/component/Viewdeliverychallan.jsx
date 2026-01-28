@@ -21,7 +21,7 @@ const handleDownloadPDF = () => {
 
   const fetchChallan = async () => {
     const res = await axios.get(
-      `https://aevix-chemical-3-gnuu.onrender.com/api/delivery-challan/${id}`
+      `https://aevix-chemical-4-9p3j.onrender.com/api/delivery-challan/${id}`
     );
     setDc(res.data);
     console.log(res.data);

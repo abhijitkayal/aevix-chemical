@@ -26,7 +26,7 @@
 //      Fetch clients
 //   ====================== */
 //   const fetchClients = async () => {
-//     const res = await axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/clients');
+//     const res = await axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/clients');
 //     setClients(res.data);
 //   };
 
@@ -35,7 +35,7 @@
 //   ====================== */
 //   const fetchInvoices = async () => {
 //     try {
-//       const res = await axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/invoices');
+//       const res = await axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/invoices');
 //       setInvoices(res.data);
 //     } catch (err) {
 //       console.error('Failed to fetch invoices:', err);
@@ -77,13 +77,13 @@
 //       if (form._id) {
 //         // UPDATE
 //         await axios.put(
-//           `https://aevix-chemical-3-gnuu.onrender.com/api/clients/${form._id}`,
+//           `https://aevix-chemical-4-9p3j.onrender.com/api/clients/${form._id}`,
 //           form
 //         );
 //       } else {
 //         // CREATE
 //         await axios.post(
-//           'https://aevix-chemical-3-gnuu.onrender.com/api/clients',
+//           'https://aevix-chemical-4-9p3j.onrender.com/api/clients',
 //           form
 //         );
 //       }
@@ -115,7 +115,7 @@
 
 //     try {
 //       await axios.delete(
-//         `https://aevix-chemical-3-gnuu.onrender.com/api/clients/${id}`
+//         `https://aevix-chemical-4-9p3j.onrender.com/api/clients/${id}`
 //       );
 //       fetchClients();
 //     } catch (err) {
@@ -537,7 +537,7 @@ const Ledger = () => {
     }
 
     const res = await axios.get(
-      `https://aevix-chemical-3-gnuu.onrender.com/api/leads?search=${q}`
+      `https://aevix-chemical-4-9p3j.onrender.com/api/leads?search=${q}`
     );
     setSuggestions(res.data);
   };
@@ -549,7 +549,7 @@ const Ledger = () => {
     setLoading(true);
     try {
       const res = await axios.get(
-        "https://aevix-chemical-3-gnuu.onrender.com/api/invoices/ledger",
+        "https://aevix-chemical-4-9p3j.onrender.com/api/invoices/ledger",
         {
           params: {
             customer,

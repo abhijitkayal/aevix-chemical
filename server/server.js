@@ -34,7 +34,7 @@ const app = express();
 const corsOptions = {
   origin: [
     'http://localhost:5173',
-    'https://aevix-chemical-3-gnuu.onrender.com',
+    'https://aevix-chemical-4-9p3j.onrender.com',
     'https://aevix-chemical.vercel.app', // Replace with your actual Vercel domain
     /\.vercel\.app$/, // Allow all Vercel preview deployments
   ],

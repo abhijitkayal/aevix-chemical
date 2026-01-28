@@ -58,7 +58,7 @@ Each notification includes:
 
 The system expects the Stock API endpoint:
 ```
-GET https://aevix-chemical-3-gnuu.onrender.com/api/stock
+GET https://aevix-chemical-4-9p3j.onrender.com/api/stock
 ```
 
 Response should include:

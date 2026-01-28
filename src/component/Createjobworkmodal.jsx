@@ -23,7 +23,7 @@ export default function CreateJobWorkModal({ onClose, onSuccess }) {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const submit = async () => {
-    await axios.post("https://aevix-chemical-3-gnuu.onrender.com/api/jobworks", form);
+    await axios.post("https://aevix-chemical-4-9p3j.onrender.com/api/jobworks", form);
     onSuccess();
     onClose();
   };

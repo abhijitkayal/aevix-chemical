@@ -75,8 +75,8 @@ export const NotificationProvider = ({ children }) => {
 
       // Fetch clients and invoices
       const [clientsRes, invoicesRes] = await Promise.all([
-        axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/clients'),
-        axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/invoices')
+        axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/clients'),
+        axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/invoices')
       ]);
 
       const clients = clientsRes.data;

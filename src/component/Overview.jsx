@@ -158,9 +158,9 @@
 //     const fetchAll = async () => {
 //       try {
 //         const [inwardRes, outwardRes, inventoryRes] = await Promise.all([
-//           axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/inward-payments'),
-//           axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/outward-payments'),
-//           axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/stocks')
+//           axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/inward-payments'),
+//           axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/outward-payments'),
+//           axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/stocks')
 //         ]);
 
 //         setInward(calculatePaymentTotals(inwardRes.data));
@@ -400,10 +400,10 @@ const Overview = () => {
           inventoryRes,
           salesRes
         ] = await Promise.all([
-          axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/inward-payments'),
-          axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/outward-payments'),
-          axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/stocks'),
-          axios.get('https://aevix-chemical-3-gnuu.onrender.com/api/sales')
+          axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/inward-payments'),
+          axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/outward-payments'),
+          axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/stocks'),
+          axios.get('https://aevix-chemical-4-9p3j.onrender.com/api/sales')
         ]);
 
         setInward(calculatePaymentTotals(inwardRes.data));

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { ArrowUpCircle, Plus, Eye } from "lucide-react";
 
-const API_URL = "https://aevix-chemical-3-gnuu.onrender.com/api/outward-payments";
+const API_URL = "https://aevix-chemical-4-9p3j.onrender.com/api/outward-payments";
 
 const OutwardPayment = () => {
   const [payments, setPayments] = useState([]);
@@ -123,7 +123,7 @@ const OutwardPayment = () => {
                 <td className="p-3">
                   {p.attachment ? (
                     <a
-                      href={`https://aevix-chemical-3-gnuu.onrender.com/uploads/${p.attachment}`}
+                      href={`https://aevix-chemical-4-9p3j.onrender.com/uploads/${p.attachment}`}
                       target="_blank"
                       rel="noreferrer"
                       className="text-blue-600 underline text-sm"
