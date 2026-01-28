@@ -30,7 +30,7 @@ const filteredSales = sales.filter((sale) => {
   const fetchSales = async () => {
     try {
       setLoading(true);
-      const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/sales');
+      const res = await axios.get('http://localhost:5000/api/sales');
       setSales(res.data);
     } catch (error) {
       console.error('Failed to fetch sales', error);

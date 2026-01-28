@@ -158,9 +158,9 @@
 //     const fetchAll = async () => {
 //       try {
 //         const [inwardRes, outwardRes, inventoryRes] = await Promise.all([
-//           axios.get('https://aevix-chemical-xctw.onrender.com/api/inward-payments'),
-//           axios.get('https://aevix-chemical-xctw.onrender.com/api/outward-payments'),
-//           axios.get('https://aevix-chemical-xctw.onrender.com/api/stocks')
+//           axios.get('http://localhost:5000/api/inward-payments'),
+//           axios.get('http://localhost:5000/api/outward-payments'),
+//           axios.get('http://localhost:5000/api/stocks')
 //         ]);
 
 //         setInward(calculatePaymentTotals(inwardRes.data));
@@ -400,10 +400,10 @@ const Overview = () => {
           inventoryRes,
           salesRes
         ] = await Promise.all([
-          axios.get('https://aevix-chemical-xctw.onrender.com/api/inward-payments'),
-          axios.get('https://aevix-chemical-xctw.onrender.com/api/outward-payments'),
-          axios.get('https://aevix-chemical-xctw.onrender.com/api/stocks'),
-          axios.get('https://aevix-chemical-xctw.onrender.com/api/sales')
+          axios.get('http://localhost:5000/api/inward-payments'),
+          axios.get('http://localhost:5000/api/outward-payments'),
+          axios.get('http://localhost:5000/api/stocks'),
+          axios.get('http://localhost:5000/api/sales')
         ]);
 
         setInward(calculatePaymentTotals(inwardRes.data));

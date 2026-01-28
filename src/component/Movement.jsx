@@ -567,12 +567,12 @@ export default function Movement() {
 
   /* FETCH */
   const fetchMovements = async () => {
-    const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/movements");
+    const res = await axios.get("http://localhost:5000/api/movements");
     setMovements(res.data);
   };
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/warehouses");
+    const res = await axios.get("http://localhost:5000/api/warehouses");
     setWarehouses(res.data);
   };
 
@@ -588,7 +588,7 @@ export default function Movement() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://aevix-chemical-xctw.onrender.com/api/movements", form);
+      await axios.post("http://localhost:5000/api/movements", form);
       setShowModal(false);
       fetchMovements();
       setForm({

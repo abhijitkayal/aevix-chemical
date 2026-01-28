@@ -26,7 +26,7 @@
 //      Fetch clients
 //   ====================== */
 //   const fetchClients = async () => {
-//     const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/clients');
+//     const res = await axios.get('http://localhost:5000/api/clients');
 //     setClients(res.data);
 //   };
 
@@ -35,7 +35,7 @@
 //   ====================== */
 //   const fetchInvoices = async () => {
 //     try {
-//       const res = await axios.get('https://aevix-chemical-xctw.onrender.com/api/invoices');
+//       const res = await axios.get('http://localhost:5000/api/invoices');
 //       setInvoices(res.data);
 //     } catch (err) {
 //       console.error('Failed to fetch invoices:', err);
@@ -77,13 +77,13 @@
 //       if (form._id) {
 //         // UPDATE
 //         await axios.put(
-//           `https://aevix-chemical-xctw.onrender.com/api/clients/${form._id}`,
+//           `http://localhost:5000/api/clients/${form._id}`,
 //           form
 //         );
 //       } else {
 //         // CREATE
 //         await axios.post(
-//           'https://aevix-chemical-xctw.onrender.com/api/clients',
+//           'http://localhost:5000/api/clients',
 //           form
 //         );
 //       }
@@ -115,7 +115,7 @@
 
 //     try {
 //       await axios.delete(
-//         `https://aevix-chemical-xctw.onrender.com/api/clients/${id}`
+//         `http://localhost:5000/api/clients/${id}`
 //       );
 //       fetchClients();
 //     } catch (err) {

@@ -175,7 +175,7 @@
 
 // //   /* FETCH LEADS */
 // //   const fetchLeads = async () => {
-// //     const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/leads");
+// //     const res = await axios.get("http://localhost:5000/api/leads");
 // //     setLeads(res.data);
 // //   };
 
@@ -189,7 +189,7 @@
 
 // //   const handleSubmit = async (e) => {
 // //     e.preventDefault();
-// //     await axios.post("https://aevix-chemical-xctw.onrender.com/api/leads", form);
+// //     await axios.post("http://localhost:5000/api/leads", form);
 // //     setShowModal(false);
 // //     setForm({
 // //       name: "",

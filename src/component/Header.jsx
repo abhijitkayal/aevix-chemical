@@ -161,7 +161,7 @@ const [profileData, setProfileData] = useState({
       }
 
       const res = await axios.get(
-        `https://aevix-chemical-xctw.onrender.com/api/profile/${email}`
+        `http://localhost:5000/api/profile/${email}`
       );
 
       setProfileData({
