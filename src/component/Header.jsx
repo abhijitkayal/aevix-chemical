@@ -312,7 +312,18 @@ const [profileData, setProfileData] = useState({
                     </div>
                     <button
                         className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        onClick={() => { alert("Logging out..."); window.location.href = "/"; }}
+                        onClick={() => {
+                          // Clear stored user data and notify other components
+                          localStorage.removeItem('user');
+                          localStorage.removeItem('loginEmail');
+                          try {
+                            window.dispatchEvent(new CustomEvent('user:logout'));
+                          } catch (e) {
+                            // ignore
+                          }
+                          alert('Logging out...');
+                          window.location.href = "/";
+                        }}
                     >
                         Logout
                     </button>

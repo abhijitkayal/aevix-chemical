@@ -1,7 +1,8 @@
 // Sidebar.jsx - Navigation component with React Router DOM
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import axios from 'axios';
 import {
   LayoutDashboard,
   PieChart,
@@ -13,7 +14,7 @@ import {
 } from "lucide-react";
 
 // Sidebar configuration with routes
-const tabs = [
+const baseTabs = [
   {
     name: "Dashboard",
     icon: LayoutDashboard,
@@ -86,10 +87,126 @@ const tabs = [
   },
 ];
 
+// Filter tabs based on the logged-in user's role
+function computeVisibleTabs(role) {
+  if (!role) return baseTabs;
+
+  const lower = String(role).toLowerCase();
+  const isAdmin = lower.includes("admin");
+  const isManager = lower.includes("manager");
+
+  if (isAdmin) return baseTabs;
+
+  if (isManager) {
+    // Managers see only Dashboard and Billing (restricted to Invoices & Proforma)
+    return baseTabs
+      .filter((tab) => ["Dashboard", "Billing"].includes(tab.name))
+      .map((tab) => {
+        if (tab.name === "Billing") {
+          return {
+            ...tab,
+            subtabs: tab.subtabs.filter((s) => ["Invoices","Quotations", "Proforma","Order Acknowledgement","Delivery Challan"].includes(s.name)),
+          };
+        }
+        return tab;
+      });
+  }
+
+  // Default: return all tabs
+  return baseTabs;
+}
+
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [openTabs, setOpenTabs] = useState([0]); // Start with Dashboard open
+  const user = JSON.parse(localStorage.getItem("user"));
+
+
+
+  // Track role reactively (updates on login/logout) and compute visible tabs
+  const [role, setRole] = useState("");
+  useEffect(() => {
+    // Helper to fetch role from server using saved login email
+    const fetchRoleFromServer = async (email) => {
+      if (!email) return;
+      try {
+        const res = await axios.get(`/api/profile/${email}`);
+        console.log('Sidebar: fetched profile response', res.data);
+        setRole(res.data.role || "");
+        
+        // console.log("log",res.data);
+      } catch (err) {
+        console.log('Sidebar: failed to fetch profile, falling back to local user', err?.message || err);
+        // Fallback: try reading local user object if server fails
+        try {
+          const u = JSON.parse(localStorage.getItem("user") || "null");
+          console.log('Sidebar: fallback user object', u);
+          setRole(u?.role || "");
+        } catch (e) {
+          setRole("");
+        }
+      }
+    };
+
+    const readAndFetch = () => {
+      const email = localStorage.getItem("loginEmail");
+      if (email) fetchRoleFromServer(email);
+      else {
+        // Fallback to user object
+        try {
+          const u = JSON.parse(localStorage.getItem("user") || "null");
+          setRole(u?.role || "");
+        } catch (e) {
+          setRole("");
+        }
+      }
+    };
+
+    readAndFetch();
+
+    // Listen for changes via localStorage events
+    const onStorage = (e) => {
+      if (e.key === "loginEmail" || e.key === "user") readAndFetch();
+    };
+
+    // Listen for explicit login/logout events dispatched by Login/Header
+    const onUserLogin = (e) => {
+      const u = e?.detail;
+      console.log('Sidebar: user:login event received', u);
+      if (u?.role) {
+        console.log('Sidebar: using role from login event:', u.role);
+        setRole(u.role);
+        console.log(role);
+      } else if (u?.email) {
+        console.log('Sidebar: no role in login event, fetching role for', u.email);
+        fetchRoleFromServer(u.email);
+      }
+    };
+    const onUserLogout = () => {
+      console.log('Sidebar: user:logout event received');
+      setRole("");
+    };
+
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("user:login", onUserLogin);
+    window.addEventListener("user:logout", onUserLogout);
+
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("user:login", onUserLogin);
+      window.removeEventListener("user:logout", onUserLogout);
+    };
+  }, []);
+const role1 = user?.role;
+
+console.log("User role:", role1);
+  const tabs = computeVisibleTabs(role1);
+
+  // Log role changes for debugging
+  useEffect(() => {
+    console.log('Sidebar: role state changed ->', role);
+  }, [role]);
 
   const toggleTab = (index) => {
     setOpenTabs((prev) =>

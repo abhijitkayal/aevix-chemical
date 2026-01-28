@@ -601,7 +601,7 @@ const handleSubmit = async () => {
           <div className="gap-3 grid grid-cols-2 ">
             <input
               name="address"
-              placeholder="Address"
+              placeholder="Billing Address"
               className="input border-2 rounded mt-3 px-2 py-2"
               onChange={handleChange}
               value={form.address}
@@ -620,23 +620,26 @@ const handleSubmit = async () => {
               <input
                 name="bankName"
                 placeholder="Bank Name"
-                className="input border-2 rounded px-2 py-2"
+                className="input border-2 cursor-no-drop rounded px-2 py-2"
                 onChange={handleChange}
-                value={form.bankName}
+                disabled
+                value=" State Bank Of India"
               />
               <input
                 name="bankAccount"
                 placeholder="Account No"
-                className="input border-2 rounded px-2 py-2"
+                className="input border-2 cursor-no-droprounded px-2 py-2"
                 onChange={handleChange}
-                value={form.bankAccount}
+                disabled
+                value="43320503750"
               />
               <input
                 name="ifsc"
                 placeholder="IFSC"
-                className="input border-2 rounded px-2 py-2"
+                className="input border-2 cursor-no-drop rounded px-2 py-2"
                 onChange={handleChange}
-                value={form.ifsc}
+                disabled
+                value="SBIN0015197"
               />
             </div>
 
@@ -731,7 +734,7 @@ const handleSubmit = async () => {
 
     <input
       name="shippingDetails.netWeight"
-      placeholder="Net Weight"
+      placeholder="Shipping address"
       className="border px-3 py-2 rounded"
       onChange={handleChange}
       value={form.shippingDetails.netWeight}

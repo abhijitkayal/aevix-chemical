@@ -342,3 +342,34 @@ button:focus-visible {
   border-top: 1px solid #000;
   padding-top: 5px;
 }
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  /* Hide everything */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only printable content */
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide buttons */
+  button {
+    display: none !important;
+  }
+}
+
+

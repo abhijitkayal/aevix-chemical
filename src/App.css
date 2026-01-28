@@ -41,3 +41,37 @@
 .read-the-docs {
   color: #888;
 }
+@media print {
+  html,
+  body {
+    background: white !important;
+  }
+
+  body * {
+    display: none;
+  }
+
+  .print-area,
+  .print-area * {
+    display: block;
+  }
+
+  .print-area {
+    position: static;
+    width: 100%;
+  }
+
+  .bg-black,
+  .bg-black\/60,
+  .bg-gray-800,
+  .bg-gray-900 {
+    background: transparent !important;
+  }
+
+  .fixed,
+  .overlay,
+  .modal-backdrop {
+    display: none !important;
+  }
+}
+

@@ -14,18 +14,18 @@ const OrderAckPDF = forwardRef(({ oa }, ref) => {
         <tbody>
           <tr>
             <td className="border border-black p-2 w-1/2 align-top">
-              <p><b>Supplier Name</b></p>
-              <p>{oa.supplier.name}</p>
-              <p className="mt-2"><b>Address</b></p>
-              <p>{oa.supplier.address}</p>
-              <p className="mt-2"><b>Ship From</b></p>
-              <p>{oa.supplier.shipFrom}</p>
+              <p><b>Supplier Name : </b>{oa.supplier.name}</p>
+              {/* <p></p> */}
+              <p className="mt-2"><b>Address : </b>{oa.supplier.address}</p>
+              {/* <p</p> */}
+              <p className="mt-2"><b>Ship From :</b> {oa.supplier.shipFrom}</p>
+              
             </td>
 
             <td className="border border-black p-2 w-1/2 align-top">
-              <p><b>OA Number & Date</b></p>
-              <p>{oa.oaNumber} / {oa.oaDate}</p>
-              <p className="mt-1"><b>Shipping:</b> {oa.shippingDetails.type}</p>
+              <p><b>OA Number & Date :</b> {oa.oaNumber} / {oa.oaDate}</p>
+              {/* <p></p> */}
+              <p className="mt-1"><b>Shipping:</b> {oa.shippingAddress}</p>
               <p><b>Net Weight:</b> {oa.shippingDetails.netWeight}</p>
               <p><b>Gross Weight:</b> {oa.shippingDetails.grossWeight}</p>
               <p><b>Order Date:</b> {oa.shippingDetails.orderDate}</p>
@@ -36,17 +36,17 @@ const OrderAckPDF = forwardRef(({ oa }, ref) => {
 
           <tr>
             <td className="border border-black p-2 align-top">
-              <p><b>Buyer Name</b></p>
-              <p>{oa.buyer.name}</p>
-              <p className="mt-1"><b>Address</b></p>
-              <p>{oa.buyer.address}</p>
-              <p className="mt-1"><b>GST</b></p>
-              <p>{oa.buyer.gst}</p>
+              <p><b>Buyer Name : </b>{oa.buyer.name}</p>
+              {/* <p></p> */}
+              <p className="mt-1"><b>Address:</b>{oa.buyer.address}</p>
+              <p></p>
+              <p className="mt-1"><b>GST : </b>{oa.buyer.gst}</p>
+              <p></p>
             </td>
 
             <td className="border border-black p-2 align-top">
-              <p><b>Shipping Address</b></p>
-              <p>{oa.buyer.shippingAddress}</p>
+              <p><b>Shipping Address :</b> {oa.shippingAddress}</p>
+              {/* <p>{oa.buyer.shippingAddress}</p> */}
             </td>
           </tr>
         </tbody>

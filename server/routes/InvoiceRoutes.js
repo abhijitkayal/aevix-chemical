@@ -74,6 +74,38 @@ router.get("/:id/download", async (req, res) => {
   }
 });
 
+/* ================= CUSTOMER LEDGER ================= */
+router.get("/ledger", async (req, res) => {
+  try {
+    const { customer, from, to } = req.query;
+
+    if (!customer) {
+      return res.status(400).json({ message: "Customer is required" });
+    }
+
+    const filter = {
+      customer: { $regex: customer, $options: "i" }, // recommended search support
+    };
+
+    if (from || to) {
+      filter.date = {};
+      if (from) filter.date.$gte = new Date(from);
+      if (to) filter.date.$lte = new Date(to);
+    }
+
+    const invoices = await Invoice.find(filter).sort({ date: 1 });
+
+    res.json(invoices);
+  } catch (error) {
+    console.error("Ledger Error:", error);
+    res.status(500).json({
+      message: "Ledger fetch failed",
+      error: error.message,
+    });
+  }
+});
+
+
 router.get("/:id", async (req, res) => {
   try {
     const invoice = await Invoice.findById(req.params.id)
@@ -300,6 +332,90 @@ router.put("/:id", async (req, res) => {
     });
   }
 });
+/* ================= CUSTOMER LEDGER ================= */
+router.get("/ledger", async (req, res) => {
+  try {
+    const { customer } = req.query;
+
+    if (!customer) {
+      return res.status(400).json({ message: "Customer is required" });
+    }
+
+    // Trim and normalize incoming query params
+    const rawCustomer = (req.query.customer || "").trim();
+    const rawFrom = (req.query.from || "").trim();
+    const rawTo = (req.query.to || "").trim();
+
+    console.info("Ledger request:", { customer: rawCustomer, from: rawFrom, to: rawTo });
+
+    if (!rawCustomer) {
+      return res.status(400).json({ message: "Customer is required" });
+    }
+
+    // ✅ CONTAINS search (handles space, case, partial typing)
+    const filter = {
+      customer: { $regex: rawCustomer, $options: "i" },
+    };
+
+    // Only parse dates when non-empty
+    if (rawFrom || rawTo) {
+      const fromDate = rawFrom ? new Date(rawFrom) : null;
+      const toDate = rawTo ? new Date(rawTo) : null;
+
+      if ((rawFrom && isNaN(fromDate.getTime())) || (rawTo && isNaN(toDate.getTime()))) {
+        return res.status(400).json({ message: "Invalid date format for 'from' or 'to'. Use YYYY-MM-DD." });
+      }
+
+      if (fromDate) filter.date = { ...(filter.date || {}), $gte: fromDate };
+      if (toDate) {
+        toDate.setHours(23, 59, 59, 999);
+        filter.date = { ...(filter.date || {}), $lte: toDate };
+      }
+    }
+
+    console.debug("Ledger filter:", filter);
+
+    let invoices;
+    try {
+      invoices = await Invoice.find(filter).sort({ date: 1 }).lean();
+    } catch (dbErr) {
+      console.error("Ledger DB query error:", dbErr);
+      return res.status(500).json({ message: "Ledger DB query error", error: dbErr.message });
+    }
+
+    // Sanitize dates for the client to avoid mixed types
+    const sanitized = invoices.map((inv) => {
+      if (inv && inv.date) {
+        if (typeof inv.date === "string") {
+          const parsed = new Date(inv.date);
+          inv.date = isNaN(parsed.getTime()) ? inv.date : parsed.toISOString();
+        } else if (inv.date instanceof Date) {
+          inv.date = inv.date.toISOString();
+        }
+      }
+      return inv;
+    });
+
+    console.info(`Ledger: found ${sanitized.length} invoices`);
+
+    // Check serialization before sending (catches circular/unsupported values)
+    try {
+      JSON.stringify(sanitized);
+    } catch (serErr) {
+      console.error("Ledger serialization error:", serErr);
+      return res.status(500).json({ message: "Ledger serialization error", error: serErr.message });
+    }
+
+    res.json(sanitized);
+  } catch (error) {
+    console.error("Ledger Error:", error);
+    res.status(500).json({ message: "Ledger fetch failed" });
+  }
+});
+
+
+
+
 
 
 export default router;

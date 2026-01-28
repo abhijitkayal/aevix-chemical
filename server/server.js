@@ -1,6 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
+import dotenv from 'dotenv';
+
+// Load environment variables from .env when running locally
+dotenv.config();
 import warehouseRoutes from "./routes/WarehouseRoutes.js";
 import invoiceRoutes from "./routes/InvoiceRoutes.js";
 import productRoutes from "./routes/ProductRoutes.js";
@@ -25,6 +29,7 @@ import clientRoutes from './routes/ClientRoutes.js';
 import saleRoutes from './routes/SaleRoutes.js';
 import CommissionRoutes from './routes/CommissionRoutes.js';
 import profileRoutes from './routes/ProfileRoutes.js';
+import batchRoutes from './routes/BatchRoutes.js';
 const app = express();
 
 // Configure CORS to allow Vercel frontend
@@ -76,7 +81,7 @@ app.use("/api/clients", clientRoutes);
 app.use("/api/sales", saleRoutes);
 app.use("/api/commissions", CommissionRoutes);
 app.use("/api/profile", profileRoutes);
-
+app.use("/api/batches", batchRoutes);
 app.listen(5000, () => {
   console.log("Server running on port 5000");
 });

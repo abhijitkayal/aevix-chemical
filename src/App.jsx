@@ -153,6 +153,8 @@ import WarehouseDetails from './component/WarehouseDetails.jsx';
 import PurchaseInvoicePage from './component/Purchaseinvoice.jsx';
 import Login from './component/Login.jsx';
 import ViewInvoice from './component/ViewInvoice.jsx';
+import Batch from './component/Batch.jsx';
+   import ViewDeliveryChallan from "./component/Viewdeliverychallan.jsx";
 
 function App() {
   const location = useLocation();
@@ -189,6 +191,13 @@ function App() {
                 <Route path="/billing/reports" element={<Report />} />
                 <Route path="/billing/proforma" element={<Proforma />} />
                 <Route path="/billing/delivery-challan" element={<Deliverychalan />} />
+             
+
+<Route
+  path="/delivery-challan/view/:id"
+  element={<ViewDeliveryChallan />}
+/>
+
                 <Route path="/billing/order-acknowledgement" element={<Orderacknowledgement />} />
                 <Route path="/billing/packing-list" element={<Packinglist />} />
 
@@ -211,7 +220,8 @@ function App() {
                 <Route path="/accounting/credit-note" element={<Creditnote />} />
                 <Route path="/accounting/debit-note" element={<DebitNote />} />
                 <Route path="/accounting/agent-commission" element={<Agentcommition />} />
-                <Route path="/accounting/journal" element={<Journal />} />
+                {/* <Route path="/accounting/journal" element={<Journal />} /> */}
+                <Route path='/accounting/batch' element={<Batch/>}/>
                 <Route path="/accounting/trial-balance" element={<TrialBalance />} />
                 <Route path="/accounting/profit-loss" element={<ProfitLoss />} />
                 <Route path="/accounting/payment-reminder" element={<PaymentReminder />} />

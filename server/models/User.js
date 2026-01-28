@@ -8,6 +8,9 @@ const userSchema = new mongoose.Schema(
     role: String,
     employeeId: String,
     password: String, // plain password
+    // OTP fields for login flow
+    otp: String,
+    otpExpiry: Date,
   },
   { timestamps: true }
 );

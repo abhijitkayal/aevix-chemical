@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
+
 
 export default function Deliverychalan() {
   const [open, setOpen] = useState(false);
@@ -10,35 +13,39 @@ export default function Deliverychalan() {
   from: "",
   to: "",
 });
+const navigate = useNavigate();
 
 
-  const [form, setForm] = useState({
-    supplyType: "Outward",
-    customerName: "",
-    address: "",
-    contactPerson: "",
-    phone: "",
-    gstin: "",
-    reverseCharge: "No",
-    shippingSame: true,
-    placeOfSupply: "",
+const [form, setForm] = useState({
+  supplyType: "Outward",
+  customerName: "",
+  address: "",
+  shippingAddress: "",
+  state: "",
+  contactPerson: "",
+  phone: "",
+  gstin: "",
+  placeOfSupply: "",
 
-    type: "",
-    challanPrefix: "",
-    challanNo: "",
-    challanPostfix: "",
-    challanDate: "",
-    lrNo: "",
-    ewayNo: "",
-    ewayReason: "",
-    deliveryMode: "",
-  });
+  productName: "",
+  quantity: "",
+
+  challanPrefix: "",
+  challanNo: "",
+  challanPostfix: "",
+  challanDate: "",
+  lrNo: "",
+  ewayNo: "",
+  ewayReason: "",
+  deliveryMode: "",
+});
+
 const [supplyType, setSupplyType] = useState("Outward");
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const saveChallan = async () => {
-    await axios.post("https://aevix-chemical-xctw.onrender.com/api/delivery-challan", form);
+    await axios.post("http://localhost:5000/api/delivery-challan", form);
     setOpen(false);
     fetchData();
   };
@@ -57,7 +64,7 @@ const filteredData = data.filter((dc) => {
 });
 
   const fetchData = async () => {
-    const res = await axios.get("https://aevix-chemical-xctw.onrender.com/api/delivery-challan");
+    const res = await axios.get("http://localhost:5000/api/delivery-challan");
     setData(res.data);
   };
 
@@ -97,7 +104,7 @@ const filteredData = data.filter((dc) => {
 
   <button
     onClick={() => setDateFilter({ from: "", to: "" })}
-    className="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300"
+    className="bg-gray-200 px-4 py-2 rounded h-10 flex items-center justify-center text-sm hover:bg-gray-300"
   >
     Clear
   </button>
@@ -105,7 +112,7 @@ const filteredData = data.filter((dc) => {
 
         <button
           onClick={() => setOpen(true)}
-          className="bg-green-600 text-white px-4 py-2 rounded flex gap-2"
+          className="text-white px-4 py-2 mt-6 ml-5 rounded h-10 flex items-center gap-2 text-sm"
         >
           <Plus size={18} /> Create Delivery Challan
         </button>
@@ -152,6 +159,20 @@ const filteredData = data.filter((dc) => {
 
                 <input name="customerName" placeholder="M/S *" className="input w-full border-2 rounded px-2 py-2" onChange={handleChange} />
                 <textarea name="address" placeholder="Address" className="input w-full border-2 rounded px-2 py-2 mt-2" onChange={handleChange} />
+                <input
+  name="state"
+  placeholder="State"
+  className="input w-full border-2 rounded px-2 py-2 mt-2"
+  onChange={handleChange}
+/>
+
+<textarea
+  name="shippingAddress"
+  placeholder="Shipping Address"
+  className="input w-full border-2 rounded px-2 py-2 mt-2"
+  onChange={handleChange}
+/>
+
                 <div className="flex gap-3">
                 <input name="contactPerson" placeholder="Contact Person" className=" border-2 w-100 rounded px-2 py-2 input mt-2" onChange={handleChange} />
                 <input name="phone" placeholder="Phone No" className="  border-2 rounded px-2 w-100 py-2input mt-2" onChange={handleChange} />
@@ -182,6 +203,21 @@ const filteredData = data.filter((dc) => {
                 <div className="flex gap-2 mt-2">
                   <input name="challanPrefix" placeholder="Prefix" className="input w-1/3 border-2 rounded px-2 py-2" onChange={handleChange} />
                   <input name="challanNo" placeholder="Challan No *" className="input w-1/3 border-2 rounded px-2 py-2" onChange={handleChange} />
+                  <input
+  name="productName"
+  placeholder="Product Name"
+  className="input w-full border-2 rounded px-2 py-2 mt-2"
+  onChange={handleChange}
+/>
+
+<input
+  type="number"
+  name="quantity"
+  placeholder="Quantity"
+  className="input w-full border-2 rounded px-2 py-2 mt-2"
+  onChange={handleChange}
+/>
+
                   <input name="challanPostfix" placeholder="Postfix" className="input w-1/3 border-2 rounded px-2 py-2" onChange={handleChange} />
                 </div>
                   <div className="grid grid-cols-2 gap-3">
@@ -214,24 +250,59 @@ const filteredData = data.filter((dc) => {
       )}
 
       {/* LIST VIEW */}
-      {filteredData.map((dc) => (
-        <div key={dc._id} className="bg-white grid grid-cols-2 p-4 rounded shadow mb-4">
-          <div>
-            <h2 className="text-lg font-bold underline">Customer Details</h2>
-          <p><b>Address:</b>{dc.address}</p>
-          <p><b>Customer:</b> {dc.customerName}</p>
-          <p><b>Phone:</b> {dc.phone}</p>
-          <p><b>GST In:</b> {dc.gstin}</p>
-          </div>
-          <div>
-            <h2 className="text-lg underline font-bold">Delivery Challan Details</h2>
-          <p><b>Challan No:</b> {dc.challanPrefix}{dc.challanNo}{dc.challanPostfix}</p>
-          <p><b>LR No:</b> {dc.lrNo}</p>
-          <p><b>Date:</b> {dc.challanDate}</p>
-          <p><b>Delivery Mode:</b> {dc.deliveryMode}</p>
-          </div>
-        </div>
-      ))}
+      <table className="w-full border border-gray-300 rounded">
+  <thead className="bg-gray-100">
+    <tr>
+      <th className="border p-2 text-left">Customer</th>
+      <th className="border p-2 text-left">Address</th>
+      <th className="border p-2 text-left">Phone</th>
+      <th className="border p-2 text-left">GSTIN</th>
+      <th className="border p-2 text-left">Challan No</th>
+      <th className="border p-2 text-left">LR No</th>
+      <th className="border p-2 text-left">Date</th>
+      <th className="border p-2 text-left">Delivery Mode</th>
+      <th className="border p-2 text-center">Action</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {filteredData.map((dc) => (
+      <tr key={dc._id} className="hover:bg-gray-50">
+        <td className="border p-2">{dc.customerName}</td>
+        <td className="border p-2">{dc.address}</td>
+        <td className="border p-2">{dc.phone}</td>
+        <td className="border p-2">{dc.gstin}</td>
+
+        <td className="border p-2 font-medium">
+          {dc.challanPrefix}
+          {dc.challanNo}
+          {dc.challanPostfix}
+        </td>
+
+        <td className="border p-2">{dc.lrNo}</td>
+
+        <td className="border p-2">
+          {dc.challanDate?.slice(0, 10)}
+        </td>
+
+        <td className="border p-2">{dc.deliveryMode}</td>
+
+        {/* ACTION COLUMN */}
+        <td className="border p-2 text-center">
+          <button
+            onClick={() =>
+              navigate(`/delivery-challan/view/${dc._id}`)
+            }
+            className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700"
+          >
+            View
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
     </div>
   );
 }

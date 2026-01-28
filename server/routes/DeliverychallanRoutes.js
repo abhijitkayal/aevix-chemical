@@ -22,5 +22,17 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+router.get("/:id", async (req, res) => {
+  try {
+    const challan = await DeliveryChallan.findById(req.params.id);
+    if (!challan) {
+      return res.status(404).json({ message: "Not found" });
+    }
+    res.json(challan);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 export default router;

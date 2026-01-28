@@ -103,31 +103,111 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [otpRequired, setOtpRequired] = useState(false);
+const [otp, setOtp] = useState("");
+const [userId, setUserId] = useState(null);
+
 
   // 🔐 SIGN IN FUNCTION
-  const handleSubmit = async (e) => {
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setMessage("");
+  //   setLoading(true);
+
+  //   try {
+  //     const res = await axios.post(
+  //       "http://localhost:5000/api/auth/login",
+  //       { email, password }
+  //     );
+
+  //     // Normalize email and save user
+  //     const normalizedEmail = (email || '').trim().toLowerCase();
+  //     const userObj = { ...(res.data.user || {}), email: normalizedEmail };
+  //     localStorage.setItem("user", JSON.stringify(userObj));
+  //     localStorage.setItem("loginEmail", normalizedEmail);
+
+  //     // Debug: log the login response object
+  //     console.log('LOGIN_RESPONSE:', res.data);
+  //     localStorage.setItem("user", JSON.stringify(res.data.user));
+
+
+  //     // Dispatch a login event so other components (eg. Sidebar) can update immediately
+  //     try {
+  //       window.dispatchEvent(new CustomEvent('user:login', { detail: userObj }));
+  //     } catch (e) {
+  //       // ignore if CustomEvent unsupported
+  //     }
+
+  //     // ✅ Navigate after login
+  //     navigate("/dashboard/overview");
+  //     console.log(res.data.user);
+  //   } catch (err) {
+  //     setMessage(err.response?.data?.message || "Login failed");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
     setLoading(true);
 
     try {
       const res = await axios.post(
-        "https://aevix-chemical-xctw.onrender.com/api/auth/login",
+        "http://localhost:5000/api/auth/login",
         { email, password }
       );
 
-      // ✅ Save user
-      localStorage.setItem("user", JSON.stringify(res.data.user));
-      localStorage.setItem("loginEmail", email);
-
-      // ✅ Navigate after login
-      navigate("/dashboard/overview");
+      // 🔁 OTP required
+      if (res.data.otpRequired) {
+        setOtpRequired(true);
+        setUserId(res.data.userId);
+        setMessage("OTP sent to your email");
+      }
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
+
+  /* =========================
+     2️⃣ OTP VERIFY
+  ========================== */
+  const verifyOtp = async (e) => {
+    e.preventDefault();
+    setMessage("");
+    setLoading(true);
+
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/verify-otp",
+        { userId, otp }
+      );
+
+      // Normalize & store user
+      const userObj = {
+        ...res.data.user,
+        email: res.data.user.email.toLowerCase(),
+      };
+
+      localStorage.setItem("user", JSON.stringify(userObj));
+      localStorage.setItem("loginEmail", userObj.email);
+
+      // 🔔 Notify sidebar/header
+      window.dispatchEvent(
+        new CustomEvent("user:login", { detail: userObj })
+      );
+
+      navigate("/dashboard/overview");
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Invalid OTP");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-600 to-blue-400 p-4">
@@ -150,7 +230,7 @@ const Login = () => {
         <div className="p-10 flex flex-col justify-center">
           <h3 className="text-2xl font-semibold mb-6">Sign in</h3>
 
-          <form className="space-y-4" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={otpRequired ? verifyOtp : handleSubmit}>
             {/* Email */}
             <div>
               <label className="text-sm text-gray-600">Email</label>
@@ -164,61 +244,95 @@ const Login = () => {
               />
             </div>
 
-            {/* Password */}
-            <div className="relative">
-              <label className="text-sm text-gray-600">Password</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                required
-              />
-              <p
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute cursor-pointer right-3 top-9 text-gray-500"
-              >
-                {showPassword ? "🙈" : "👁️"}
-              </p>
-            </div>
+            {/* Password or OTP (conditional) */}
+            {!otpRequired ? (
+              <>
+                <div className="relative">
+                  <label className="text-sm text-gray-600">Password</label>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                  />
+                  <p
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute cursor-pointer right-3 top-9 text-gray-500"
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </p>
+                </div>
 
-            {/* Forgot */}
-            {/* <div className="text-right text-sm text-blue-600 hover:underline cursor-pointer">
-              Forgot password?
-            </div> */}
+                {/* Sign in button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full py-2 rounded-lg font-medium transition text-white
+                    ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}
+                  `}
+                >
+                  {loading ? "Signing in..." : "Sign in"}
+                </button>
+              </>
+            ) : (
+              <>
+                <div>
+                  <label className="text-sm text-gray-600">OTP</label>
+                  <input
+                    type="text"
+                    placeholder="Enter OTP"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    className="w-full mt-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
+                    autoFocus
+                  />
+                  <p className="text-xs text-gray-500 mt-1">OTP sent to <strong>{email}</strong>. Check your email.</p>
+                </div>
 
-            {/* Button */}
-            <button
-              type="submit"
-              disabled={loading}
-              className={`w-full py-2 rounded-lg font-medium transition text-white
-                ${loading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}
-              `}
-            >
-              {loading ? "Signing in..." : "Sign in"}
-            </button>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={`flex-1 py-2 rounded-lg font-medium text-white transition ${loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700'}`}
+                  >
+                    {loading ? 'Verifying...' : 'Verify OTP'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      // Resend OTP
+                      setMessage('');
+                      setLoading(true);
+                      try {
+                        const res = await axios.post('http://localhost:5000/api/auth/login', { email, password });
+                        if (res.data.otpRequired) {
+                          setUserId(res.data.userId);
+                          setMessage('OTP resent');
+                        }
+                      } catch (err) {
+                        setMessage(err.response?.data?.message || 'Failed to resend OTP');
+                      } finally {
+                        setLoading(false);
+                      }
+                    }}
+                    className="flex-none py-2 px-3 rounded-lg border bg-white hover:bg-gray-50"
+                  >
+                    Resend
+                  </button>
+                </div>
+              </>
+            )}
 
             {/* Error */}
             {message && (
               <p className="text-center text-sm text-red-500">{message}</p>
             )}
 
-            {/* Divider */}
-            {/* <div className="flex items-center gap-2 text-gray-400 text-sm">
-              <div className="flex-1 h-px bg-gray-300"></div>
-              OR
-              <div className="flex-1 h-px bg-gray-300"></div>
-            </div> */}
-
-            {/* Other login */}
-            {/* <button
-              type="button"
-              className="w-full border py-2 rounded-lg hover:bg-gray-50 transition"
-            >
-              Sign in with other
-            </button> */}
           </form>
 
           <p className="text-xs text-gray-400 mt-6 text-center">
@@ -226,6 +340,7 @@ const Login = () => {
           </p>
         </div>
       </div>
+
     </div>
   );
 };

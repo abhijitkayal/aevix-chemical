@@ -334,7 +334,6 @@
 
 // export default Orderacknowledgement;
 
-;
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Plus, Eye, Download } from "lucide-react";
@@ -362,10 +361,13 @@ export default function OrderAcknowledgement() {
     contentRef: printRef,
   });
 
-  const handleView = (oa) => {
-    setSelectedOA(oa);
-    setTimeout(() => handlePrint(), 300);
-  };
+ const handleView = (oa) => {
+  setSelectedOA(oa);
+  // setTimeout(() => {
+  //   handlePrint();
+  // }, 500); // give React time to render
+};
+
 
   const handleDownload = (oa) => {
     const el = document.getElementById(`oa-${oa._id}`);
@@ -398,19 +400,19 @@ export default function OrderAcknowledgement() {
             <th className="p-3">Buyer</th>
             <th className="p-3">Date</th>
             <th className="p-3">Total</th>
-            <th className="p-3">Actions</th>
+            <th className="p-3 text-left">Actions</th>
           </tr>
         </thead>
         <tbody>
           {data.map((oa) => (
             <tr key={oa._id} className="border-t">
-              <td className="p-3">{oa.oaNumber}</td>
-              <td className="p-3">{oa.buyer.name}</td>
-              <td className="p-3">
+              <td className="p-3 text-center">{oa.oaNumber}</td>
+              <td className="p-3 text-center">{oa.buyer.name}</td>
+              <td className="p-3 text-center">
                 {new Date(oa.oaDate).toLocaleDateString()}
               </td>
-              <td className="p-3">₹ {oa.totalAmount}</td>
-              <td className="p-3 flex gap-2">
+              <td className="p-3 text-center">₹ {oa.totalAmount}</td>
+              <td className="p-3 text-center flex gap-2">
                 <button onClick={() => handleView(oa)}>
                   <Eye />
                 </button>
@@ -430,13 +432,39 @@ export default function OrderAcknowledgement() {
         </tbody>
       </table>
 
-      {selectedOA && (
-        <div className="hidden">
-          <div ref={printRef}>
-            <OrderAckPDF oa={selectedOA} />
-          </div>
+     {selectedOA && (
+  <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+    <div className="bg-white w-full max-w-5xl max-h-[90vh] overflow-y-auto rounded shadow-lg p-6 relative">
+      
+      {/* HEADER */}
+      <div className="flex justify-between items-center mb-4">
+        {/* <h2 className="text-lg font-bold">Order Acknowledgement Preview</h2> */}
+
+        <div className="flex gap-2">
+          {/* <button
+            onClick={handlePrint}
+            className="bg-blue-600 text-white px-3 py-1 rounded"
+          >
+            Print
+          </button> */}
+
+          <button
+            onClick={() => setSelectedOA(null)}
+            className="bg-red-500 text-white px-3 py-1 rounded"
+          >
+            Close
+          </button>
         </div>
-      )}
+      </div>
+
+      {/* PDF CONTENT */}
+      <div className="justify-center items-center">
+        <OrderAckPDF oa={selectedOA} />
+      </div>
+    </div>
+  </div>
+)}
+
 
       {showForm && (
         <OrderAckForm

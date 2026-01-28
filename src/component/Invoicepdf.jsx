@@ -2,13 +2,27 @@ import React, { forwardRef } from "react";
 import logo from '../assets/AEVIX LOGO BLACK.png'
 
 const InvoicePDF = forwardRef(({ invoice }, ref) => {
+  const isWestBengal =
+  (invoice.state || "").toLowerCase().includes("west bengal");
+
   // Calculate amounts matching server-side logic
+  // const qty = invoice.quantity || 0;
+  // const rate = invoice.rate || 0;
+  // const taxable = qty * rate;
+  // const cgst = taxable * 0.09;
+  // const sgst = taxable * 0.09;
+  // const total = taxable + cgst + sgst;
+
   const qty = invoice.quantity || 0;
-  const rate = invoice.rate || 0;
-  const taxable = qty * rate;
-  const cgst = taxable * 0.09;
-  const sgst = taxable * 0.09;
-  const total = taxable + cgst + sgst;
+const rate = invoice.rate || 0;
+const taxable = qty * rate;
+
+const cgst = isWestBengal ? taxable * 0.09 : 0;
+const sgst = isWestBengal ? taxable * 0.09 : 0;
+const igst = !isWestBengal ? taxable * 0.18 : 0;
+
+const total = taxable + cgst + sgst + igst;
+
 
   const amountInWords = (num) => {
     return `RUPEES ${num.toLocaleString("en-IN")} ONLY`;
@@ -91,7 +105,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         <div className="consignee-section">
           <h4>Details of Consignee | Shipped to :</h4>
           <p><strong>Name:</strong> {consignee.name || invoice.customer}</p>
-          <p><strong>Address:</strong> {consignee.address || invoice.address}</p>
+          <p><strong>Address:</strong> {consignee.address || invoice.shippingDetails?.netWeight}</p>
           <p><strong>Phone:</strong> {consignee.phone || invoice.phone}</p>
           <p><strong>GSTIN:</strong> {consignee.gstin || invoice.gstin}</p>
           <p><strong>State:</strong> {consignee.state || invoice.state}</p>
@@ -108,8 +122,14 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <th>Qty</th>
             <th>Rate</th>
             <th>Taxable</th>
-            <th>CGST</th>
-            <th>SGST</th>
+           {isWestBengal ? (
+      <>
+        <th>CGST</th>
+        <th>SGST</th>
+      </>
+    ) : (
+      <th>IGST</th>
+    )}
           </tr>
         </thead>
         <tbody>
@@ -120,8 +140,14 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <td>{qty} {invoice.unit}</td>
             <td>{rate.toFixed(2)}</td>
             <td>{taxable.toFixed(2)}</td>
-            <td>{cgst.toFixed(2)}</td>
-            <td>{sgst.toFixed(2)}</td>
+           {isWestBengal ? (
+      <>
+        <td>{cgst.toFixed(2)}</td>
+        <td>{sgst.toFixed(2)}</td>
+      </>
+    ) : (
+      <td>{igst.toFixed(2)}</td>
+    )}
           </tr>
         </tbody>
       </table>
@@ -135,11 +161,40 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         <div className="tax-summary">
           <table>
-            <tbody>
-              <tr><td>Taxable Amount</td><td>{taxable.toFixed(2)}</td></tr>
+              {/* <tr><td>Taxable Amount</td><td>{taxable.toFixed(2)}</td></tr>
               <tr><td>Add : CGST</td><td>{cgst.toFixed(2)}</td></tr>
               <tr><td>Add : SGST</td><td>{sgst.toFixed(2)}</td></tr>
-              <tr className="grand"><td><strong>Total Amount</strong></td><td><strong>{total.toFixed(2)}</strong></td></tr>
+              <tr className="grand"><td><strong>Total Amount</strong></td><td><strong>{total.toFixed(2)}</strong></td></tr> */}
+              <tbody>
+  <tr>
+    <td>Taxable Amount</td>
+    <td>{taxable.toFixed(2)}</td>
+  </tr>
+
+  {isWestBengal ? (
+    <>
+      <tr>
+        <td>Add : CGST (9%)</td>
+        <td>{cgst.toFixed(2)}</td>
+      </tr>
+      <tr>
+        <td>Add : SGST (9%)</td>
+        <td>{sgst.toFixed(2)}</td>
+      </tr>
+    </>
+  ) : (
+    <tr>
+      <td>Add : IGST (18%)</td>
+      <td>{igst.toFixed(2)}</td>
+    </tr>
+  )}
+
+  <tr className="grand">
+    <td><strong>Total Amount</strong></td>
+    <td><strong>{total.toFixed(2)}</strong></td>
+  </tr>
+
+
             </tbody>
           </table>
         </div>
@@ -149,9 +204,10 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       <div className="footer-section">
         <div className="bank-details">
           <h4>Bank Details</h4>
-          <p><strong>Bank:</strong> {invoice.bankDetails?.bankName || "State Bank of India"}</p>
-          <p><strong>Account No:</strong> {invoice.bankDetails?.accountNo || "-"}</p>
-          <p><strong>IFSC:</strong> {invoice.bankDetails?.ifsc || "SBIN0015197"}</p>
+          <p><strong>Bank:</strong> State Bank Of India </p>
+          <p><strong>Branch:</strong>SME N.S Road</p>
+          <p><strong>Account No:</strong>43320503750</p>
+          <p><strong>IFSC:</strong> IFSC- SBIN0015197</p>
         </div>
 
         <div className="signature">
