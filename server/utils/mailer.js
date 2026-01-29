@@ -18,6 +18,7 @@
 // export default transporter;
 
 import nodemailer from 'nodemailer';
+import dns from 'dns';
 
 // Use environment variables for SMTP configuration. On Render set these in service settings.
 const SMTP_HOST = "smtp.gmail.com";
@@ -32,11 +33,37 @@ if (!EMAIL_USER || !EMAIL_PASS) {
   console.warn('Mailer: EMAIL_USER or EMAIL_PASS is not set. Configure these as environment variables in your hosting provider (e.g., Render).');
 }
 
+// Best-effort: prefer IPv6 by attempting to set DNS order but be resilient if Node doesn't accept 'ipv6first'.
+if (dns.setDefaultResultOrder) {
+  try {
+    dns.setDefaultResultOrder('ipv6first');
+    console.log('Mailer: attempted to set DNS result order to ipv6first');
+  } catch (err) {
+    console.warn('Mailer: dns.setDefaultResultOrder("ipv6first") not supported on this Node version:', err && err.message ? err.message : err);
+  }
+}
+
+// Try to resolve an IPv6 address for SMTP_HOST; if successful prefer it, otherwise fallback to hostname.
+let smtpHostToUse = SMTP_HOST;
+try {
+  const res = await dns.promises.lookup(SMTP_HOST, { family: 6 });
+  if (res && res.address) {
+    smtpHostToUse = res.address;
+    console.log('Mailer: resolved IPv6 address for SMTP_HOST:', smtpHostToUse);
+  }
+} catch (err) {
+  console.log('Mailer: IPv6 lookup failed, using hostname. Error:', err && err.message ? err.message : err);
+}
+
 const transporter = nodemailer.createTransport({
-  host: SMTP_HOST,
+  host: smtpHostToUse,
   port: SMTP_PORT,
   secure: SMTP_SECURE,
   auth: EMAIL_USER && EMAIL_PASS ? { user: EMAIL_USER, pass: EMAIL_PASS } : undefined,
+  // Add timeouts and relaxed TLS for better diagnostics in dev. Remove rejectUnauthorized:false in production.
+  tls: { rejectUnauthorized: false },
+  connectionTimeout: 10000, // 10s
+  socketTimeout: 10000,
 });
 
 // Verify transporter at startup to fail fast and log useful info
