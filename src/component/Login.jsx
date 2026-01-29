@@ -159,11 +159,12 @@ const [userId, setUserId] = useState(null);
         { email, password }
       );
 
-      // 🔁 OTP required
-      if (res.data.otpRequired) {
-        setOtpRequired(true);
-        setUserId(res.data.userId);
-        setMessage("OTP sent to your email");
+      // OTP sent — store email and navigate to verification page
+      if (res.data && res.data.email) {
+        const normalized = (email || '').trim().toLowerCase();
+        localStorage.setItem('loginEmail', normalized);
+        setMessage('OTP sent to your email');
+        navigate('/verify-otp');
       }
     } catch (err) {
       setMessage(err.response?.data?.message || "Login failed");
@@ -346,3 +347,4 @@ const [userId, setUserId] = useState(null);
 };
 
 export default Login;
+

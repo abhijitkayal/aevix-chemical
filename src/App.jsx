@@ -152,20 +152,22 @@ import ProfitLoss from './component/P&L.jsx';
 import WarehouseDetails from './component/WarehouseDetails.jsx';
 import PurchaseInvoicePage from './component/Purchaseinvoice.jsx';
 import Login from './component/Login.jsx';
+import OtpVerify from './component/Otpverify.jsx';
 import ViewInvoice from './component/ViewInvoice.jsx';
 import Batch from './component/Batch.jsx';
    import ViewDeliveryChallan from "./component/Viewdeliverychallan.jsx";
 
 function App() {
   const location = useLocation();
-  const isLoginPage = location.pathname === '/';
+  const isPublicPage = location.pathname === '/' || location.pathname === '/verify-otp';
 
   return (
     <>
-      {/* LOGIN PAGE (NO SIDEBAR, NO HEADER) */}
-      {isLoginPage ? (
+      {/* PUBLIC PAGES (LOGIN, OTP) - NO SIDEBAR, NO HEADER */}
+      {isPublicPage ? (
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/verify-otp" element={<OtpVerify />} />
         </Routes>
       ) : (
         /* PROTECTED APP LAYOUT */
