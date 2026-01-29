@@ -1,93 +1,90 @@
-// import nodemailer from "nodemailer";
-// import dotenv from "dotenv";
-// dotenv.config();
+import sgMail from '@sendgrid/mail';
 
-// // Basic diagnostics for missing credentials
-// if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-//   console.warn('Mailer: EMAIL_USER or EMAIL_PASS is not set. SMTP auth will fail. Check your .env and ensure EMAIL_USER and EMAIL_PASS are configured.');
-// }
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY || '';
+const EMAIL_FROM = process.env.EMAIL_FROM || process.env.EMAIL_USER || 'noreply@aevixchemical.com';
 
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: process.env.EMAIL_USER, // your gmail
-//     pass: process.env.EMAIL_PASS, // gmail app password
-//   },
-// });
+console.log('Mailer: Using SendGrid');
+console.log('Mailer: SENDGRID_API_KEY set?', !!SENDGRID_API_KEY);
+console.log('Mailer: EMAIL_FROM:', EMAIL_FROM);
 
-// export default transporter;
-
-import nodemailer from 'nodemailer';
-import dns from 'dns';
-
-
-// Read SMTP configuration from environment variables, fallback to defaults
-const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
-const SMTP_PORT = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 587;
-const SMTP_SECURE = process.env.SMTP_SECURE === 'true' || false;
-const EMAIL_USER = process.env.EMAIL_USER || '';
-const EMAIL_PASS = process.env.EMAIL_PASS || '';
-
-console.log('Mailer config:', { SMTP_HOST, SMTP_PORT, SMTP_SECURE });
-console.log('Mailer: EMAIL_USER set?', !!EMAIL_USER, 'EMAIL_PASS set?', !!EMAIL_PASS);
-if (!EMAIL_USER || !EMAIL_PASS) {
-  console.warn('Mailer: EMAIL_USER or EMAIL_PASS is not set. Configure these as environment variables in your hosting provider (e.g., Render).');
+if (!SENDGRID_API_KEY) {
+  console.error('Mailer: ✗ SENDGRID_API_KEY is not set!');
+  console.error('Mailer: Get your API key from: https://app.sendgrid.com/settings/api_keys');
+  console.error('Mailer: Add to .env: SENDGRID_API_KEY=SG.xxxxx');
+} else {
+  sgMail.setApiKey(SENDGRID_API_KEY);
+  console.log('Mailer: ✓ SendGrid initialized');
 }
 
-// Try to set DNS result order to prefer IPv6 where supported, but tolerate older Node versions
-if (dns.setDefaultResultOrder) {
-  try {
-    dns.setDefaultResultOrder('ipv4first'); // prefer IPv4 by default on servers that may not have IPv6
-    console.log('Mailer: attempted to set DNS result order to ipv4first');
-  } catch (err) {
-    console.warn('Mailer: dns.setDefaultResultOrder failed:', err && err.message ? err.message : err);
+export const sendOtpMail = async (email, otp) => {
+  console.log('>>> sendOtpMail called with email:', email);
+  
+  if (!SENDGRID_API_KEY) {
+    console.error('>>> ERROR: No SendGrid API key!');
+    throw new Error('SendGrid API key not configured. Set SENDGRID_API_KEY in your .env file.');
   }
-}
 
-// Helper to create a nodemailer transporter for given host (hostname or IP)
-const makeTransport = (host) => nodemailer.createTransport({
-  host,
-  port: SMTP_PORT,
-  secure: SMTP_SECURE,
-  auth: EMAIL_USER && EMAIL_PASS ? { user: EMAIL_USER, pass: EMAIL_PASS } : undefined,
-  tls: { rejectUnauthorized: process.env.NODE_ENV === 'production', servername: SMTP_HOST },
-  connectionTimeout: 10000,
-  socketTimeout: 10000,
-});
+  console.log('>>> SendGrid API key is set');
+  console.log('>>> EMAIL_FROM:', EMAIL_FROM);
 
-// Create initial transporter using hostname and verify; if verification fails due to IPv6 route issues, try IPv4 fallback
-let transporter = makeTransport(SMTP_HOST);
-
-(async () => {
   try {
-    await transporter.verify();
-    console.log('Mailer: SMTP connection verified using host:', SMTP_HOST);
-  } catch (err) {
-    console.error('Mailer: SMTP verify failed', err && err.message ? err.message : err);
+    console.log('>>> Preparing email message...');
+    
+    const msg = {
+      to: email,
+      from: EMAIL_FROM, // Must be verified sender in SendGrid
+      subject: 'Your Login OTP - Aevix Chemical',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #333;">Login Verification</h2>
+          <p>Your OTP code is:</p>
+          <div style="background: #f0f0f0; padding: 20px; text-align: center; margin: 20px 0; border-radius: 8px;">
+            <h1 style="color: #4F46E5; font-size: 36px; letter-spacing: 8px; margin: 0; font-weight: bold;">${otp}</h1>
+          </div>
+          <p>This code is valid for <strong>5 minutes</strong>.</p>
+          <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+          <p style="color: #666; font-size: 12px;">If you didn't request this code, please ignore this email.</p>
+          <p style="color: #666; font-size: 12px;">© 2026 Aevix Chemical. All rights reserved.</p>
+        </div>
+      `,
+      text: `Your OTP code is: ${otp}\n\nThis code is valid for 5 minutes.\n\nIf you didn't request this, please ignore this email.`,
+    };
 
-    const shouldTryIPv4 = err && (err.code === 'ENETUNREACH' || err.code === 'ETIMEDOUT' || /ENETUNREACH|ETIMEDOUT|EHOSTUNREACH|ESOCKET|EAI_AGAIN/.test(err.message || ''));
-    if (shouldTryIPv4) {
-      try {
-        const res4 = await dns.promises.lookup(SMTP_HOST, { family: 4 });
-        if (res4 && res4.address) {
-          const ipv4 = res4.address;
-          console.log('Mailer: attempting fallback to IPv4 address', ipv4);
-          const transporter4 = makeTransport(ipv4);
-          try {
-            await transporter4.verify();
-            transporter = transporter4; // use the working transporter
-            console.log('Mailer: SMTP verified via IPv4 fallback', ipv4);
-          } catch (err2) {
-            console.error('Mailer: IPv4 fallback verify failed', err2 && err2.message ? err2.message : err2);
-          }
-        } else {
-          console.warn('Mailer: IPv4 lookup returned no address; cannot fallback to IPv4');
+    console.log('>>> Calling SendGrid API...');
+    const response = await sgMail.send(msg);
+    console.log('>>> ✓ SendGrid response received');
+    console.log('>>> Response status:', response[0]?.statusCode);
+    console.log('>>> OTP sent successfully via SendGrid');
+    return response;
+  } catch (err) {
+    console.error('>>> ✗ SendGrid ERROR caught!');
+    console.error('>>> Error message:', err?.message);
+    console.error('>>> Error code:', err?.code);
+    
+    if (err.response) {
+      console.error('>>> SendGrid response body:', JSON.stringify(err.response.body, null, 2));
+      console.error('>>> SendGrid response status:', err.response.statusCode);
+      
+      // Check for common SendGrid errors
+      if (err.response.body?.errors) {
+        const errors = err.response.body.errors;
+        console.error('>>> SendGrid errors:', JSON.stringify(errors, null, 2));
+        
+        // Check if sender not verified
+        if (errors.some(e => e.message?.includes('not verified') || e.message?.includes('does not have a verified'))) {
+          throw new Error(`Sender email ${EMAIL_FROM} is not verified in SendGrid. Go to https://app.sendgrid.com/settings/sender_auth/senders and verify it.`);
         }
-      } catch (err2) {
-        console.error('Mailer: IPv4 lookup failed:', err2 && err2.message ? err2.message : err2);
+        
+        // Check for API key issues
+        if (err.response.statusCode === 401 || err.response.statusCode === 403) {
+          throw new Error('SendGrid API key is invalid or doesn\'t have permission to send emails. Check your SENDGRID_API_KEY in .env');
+        }
       }
     }
+    
+    console.error('>>> Full error object:', err);
+    throw new Error(`SendGrid error: ${err?.message || 'Unknown error'}`);
   }
-})();
+};
 
-export default transporter;
+export default sgMail;
