@@ -1,0 +1,21 @@
+{
+  "name": "aevix-chemical-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Backend API for Aevix Chemical",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.6",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongoose": "^8.21.0",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.13",
+    "pdfkit": "^0.17.2"
+  }
+}

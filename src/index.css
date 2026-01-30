@@ -1,0 +1,375 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+@import "tailwindcss"; 
+
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light;
+  color: #000000;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Dark mode root fallback when `html` has .dark */
+html.dark :root {
+  color-scheme: dark;
+  color: #ffffff;
+  background-color: #0f172a; /* slate-900 */
+}
+
+a {
+  font-weight: 500;
+  color: #646cff;
+  text-decoration: inherit;
+}
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-width: 100vw;
+  min-height: 100vh;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #000000;
+  background-color: #ffffff;
+}
+
+/* Ensure body also updates when dark class is applied to html */
+html.dark body {
+  color: #ffffff;
+  background-color: #0f172a; /* slate-900 */
+}
+
+/* Make base buttons lighter in dark mode for better visibility */
+html.dark button {
+  background-color: transparent;
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.06);
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #0f172a;
+  color:white;
+  cursor: pointer;
+  transition: border-color 0.25s;
+}
+button:hover {
+  border-color: #646cff;
+}
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #000000;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  /* button {
+    background-color: transparent;
+  } */
+}
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .pdf-page, .pdf-page * {
+    visibility: visible;
+  }
+  .pdf-page {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
+/* ============================================
+   INVOICE PDF PREVIEW STYLES
+============================================ */
+.pdf-page {
+  background: white;
+  padding: 40px;
+  font-family: 'Helvetica', Arial, sans-serif;
+  font-size: 9pt;
+  color: #000;
+  max-width: 794px; /* A4 width in pixels */
+  margin: 0 auto;
+}
+
+.pdf-page .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 250px;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #000;
+}
+
+.pdf-page .header .company {
+  flex: 1;
+  text-align: left;
+}
+
+.pdf-page .company-name {
+  font-weight: bold;
+  font-size: 18pt;
+  margin: 10px 0 5px 0;
+}
+
+.pdf-page .header p {
+  margin: 2px 0;
+  font-size: 9pt;
+}
+
+.pdf-page .invoice-title {
+  text-align: left;
+  min-width: 250px;
+}
+
+.pdf-page .invoice-title h1 {
+  font-size: 14pt;
+  margin: 0 0 10px 0;
+  font-weight: bold;
+}
+
+.pdf-page .invoice-title table {
+  border: 1px solid #000;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.pdf-page .invoice-title table td {
+  padding: 4px 8px;
+  font-size: 9pt;
+  border: 1px solid #000;
+  width: 50%;
+}
+
+.pdf-page .invoice-title table td:first-child {
+  font-weight: bold;
+  text-align: left;
+}
+
+.pdf-page .invoice-title table td:last-child {
+  text-align: left;
+}
+
+.pdf-page .two-col {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0;
+  border: 1px solid #000;
+}
+
+.pdf-page .buyer-section,
+.pdf-page .consignee-section {
+  flex: 1;
+  padding: 10px;
+  text-align: left;
+}
+
+.pdf-page .consignee-section {
+  border-left: 1px solid #000;
+}
+
+.pdf-page .two-col h4 {
+  font-size: 10pt;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+
+.pdf-page .two-col p {
+  margin: 5px 0;
+  font-size: 9pt;
+}
+
+.pdf-page table.items {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  border: 1px solid #000;
+}
+
+.pdf-page table.items th,
+.pdf-page table.items td {
+  border: 1px solid #000;
+  padding: 8px 5px;
+  text-align: left;
+  font-size: 9pt;
+}
+
+.pdf-page table.items th {
+  background-color: #f5f5f5;
+  font-weight: bold;
+}
+
+.pdf-page table.items td:nth-child(4),
+.pdf-page table.items td:nth-child(5),
+.pdf-page table.items td:nth-child(6),
+.pdf-page table.items td:nth-child(7),
+.pdf-page table.items td:nth-child(8) {
+  text-align: left;
+}
+
+.pdf-page .bottom-section {
+  display: flex;
+  gap: 15px;
+  margin: 10px 0;
+}
+
+.pdf-page .amount-words {
+  flex: 1;
+  border: 1px solid #000;
+  padding: 10px;
+  text-align: left;
+}
+
+.pdf-page .amount-words h4 {
+  font-size: 10pt;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+
+.pdf-page .amount-words p {
+  margin: 5px 0;
+  font-size: 9pt;
+}
+
+.pdf-page .tax-summary {
+  width: 205px;
+  border: 1px solid #000;
+}
+
+.pdf-page .tax-summary table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pdf-page .tax-summary table td {
+  padding: 8px;
+  font-size: 9pt;
+  border-bottom: 1px solid #000;
+}
+
+.pdf-page .tax-summary table td:last-child {
+  text-align:left;
+}
+
+.pdf-page .tax-summary table tr.grand td {
+  font-weight: bold;
+  border-bottom: none;
+}
+
+.pdf-page .footer-section {
+  display: flex;
+  gap: 15px;
+  margin: 20px 0 0 0;
+}
+
+.pdf-page .bank-details {
+  flex: 1;
+  border: 1px solid #000;
+  padding: 10px;
+}
+
+.pdf-page .bank-details h4 {
+  font-size: 10pt;
+  text-align: left;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  border-bottom: 1px solid #000;
+  padding-bottom: 5px;
+}
+
+.pdf-page .bank-details p {
+  margin: 5px 0;
+  font-size: 9pt;
+  text-align: left;
+}
+
+.pdf-page .signature {
+  width: 205px;
+  padding: 10px;
+  text-align: center;
+}
+
+.pdf-page .signature p {
+  margin: 5px 0;
+  font-size: 9pt;
+}
+
+.pdf-page .signature p:first-child {
+  text-align: left;
+  margin-bottom: 15px;
+  font-size: 8pt;
+}
+
+.pdf-page .signature p:last-child {
+  font-size: 8pt;
+  border-top: 1px solid #000;
+  padding-top: 5px;
+}
+
+@media print {
+  body {
+    background: white !important;
+  }
+
+  /* Hide everything */
+  body * {
+    visibility: hidden;
+  }
+
+  /* Show only printable content */
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+
+  /* Hide buttons */
+  button {
+    display: none !important;
+  }
+}
+
+

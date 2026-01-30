@@ -1,0 +1,274 @@
+import React, { forwardRef } from "react";
+import logo from "../assets/AEVIX LOGO BLACK.png";
+
+const InvoicePDF = forwardRef(({ invoice }, ref) => {
+  const isWestBengal = (invoice.state || "")
+    .toLowerCase()
+    .includes("west bengal");
+
+  // Calculate amounts matching server-side logic
+  // const qty = invoice.quantity || 0;
+  // const rate = invoice.rate || 0;
+  // const taxable = qty * rate;
+  // const cgst = taxable * 0.09;
+  // const sgst = taxable * 0.09;
+  // const total = taxable + cgst + sgst;
+
+  const qty = invoice.quantity || 0;
+  const rate = invoice.rate || 0;
+  const taxable = qty * rate;
+
+  const cgst = isWestBengal ? taxable * 0.09 : 0;
+  const sgst = isWestBengal ? taxable * 0.09 : 0;
+  const igst = !isWestBengal ? taxable * 0.18 : 0;
+
+  const total = taxable + cgst + sgst + igst;
+
+  const amountInWords = (num) => {
+    return `RUPEES ${num.toLocaleString("en-IN")} ONLY`;
+  };
+
+  const consignee = invoice.consignee || {};
+
+  return (
+    <div
+      ref={ref}
+      className="pdf-page mx-auto bg-white"
+      style={{
+        width: "794px", // A4 width at 96 DPI
+        minHeight: "1123px", // A4 height
+        padding: "24px",
+        boxSizing: "border-box",
+      }}
+    >
+      {/* HEADER */}
+      <div className="flex justify-between items-start mb-6">
+        {/* LEFT SIDE (LOGO + DETAILS) */}
+        <div className="flex items-start gap-4 w-[65%]">
+          {/* LOGO */}
+          <img
+            src={logo}
+            alt="Company Logo"
+            className="w-[120px] object-contain"
+          />
+
+          {/* COMPANY DETAILS */}
+          <div className="text-sm leading-snug text-left mr-10">
+            <p className="font-bold text-base">AEVIX CHEMICAL</p>
+            <p>
+              115, VILL. UTTAR JOJRA, PO. ROHANDA, PS. MADHYAMGRAM, KOLKATA,
+              WEST BENGAL - 700135
+            </p>
+            <p>Telephone: 033 31556300</p>
+            <p>Kolkata, West Bengal - 700013</p>
+            <a
+              href="http://www.aevixchemical.com"
+              className="text-blue-600 underline"
+            >
+              Website: www.aevixchemical.com
+            </a>
+          </div>
+        </div>
+
+        {/* RIGHT SIDE (TAX INVOICE) */}
+        <div className="w-[40%] text-left">
+          <h2 className="text-lg font-bold mb-2">TAX INVOICE</h2>
+
+          <table className="w-full border border-black border-collapse text-sm">
+            <tbody>
+              <tr>
+                <td className="border border-black px-2 py-1 font-medium">
+                  Invoice No
+                </td>
+                <td className="border border-black px-2 py-1">
+                  {invoice.invoiceNo || invoice._id}
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-black px-2 py-1 font-medium">
+                  Invoice Date
+                </td>
+                <td className="border border-black px-2 py-1">
+                  {new Date(invoice.date).toLocaleDateString("en-IN")}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* BUYER & CONSIGNEE */}
+      <div className="two-col">
+        <div className="buyer-section">
+          <h4>Details of Buyer | Billed to :</h4>
+          <p>
+            <strong>Name:</strong> {invoice.customer}
+          </p>
+          <p>
+            <strong>Address:</strong> {invoice.address}
+          </p>
+          <p>
+            <strong>Phone:</strong> {invoice.phone}
+          </p>
+          <p>
+            <strong>GSTIN:</strong> {invoice.gstin}
+          </p>
+          <p>
+            <strong>PAN:</strong> {invoice.pan}
+          </p>
+          <p>
+            <strong>State:</strong> {invoice.state}
+          </p>
+          <p>
+            <strong>Place of Supply:</strong> {invoice.placeOfSupply}
+          </p>
+        </div>
+
+        <div className="consignee-section">
+          <h4>Details of Consignee | Shipped to :</h4>
+          <p>
+            <strong>Name:</strong> {consignee.name || invoice.customer}
+          </p>
+          <p>
+            <strong>Address:</strong>{" "}
+            {consignee.address || invoice.shippingDetails?.netWeight}
+          </p>
+          <p>
+            <strong>Phone:</strong> {consignee.phone || invoice.phone}
+          </p>
+          <p>
+            <strong>GSTIN:</strong> {consignee.gstin || invoice.gstin}
+          </p>
+          <p>
+            <strong>State:</strong> {consignee.state || invoice.state}
+          </p>
+        </div>
+      </div>
+
+      {/* ITEMS TABLE */}
+      <table className="items">
+        <thead>
+          <tr>
+            <th>Sr</th>
+            <th>Product / Service</th>
+            <th>HSN</th>
+            <th>Qty</th>
+            <th>Rate</th>
+            <th>Taxable</th>
+            {isWestBengal ? (
+              <>
+                <th>CGST</th>
+                <th>SGST</th>
+              </>
+            ) : (
+              <th>IGST</th>
+            )}
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td>{invoice.productName}</td>
+            <td>{invoice.hsn || "-"}</td>
+            <td>
+              {qty} {invoice.unit}
+            </td>
+            <td>{rate.toFixed(2)}</td>
+            <td>{taxable.toFixed(2)}</td>
+            {isWestBengal ? (
+              <>
+                <td>{cgst.toFixed(2)}</td>
+                <td>{sgst.toFixed(2)}</td>
+              </>
+            ) : (
+              <td>{igst.toFixed(2)}</td>
+            )}
+          </tr>
+        </tbody>
+      </table>
+
+      {/* TOTALS & BANK */}
+      <div className="bottom-section">
+        <div className="amount-words">
+          <h4>Total in Words</h4>
+          <p>{amountInWords(total)}</p>
+        </div>
+
+        <div className="tax-summary">
+          <table>
+            {/* <tr><td>Taxable Amount</td><td>{taxable.toFixed(2)}</td></tr>
+              <tr><td>Add : CGST</td><td>{cgst.toFixed(2)}</td></tr>
+              <tr><td>Add : SGST</td><td>{sgst.toFixed(2)}</td></tr>
+              <tr className="grand"><td><strong>Total Amount</strong></td><td><strong>{total.toFixed(2)}</strong></td></tr> */}
+            <tbody>
+              <tr>
+                <td>Taxable Amount</td>
+                <td>{taxable.toFixed(2)}</td>
+              </tr>
+
+              {isWestBengal ? (
+                <>
+                  <tr>
+                    <td>Add : CGST (9%)</td>
+                    <td>{cgst.toFixed(2)}</td>
+                  </tr>
+                  <tr>
+                    <td>Add : SGST (9%)</td>
+                    <td>{sgst.toFixed(2)}</td>
+                  </tr>
+                </>
+              ) : (
+                <tr>
+                  <td>Add : IGST (18%)</td>
+                  <td>{igst.toFixed(2)}</td>
+                </tr>
+              )}
+
+              <tr className="grand">
+                <td>
+                  <strong>Total Amount</strong>
+                </td>
+                <td>
+                  <strong>{total.toFixed(2)}</strong>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* BANK DETAILS & SIGNATURE */}
+      <div className="footer-section">
+        <div className="bank-details">
+          <h4>Bank Details</h4>
+          <p>
+            <strong>Bank:</strong> State Bank Of India{" "}
+          </p>
+          <p>
+            <strong>Branch:</strong>SME N.S Road
+          </p>
+          <p>
+            <strong>Account No:</strong>43320503750
+          </p>
+          <p>
+            <strong>IFSC:</strong> IFSC- SBIN0015197
+          </p>
+        </div>
+
+        <div className="signature">
+          <p>
+            Certified that the particulars given above are true and correct.
+          </p>
+          <p>
+            <strong>For AEVIX CHEMICAL</strong>
+          </p>
+          <p style={{ marginTop: "40px" }}>Authorised Signatory</p>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+InvoicePDF.displayName = "InvoicePDF";
+
+export default InvoicePDF;
