@@ -70,71 +70,94 @@ const StateWiseCharts = () => {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2 style={{ fontWeight: "bold", marginBottom: 20 }}>
+    <div className="p-4 sm:p-6 mt-6">
+      <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-6">
         📊 State-wise Sales Overview
       </h2>
 
-      {/* ================= STATES COUNT PIE ================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div style={{ width: "100%", height: 350 }}>
-          <h4>🗺️ total buy product</h4>
-          <ResponsiveContainer>
+      {/* ================= PIE CHARTS ================= */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+        {/* PIE 1 - Total Buy Product */}
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 h-[320px] sm:h-[380px]">
+          <h4 className="font-semibold mb-2 text-sm sm:text-base">
+            🗺️ Total Buy Product
+          </h4>
+          <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie
                 data={chartData}
                 dataKey="invoiceCount"
                 nameKey="state"
-                outerRadius={120}
-                label
+                outerRadius={window.innerWidth < 640 ? 70 : 100}
+                label={(entry) => window.innerWidth >= 640 ? entry.state : ''}
               >
                 {chartData.map((_, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
               <Tooltip />
-              <Legend />
+              <Legend 
+                wrapperStyle={{ fontSize: window.innerWidth < 640 ? '10px' : '12px' }}
+                iconSize={window.innerWidth < 640 ? 8 : 10}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
-        <div style={{ width: "100%", height: 350, marginTop: 40 }}>
-          <h4>💰 Amount Collected Per State</h4>
-          <ResponsiveContainer>
+
+        {/* PIE 2 - Amount Collected */}
+        <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 h-[320px] sm:h-[380px]">
+          <h4 className="font-semibold mb-2 text-sm sm:text-base">
+            💰 Amount Collected Per State
+          </h4>
+          <ResponsiveContainer width="100%" height="90%">
             <PieChart>
               <Pie
                 data={chartData}
                 dataKey="totalAmount"
                 nameKey="state"
-                outerRadius={120}
-                label={({ state, totalAmount }) => `${state}: ₹${totalAmount} `}
+                outerRadius={window.innerWidth < 640 ? 70 : 100}
+                label={(entry) => window.innerWidth >= 640 ? `${entry.state}: ₹${entry.totalAmount}` : ''}
               >
                 {chartData.map((_, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip />
-              <Legend />
+              <Tooltip formatter={(value) => `₹${value.toLocaleString('en-IN')}`} />
+              <Legend 
+                wrapperStyle={{ fontSize: window.innerWidth < 640 ? '10px' : '12px' }}
+                iconSize={window.innerWidth < 640 ? 8 : 10}
+              />
             </PieChart>
           </ResponsiveContainer>
         </div>
       </div>
 
-      {/* ================= PRODUCT COUNT BAR ================= */}
-      <div style={{ width: "100%", height: 350, marginTop: 40 }}>
-        <h4>📦 Products Sold Per State</h4>
-        <ResponsiveContainer>
+      {/* ================= BAR CHART ================= */}
+      <div className="bg-white rounded-xl shadow-md p-4 sm:p-6 mt-4 sm:mt-6 h-[320px] sm:h-[380px]">
+        <h4 className="font-semibold mb-2 text-sm sm:text-base">
+          📦 Products Sold Per State
+        </h4>
+        <ResponsiveContainer width="100%" height="90%">
           <BarChart data={chartData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="state" />
-            <YAxis />
+            <XAxis 
+              dataKey="state" 
+              tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+              angle={-45}
+              textAnchor="end"
+              height={80}
+            />
+            <YAxis 
+              tick={{ fontSize: window.innerWidth < 640 ? 10 : 12 }}
+            />
             <Tooltip />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ fontSize: window.innerWidth < 640 ? '11px' : '12px' }}
+            />
             <Bar dataKey="totalProducts" fill="#00C49F" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>
-
-      {/* ================= AMOUNT PIE ================= */}
     </div>
   );
 };

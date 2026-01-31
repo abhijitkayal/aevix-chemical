@@ -221,11 +221,27 @@ export default function Quotation() {
             windowWidth: element.scrollWidth,
             windowHeight: element.scrollHeight,
             onclone: (clonedDoc) => {
-              // Force all colors to be in supported format
-              const clonedElement = clonedDoc.querySelector('[style*="oklch"]');
-              if (clonedElement) {
-                clonedElement.style.color = "#000000";
-              }
+              // Convert all oklch colors to supported formats
+              const allElements = clonedDoc.querySelectorAll('*');
+              allElements.forEach((el) => {
+                const computedStyle = window.getComputedStyle(el);
+                
+                // Check and replace oklch colors in all color properties
+                ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach((prop) => {
+                  const value = computedStyle[prop];
+                  if (value && value.includes('oklch')) {
+                    // Replace oklch with a safe color or transparent
+                    el.style[prop] = prop === 'color' ? '#000000' : 
+                                     prop === 'backgroundColor' ? '#ffffff' : 
+                                     'transparent';
+                  }
+                });
+                
+                // Force inline styles to not use oklch
+                if (el.style.cssText && el.style.cssText.includes('oklch')) {
+                  el.style.cssText = el.style.cssText.replace(/oklch\([^)]+\)/g, '#000000');
+                }
+              });
             },
           });
 

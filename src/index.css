@@ -372,4 +372,31 @@ button:focus-visible {
   }
 }
 
+/* PDF Generation Safe Colors - Prevent oklch issues */
+@supports (color: oklch(0% 0 0)) {
+  * {
+    --tw-shadow-color: rgb(0 0 0 / 0.1) !important;
+    --tw-ring-color: rgb(59 130 246 / 0.5) !important;
+  }
+}
 
+/* Ensure all Tailwind gray colors use hex for PDF compatibility */
+.bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+.bg-gray-100 {
+  background-color: #f3f4f6 !important;
+}
+
+.text-gray-500 {
+  color: #6b7280 !important;
+}
+
+.text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.border-gray-200 {
+  border-color: #e5e7eb !important;
+}

@@ -276,23 +276,34 @@ const InvoiceSummary = () => {
   }, []);
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 mt-4 sm:mt-6">
 
       {/* ======================
           Invoice Count Summary
       ====================== */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-semibold mb-4">
+      <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
           Invoice Count Summary
         </h2>
 
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
           <BarChart data={summaryData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis allowDecimals={false} />
+            <XAxis 
+              dataKey="month" 
+              tick={{ fontSize: 12 }}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis 
+              allowDecimals={false}
+              tick={{ fontSize: 12 }}
+            />
             <Tooltip />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ fontSize: '12px' }}
+            />
             <Bar
               dataKey="invoiceCount"
               fill="#10b981"
@@ -306,18 +317,29 @@ const InvoiceSummary = () => {
       {/* ======================
           Invoice Amount Summary
       ====================== */}
-      <div className="bg-white rounded-xl shadow-md p-6">
-        <h2 className="text-lg font-semibold mb-4">
+      <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+        <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">
           Invoice Amount Summary
         </h2>
 
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
           <LineChart data={summaryData}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis tickFormatter={(v) => `₹ ${v / 1000}K`} />
+            <XAxis 
+              dataKey="month" 
+              tick={{ fontSize: 12 }}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis 
+              tickFormatter={(v) => `₹${v / 1000}K`}
+              tick={{ fontSize: 12 }}
+            />
             <Tooltip formatter={(v) => `₹ ${v.toLocaleString("en-IN")}`} />
-            <Legend />
+            <Legend 
+              wrapperStyle={{ fontSize: '12px' }}
+            />
 
             <Area
               type="monotone"
@@ -332,9 +354,9 @@ const InvoiceSummary = () => {
               type="monotone"
               dataKey="totalAmount"
               stroke="#047857"
-              strokeWidth={3}
-              dot={{ r: 5 }}
-              activeDot={{ r: 7 }}
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              activeDot={{ r: 6 }}
             />
           </LineChart>
         </ResponsiveContainer>

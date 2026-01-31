@@ -26,11 +26,24 @@ export default function OtpVerify() {
     setLoading(true);
     try {
       const res = await axios.post('https://aevix-chemical-mpbw.vercel.app/api/auth/verify-otp', { email, otp });
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      localStorage.removeItem('loginEmail');
+      
+      // Store user data
+      const userObj = res.data.user;
+      const normalizedEmail = userObj.email.toLowerCase();
+      
+      localStorage.setItem('user', JSON.stringify(userObj));
+      localStorage.setItem('loginEmail', normalizedEmail); // ✅ Keep email for profile fetching
+      
+      console.log('✅ Login successful! User:', userObj);
+      console.log('📧 Email stored in localStorage:', normalizedEmail);
+      
       setMessage('Verified! Redirecting...');
+      
       // Dispatch login event
-      try { window.dispatchEvent(new CustomEvent('user:login', { detail: res.data.user })); } catch(e) {}
+      try { 
+        window.dispatchEvent(new CustomEvent('user:login', { detail: userObj })); 
+      } catch(e) {}
+      
       navigate('/dashboard/overview');
     } catch (err) {
       setMessage(err.response?.data?.message || 'Invalid OTP');

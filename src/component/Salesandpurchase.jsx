@@ -55,18 +55,18 @@ const MiniBarChart = ({ data }) => (
    Sale / Purchase Card
 ====================== */
 const InvoiceAmountCard = ({ title, monthLabel, amount, chartData }) => (
-  <div className="bg-white rounded-xl shadow-md p-6">
-    <h2 className="text-lg font-semibold">{title}</h2>
+  <div className="bg-white rounded-xl shadow-md p-4 sm:p-6">
+    <h2 className="text-base sm:text-lg font-semibold">{title}</h2>
 
-    <p className="text-sm text-gray-500 mt-2">
+    <p className="text-xs sm:text-sm text-gray-500 mt-2">
       {monthLabel}
     </p>
 
-    <p className="text-2xl font-bold mt-1">
+    <p className="text-xl sm:text-2xl font-bold mt-1">
       ₹ {amount.toLocaleString('en-IN')}
     </p>
 
-    <div className="mt-4">
+    <div className="mt-3 sm:mt-4">
       <MiniBarChart data={chartData} />
     </div>
   </div>
@@ -154,12 +154,12 @@ const Overview = () => {
   }
 
   return (
-    <div className="p-2 bg-cyan-50 ">
+    <div className="p-2 sm:p-4 bg-cyan-50 ">
 
       {/* ======================
           SALE & PURCHASE CARDS
       ====================== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {saleCard && (
           <InvoiceAmountCard
             title="Sale"

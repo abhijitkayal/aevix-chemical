@@ -28,28 +28,71 @@ const Header = () => {
   });
 
   useEffect(() => {
+    console.log("🚀 Header useEffect triggered - Starting to fetch profile");
+    console.log("📦 All localStorage items:", { ...localStorage });
+    
     const fetchProfile = async () => {
       try {
-        const email = localStorage.getItem("loginEmail");
-        if (!email) return;
+        let email = localStorage.getItem("loginEmail");
+        const user = localStorage.getItem("user");
+        console.log("📧 Login Email from localStorage:", email);
+        console.log("👤 User from localStorage:", user);
+        
+        // Fallback: if no loginEmail but user exists, extract and store it
+        if (!email && user) {
+          try {
+            const userObj = JSON.parse(user);
+            if (userObj.email) {
+              email = userObj.email.toLowerCase();
+              localStorage.setItem("loginEmail", email);
+              console.log("🔧 Fixed: Extracted email from user object:", email);
+            }
+          } catch (e) {
+            console.error("Failed to parse user object:", e);
+          }
+        }
+        
+        if (!email) {
+          console.warn("⚠️ No email found in localStorage");
+          console.log("🔍 Checking all localStorage keys:", Object.keys(localStorage));
+          return;
+        }
 
+        console.log("🔄 Fetching profile for:", email);
         const res = await axios.get(
           `https://aevix-chemical-mpbw.vercel.app/api/profile/${email}`,
         );
 
-        setProfileData({
+        console.log("✅ Profile data fetched:", res.data);
+        
+        const newProfileData = {
           name: res.data.name,
           email: res.data.email,
-          imageUrl: res.data.imageUrl || profileData.imageUrl,
-        });
+          imageUrl: res.data.imageUrl || "https://randomuser.me/api/portraits/men/32.jpg",
+        };
+        
+        console.log("📝 Setting profile data:", newProfileData);
+        setProfileData(newProfileData);
       } catch (err) {
         console.error(
-          "Profile fetch error:",
+          "❌ Profile fetch error:",
           err.response?.data || err.message,
         );
       }
     };
+    
+    console.log("🎯 About to call fetchProfile()");
     fetchProfile();
+    console.log("✨ fetchProfile() called");
+
+    // Listen for login events
+    const handleLoginEvent = (e) => {
+      console.log("🔔 Login event received:", e.detail);
+      fetchProfile();
+    };
+
+    window.addEventListener('user:login', handleLoginEvent);
+    return () => window.removeEventListener('user:login', handleLoginEvent);
   }, []);
 
   const handleSendMessage = () => {
@@ -62,13 +105,29 @@ const Header = () => {
   const getHoverClass = (extraClasses = "") =>
     `${extraClasses} hover:bg-gray-100`;
 
+  // Get avatar initials and color
+  const getAvatarInitial = (name) => {
+    if (!name || name.trim() === "") return "U";
+    return name.trim().charAt(0).toUpperCase();
+  };
+
+  const getAvatarColor = (name) => {
+    const colors = [
+      'bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-pink-500',
+      'bg-indigo-500', 'bg-red-500', 'bg-yellow-500', 'bg-teal-500'
+    ];
+    if (!name) return colors[0];
+    const index = name.charCodeAt(0) % colors.length;
+    return colors[index];
+  };
+
   return (
     <>
       {/* HEADER */}
       <div className="flex items-center justify-between md:justify-between shadow-md px-4 md:px-6 py-3 fixed top-0 left-0 md:left-64 right-0 z-40 duration-300 bg-gray-100 text-gray-900">
         {/* MOBILE CENTERED HELLO */}
         <div className="flex-1 flex justify-center md:justify-start">
-          <h2 className="text-lg font-semibold truncate">{`👋 Hello, ${profileData?.name}`}</h2>
+          <h2 className="text-lg font-semibold truncate" onClick={console.log(` hello ${profileData}`)}>{`👋 Hello, ${profileData.name}`}</h2>
         </div>
 
         {/* DESKTOP SEARCH BAR */}
@@ -115,11 +174,11 @@ const Header = () => {
             className={` sm:flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors duration-300 ${getHoverClass()}`}
             onClick={() => setShowProfilePopup(true)}
           >
-            <img
-              src={profileData.imageUrl}
-              alt="profile"
-              className="w-8 h-8 rounded-full"
-            />
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${getAvatarColor(profileData.name)}`}
+            >
+              {getAvatarInitial(profileData.name)}
+            </div>
             <div className="flex flex-col">
               <p className="text-sm font-medium truncate">
                 {profileData?.name}
@@ -160,11 +219,11 @@ const Header = () => {
               ✕
             </button>
             <div className="flex flex-col items-center space-y-4">
-              <img
-                src={profileData.imageUrl}
-                alt="profile"
-                className="w-24 h-24 rounded-full"
-              />
+              <div
+                className={`w-24 h-24 rounded-full flex items-center justify-center text-white font-bold text-4xl ${getAvatarColor(profileData.name)}`}
+              >
+                {getAvatarInitial(profileData.name)}
+              </div>
               <div className="text-center space-y-1">
                 <p className="font-semibold text-lg">{profileData.name}</p>
                 <p className="text-sm text-gray-400">{profileData.email}</p>

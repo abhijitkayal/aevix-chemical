@@ -27,13 +27,19 @@ export default function QuotationInvoiceView({ quotation }) {
   const grandTotal = subtotal + totalTax;
 
   return (
-    <div className="bg-white px-12 py-8 text-sm w-full">
+    <div 
+      className="bg-white px-12 py-8 text-sm w-full" 
+      style={{ 
+        backgroundColor: '#ffffff',
+        color: '#000000'
+      }}
+    >
       {/* HEADER */}
       <div className="flex justify-between border-b pb-3 mb-4">
         <div className="flex gap-3">
           <img src={logo} alt="logo" className="w-20 h-20" />
           <div>
-            <h2 className="text-xl font-bold">VERTEX EXPORTS</h2>
+            <h2 className="text-xl font-bold">AEVIX CHEMICAL</h2>
             <p>158 Lenin Sarani, 2nd Floor</p>
             <p>Kolkata, West Bengal - 700013</p>
             <p><b>GSTIN:</b> 19BQJPR8561B1ZG</p>
@@ -160,7 +166,7 @@ export default function QuotationInvoiceView({ quotation }) {
           })}
 
           {/* Subtotal Row */}
-          <tr className="font-semibold bg-gray-50">
+          <tr className="font-semibold" style={{ backgroundColor: '#f9fafb' }}>
             <td colSpan="5" className="border p-2 text-right">Subtotal:</td>
             <td className="border p-2 text-right">₹{subtotal.toFixed(2)}</td>
             {isWestBengal ? (
@@ -175,7 +181,7 @@ export default function QuotationInvoiceView({ quotation }) {
           </tr>
 
           {/* Grand Total Row */}
-          <tr className="font-bold bg-gray-100">
+          <tr className="font-bold" style={{ backgroundColor: '#f3f4f6' }}>
             <td colSpan={isWestBengal ? 8 : 7} className="border p-2 text-right">
               Grand Total:
             </td>
@@ -195,7 +201,7 @@ export default function QuotationInvoiceView({ quotation }) {
 
         <div className="text-right">
           <p>Certified that the particulars given above are true.</p>
-          <p className="mt-10 font-semibold">For VERTEX EXPORTS</p>
+          <p className="mt-10 font-semibold">For  AEVIX CHEMICAL</p>
           <p className="mt-6">Authorised Signatory</p>
         </div>
       </div>

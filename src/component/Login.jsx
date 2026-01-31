@@ -92,11 +92,12 @@
 // export default Login;
 
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
@@ -106,6 +107,28 @@ const Login = () => {
   const [otpRequired, setOtpRequired] = useState(false);
 const [otp, setOtp] = useState("");
 const [userId, setUserId] = useState(null);
+
+  // Scroll button visibility handler
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 200) {
+        setShowScrollButton(true);
+      } else {
+        setShowScrollButton(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
 
 
   // 🔐 SIGN IN FUNCTION
@@ -341,6 +364,30 @@ const [userId, setUserId] = useState(null);
           </p>
         </div>
       </div>
+
+      {/* Scroll to Top Button - Mobile Only */}
+      {showScrollButton && (
+        <button
+          onClick={scrollToTop}
+          className="fixed bottom-6 right-6 md:hidden bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-full shadow-lg transition-all duration-300 ease-in-out transform hover:scale-110 z-50"
+          aria-label="Scroll to top"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M5 10l7-7m0 0l7 7m-7-7v18"
+            />
+          </svg>
+        </button>
+      )}
 
     </div>
   );
