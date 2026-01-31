@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Download, Edit, Eye, Pencil, Plus, X, Mail, Send } from "lucide-react";
 import { API_URL } from "../config/api";
 import InvoicePDF from "./Invoicepdf";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const pdfRef = useRef(null);
   const [dateFilter, setDateFilter] = useState({
     from: "",
     to: "",
@@ -299,6 +302,96 @@ const Invoice = () => {
     }
   };
 
+  // Client-side PDF Download
+  const handleDownloadPDF = async (invoice) => {
+    try {
+      console.log("Starting PDF generation for invoice:", invoice.invoiceNo);
+      
+      // Create a temporary container for PDF generation
+      const tempDiv = document.createElement('div');
+      tempDiv.style.position = 'absolute';
+      tempDiv.style.left = '-9999px';
+      tempDiv.style.top = '0';
+      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.style.backgroundColor = '#ffffff';
+      document.body.appendChild(tempDiv);
+      
+      // Render InvoicePDF component into temp div
+      const { createRoot } = await import('react-dom/client');
+      const root = createRoot(tempDiv);
+      
+      await new Promise((resolve) => {
+        root.render(
+          React.createElement(InvoicePDF, { invoice: invoice })
+        );
+        setTimeout(resolve, 500);
+      });
+
+      // Generate canvas from the rendered content
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff",
+        windowWidth: tempDiv.scrollWidth,
+        windowHeight: tempDiv.scrollHeight,
+        onclone: (clonedDoc) => {
+          const allElements = clonedDoc.querySelectorAll('*');
+          allElements.forEach((el) => {
+            const computedStyle = window.getComputedStyle(el);
+            
+            ['color', 'backgroundColor', 'borderColor', 'fill', 'stroke'].forEach((prop) => {
+              const value = computedStyle[prop];
+              if (value && value.includes('oklch')) {
+                el.style[prop] = prop === 'color' ? '#000000' : 
+                                 prop === 'backgroundColor' ? '#ffffff' : 
+                                 'transparent';
+              }
+            });
+            
+            if (el.style.cssText && el.style.cssText.includes('oklch')) {
+              el.style.cssText = el.style.cssText.replace(/oklch\([^)]+\)/g, '#000000');
+            }
+          });
+        },
+      });
+
+      console.log("Canvas generated, creating PDF...");
+      
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
+
+      pdf.addImage(
+        imgData,
+        "PNG",
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio,
+      );
+      
+      console.log("Saving PDF...");
+      pdf.save(`Invoice-${invoice.invoiceNo || "document"}.pdf`);
+      console.log("PDF saved successfully");
+
+      // Cleanup
+      root.unmount();
+      document.body.removeChild(tempDiv);
+      
+    } catch (error) {
+      console.error("Error in PDF generation:", error);
+      alert("Failed to generate PDF: " + error.message);
+    }
+  };
+
   const handleSubmit = async () => {
     try {
       const payload = {
@@ -460,13 +553,9 @@ const Invoice = () => {
 
                   {/* DOWNLOAD */}
                   <button
-                    onClick={() =>
-                      window.open(
-                        `${API_URL}/api/invoices/${inv._id}/download`,
-                        "_blank",
-                      )
-                    }
+                    onClick={() => handleDownloadPDF(inv)}
                     className="text-blue-600 underline"
+                    title="Download PDF"
                   >
                     <Download size={14} />
                   </button>
