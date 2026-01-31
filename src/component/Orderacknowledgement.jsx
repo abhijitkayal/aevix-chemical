@@ -446,51 +446,56 @@ export default function OrderAcknowledgement() {
           <Plus size={18} /> Create OA
         </button>
       </div>
-      <table className="w-full bg-white border text-sm">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-3">OA No</th>
-            <th className="p-3">Buyer</th>
-            <th className="p-3">Date</th>
-            <th className="p-3">Total</th>
-            <th className="p-3 text-left">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((oa) => (
-            <tr key={oa._id} className="border-t">
-              <td className="p-3 text-center">{oa.oaNumber}</td>
-              <td className="p-3 text-center">{oa.buyer.name}</td>
-              <td className="p-3 text-center">
-                {new Date(oa.oaDate).toLocaleDateString()}
-              </td>
-              <td className="p-3 text-center">₹ {oa.totalAmount}</td>
-              <td className="p-3 text-center flex gap-2">
-                <button onClick={() => handleView(oa)} title="View">
-                  <Eye />
-                </button>
-                <button onClick={() => handleDownload(oa)} title="Download PDF">
-                  <Download />
-                </button>
-                <button
-                  onClick={() => handleEmailOpen(oa)}
-                  title="Send Email"
-                  className="text-blue-600"
-                >
-                  <Mail />
-                </button>
-              </td>
-
-              {/* Hidden PDF */}
-              <td className="hidden">
-                <div id={`oa-${oa._id}`}>
-                  <OrderAckPDF oa={oa} />
-                </div>
-              </td>
+      <div className="w-full overflow-x-auto">
+        <table className="w-full bg-white border text-sm">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="p-3">OA No</th>
+              <th className="p-3">Buyer</th>
+              <th className="p-3">Date</th>
+              <th className="p-3">Total</th>
+              <th className="p-3 text-left">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data.map((oa) => (
+              <tr key={oa._id} className="border-t">
+                <td className="p-3 text-center">{oa.oaNumber}</td>
+                <td className="p-3 text-center">{oa.buyer.name}</td>
+                <td className="p-3 text-center">
+                  {new Date(oa.oaDate).toLocaleDateString()}
+                </td>
+                <td className="p-3 text-center">₹ {oa.totalAmount}</td>
+                <td className="p-3 text-center flex gap-2">
+                  <button onClick={() => handleView(oa)} title="View">
+                    <Eye />
+                  </button>
+                  <button
+                    onClick={() => handleDownload(oa)}
+                    title="Download PDF"
+                  >
+                    <Download />
+                  </button>
+                  <button
+                    onClick={() => handleEmailOpen(oa)}
+                    title="Send Email"
+                    className="text-blue-600"
+                  >
+                    <Mail />
+                  </button>
+                </td>
+
+                {/* Hidden PDF */}
+                <td className="hidden">
+                  <div id={`oa-${oa._id}`}>
+                    <OrderAckPDF oa={oa} />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {selectedOA && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">

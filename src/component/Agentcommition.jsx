@@ -302,7 +302,7 @@
 //               <Users className="text-indigo-600" size={40} />
 //             </div>
 //           </div>
-          
+
 //           <div className="bg-white p-6 rounded-lg shadow">
 //             <div className="flex items-center justify-between">
 //               <div>
@@ -574,7 +574,7 @@
 //                         <p className="text-xl font-bold text-blue-600">{selectedAgent.commissionRate}%</p>
 //                       </div>
 //                     </div>
-                    
+
 //                     <div className="border-t pt-4">
 //                       <div className="flex justify-between py-2 text-sm">
 //                         <span className="text-gray-700">Gross Commission</span>
@@ -637,9 +637,6 @@
 
 // export default Agentcommition;
 
-
-
-
 "use client";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -700,10 +697,7 @@ const AgentCommission = () => {
     e.preventDefault();
 
     if (editingId) {
-      await axios.put(
-        `${API_URL}/api/commissions/${editingId}`,
-        form
-      );
+      await axios.put(`${API_URL}/api/commissions/${editingId}`, form);
     } else {
       await axios.post("${API_URL}/api/commissions", form);
     }
@@ -730,14 +724,18 @@ const AgentCommission = () => {
   };
 
   return (
-    <div className="p-6 mt-10">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Agent Commission</h1>
+    <div className="p-6 mt-15 min-h-screen">
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          Agent Commission
+        </h1>
+
         <button
           onClick={() => setShowForm(true)}
-          className="bg-indigo-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          className="bg-orange-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
-          <Plus /> Add Commission
+          <Plus size={18} /> Add Commission
         </button>
       </div>
 
@@ -844,9 +842,7 @@ const AgentCommission = () => {
             <div className="bg-gray-100 p-3 rounded mb-3 text-sm">
               <p>Commission: ₹{form.commission}</p>
               <p>TDS (10%): ₹{form.tds}</p>
-              <p className="font-bold">
-                Net Payable: ₹{form.netPayable}
-              </p>
+              <p className="font-bold">Net Payable: ₹{form.netPayable}</p>
             </div>
 
             <div className="flex justify-end gap-2">

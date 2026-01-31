@@ -542,7 +542,6 @@
 //   );
 // }
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X, ArrowRightLeft, ArrowUpCircle } from "lucide-react";
@@ -567,12 +566,16 @@ export default function Movement() {
 
   /* FETCH */
   const fetchMovements = async () => {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/movements");
+    const res = await axios.get(
+      "https://aevix-chemical-mpbw.vercel.app/api/movements",
+    );
     setMovements(res.data);
   };
 
   const fetchWarehouses = async () => {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/warehouses");
+    const res = await axios.get(
+      "https://aevix-chemical-mpbw.vercel.app/api/warehouses",
+    );
     setWarehouses(res.data);
   };
 
@@ -588,7 +591,10 @@ export default function Movement() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("https://aevix-chemical-mpbw.vercel.app/api/movements", form);
+      await axios.post(
+        "https://aevix-chemical-mpbw.vercel.app/api/movements",
+        form,
+      );
       setShowModal(false);
       fetchMovements();
       setForm({
@@ -611,11 +617,12 @@ export default function Movement() {
   return (
     <div className="mt-16 space-y-6">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Stock Movements</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">Stock Movements</h1>
+
         <button
           onClick={() => setShowModal(true)}
-          className="bg-emerald-600 text-white px-4 py-2 rounded flex items-center gap-2"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
           <Plus size={18} /> Create Movement
         </button>
@@ -660,16 +667,37 @@ export default function Movement() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-6 rounded w-full max-w-xl relative">
-            <X className="absolute top-4 right-4 cursor-pointer" onClick={() => setShowModal(false)} />
+            <X
+              className="absolute top-4 right-4 cursor-pointer"
+              onClick={() => setShowModal(false)}
+            />
 
             <h2 className="text-xl font-bold mb-4">Create Movement</h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input name="productName" placeholder="Product Name" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
+              <input
+                name="productName"
+                placeholder="Product Name"
+                required
+                className="w-full border border-black rounded py-2 px-2"
+                onChange={handleChange}
+              />
 
               <div className="grid grid-cols-3 gap-3">
-                <input type="number" name="quantity" placeholder="Quantity" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
-                <select name="unit" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} >
+                <input
+                  type="number"
+                  name="quantity"
+                  placeholder="Quantity"
+                  required
+                  className="w-full border border-black rounded py-2 px-2"
+                  onChange={handleChange}
+                />
+                <select
+                  name="unit"
+                  required
+                  className="w-full border border-black rounded py-2 px-2"
+                  onChange={handleChange}
+                >
                   <option value="">Unit</option>
                   <option>Kg</option>
                   <option>Liter</option>
@@ -678,37 +706,79 @@ export default function Movement() {
                   <option>Packets</option>
                   <option>Ton</option>
                 </select>
-                <input type="number" name="unitPrice" placeholder="Unit Price" className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
+                <input
+                  type="number"
+                  name="unitPrice"
+                  placeholder="Unit Price"
+                  className="w-full border border-black rounded py-2 px-2"
+                  onChange={handleChange}
+                />
               </div>
 
-              <select name="fromWarehouse" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} >
+              <select
+                name="fromWarehouse"
+                required
+                className="w-full border border-black rounded py-2 px-2"
+                onChange={handleChange}
+              >
                 <option value="">From Warehouse</option>
                 {warehouses.map((w) => (
-                  <option key={w._id} value={w.warehouse}>{w.warehouse}</option>
+                  <option key={w._id} value={w.warehouse}>
+                    {w.warehouse}
+                  </option>
                 ))}
               </select>
 
-              <select name="toType" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} >
+              <select
+                name="toType"
+                required
+                className="w-full border border-black rounded py-2 px-2"
+                onChange={handleChange}
+              >
                 <option value="">Destination Type</option>
                 <option value="Client">Client</option>
                 <option value="Warehouse">Warehouse</option>
               </select>
 
               {form.toType === "Client" && (
-                <input name="toClientName" placeholder="Client Name" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
+                <input
+                  name="toClientName"
+                  placeholder="Client Name"
+                  required
+                  className="w-full border border-black rounded py-2 px-2"
+                  onChange={handleChange}
+                />
               )}
 
               {form.toType === "Warehouse" && (
-                <select name="toWarehouse" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} >
+                <select
+                  name="toWarehouse"
+                  required
+                  className="w-full border border-black rounded py-2 px-2"
+                  onChange={handleChange}
+                >
                   <option value="">To Warehouse</option>
                   {warehouses.map((w) => (
-                    <option key={w._id} value={w.warehouse}>{w.warehouse}</option>
+                    <option key={w._id} value={w.warehouse}>
+                      {w.warehouse}
+                    </option>
                   ))}
                 </select>
               )}
 
-              <input type="date" name="date" required className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
-              <textarea name="remarks" placeholder="Remarks" className="w-full border border-black rounded py-2 px-2" onChange={handleChange} />
+              <input
+                type="date"
+                name="date"
+                required
+                className="w-full border border-black rounded py-2 px-2"
+                onChange={handleChange}
+              />
+              <textarea
+                name="remarks"
+                placeholder="Remarks"
+                className="w-full border border-black rounded py-2 px-2"
+                onChange={handleChange}
+              />
 
               <button className="w-full bg-emerald-600 text-white py-2 rounded">
                 Save Movement

@@ -693,7 +693,6 @@
 
 // export default User;
 
-
 // ;
 // ;
 import React, { useEffect, useState } from "react";
@@ -718,7 +717,7 @@ const User = () => {
   /* ================= FETCH USERS ================= */
   const fetchUsers = async () => {
     const res = await axios.get(
-      "https://aevix-chemical-mpbw.vercel.app/api/users"
+      "https://aevix-chemical-mpbw.vercel.app/api/users",
     );
     setUsers(res.data);
   };
@@ -732,40 +731,40 @@ const User = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  if (!isEdit && !form.password) {
-    alert("Password is required");
-    return;
-  }
-
-  const payload = { ...form };
-
-  if (isEdit && !payload.password) {
-    delete payload.password;
-  }
-
-  try {
-    if (isEdit) {
-      await axios.put(
-        `https://aevix-chemical-mpbw.vercel.app/api/users/${editId}`,
-        payload
-      );
-    } else {
-      await axios.post(
-        "https://aevix-chemical-mpbw.vercel.app/api/users",
-        payload
-      );
+    if (!isEdit && !form.password) {
+      alert("Password is required");
+      return;
     }
 
-    resetForm();
-    fetchUsers();
-  } catch (err) {
-    alert(err.response?.data?.message || "User creation failed");
-    console.error(err);
-  }
-};
+    const payload = { ...form };
+
+    if (isEdit && !payload.password) {
+      delete payload.password;
+    }
+
+    try {
+      if (isEdit) {
+        await axios.put(
+          `https://aevix-chemical-mpbw.vercel.app/api/users/${editId}`,
+          payload,
+        );
+      } else {
+        await axios.post(
+          "https://aevix-chemical-mpbw.vercel.app/api/users",
+          payload,
+        );
+      }
+
+      resetForm();
+      fetchUsers();
+    } catch (err) {
+      alert(err.response?.data?.message || "User creation failed");
+      console.error(err);
+    }
+  };
 
   const handleEdit = (user) => {
     setForm({
@@ -784,7 +783,7 @@ const User = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     await axios.delete(
-      `https://aevix-chemical-mpbw.vercel.app/api/users/${id}`
+      `https://aevix-chemical-mpbw.vercel.app/api/users/${id}`,
     );
     fetchUsers();
   };
@@ -804,13 +803,13 @@ const User = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen mt-10">
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold">User Management</h1>
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg"
+          className="text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center bg-blue-600"
         >
           <Plus size={18} /> Add User
         </button>
@@ -859,42 +858,81 @@ const User = () => {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md p-6 rounded-xl relative">
-            <X className="absolute right-4 top-4 cursor-pointer" onClick={resetForm} />
+            <X
+              className="absolute right-4 top-4 cursor-pointer"
+              onClick={resetForm}
+            />
 
             <h2 className="text-xl font-bold mb-4">
               {isEdit ? "Edit User" : "Create User"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input name="name" placeholder="Name" className="w-full border px-3 py-2 rounded"
-                value={form.name} onChange={handleChange} required />
-
-              <input name="email" type="email" placeholder="Email" className="w-full border px-3 py-2 rounded"
-                value={form.email} onChange={handleChange} required />
-
-              <input name="password" type="password"
-                placeholder={isEdit ? "Leave blank to keep password" : "Password"}
+              <input
+                name="name"
+                placeholder="Name"
                 className="w-full border px-3 py-2 rounded"
-                value={form.password} onChange={handleChange}
-                required={!isEdit} />
+                value={form.name}
+                onChange={handleChange}
+                required
+              />
 
-              <input name="phone" placeholder="Phone" className="w-full border px-3 py-2 rounded"
-                value={form.phone} onChange={handleChange} />
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                className="w-full border px-3 py-2 rounded"
+                value={form.email}
+                onChange={handleChange}
+                required
+              />
 
-              <select name="role" className="w-full border px-3 py-2 rounded"
-                value={form.role} onChange={handleChange} required>
+              <input
+                name="password"
+                type="password"
+                placeholder={
+                  isEdit ? "Leave blank to keep password" : "Password"
+                }
+                className="w-full border px-3 py-2 rounded"
+                value={form.password}
+                onChange={handleChange}
+                required={!isEdit}
+              />
+
+              <input
+                name="phone"
+                placeholder="Phone"
+                className="w-full border px-3 py-2 rounded"
+                value={form.phone}
+                onChange={handleChange}
+              />
+
+              <select
+                name="role"
+                className="w-full border px-3 py-2 rounded"
+                value={form.role}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Select Role</option>
                 <option value="Sales">Sales</option>
                 <option value="Accountant">Accountant</option>
                 <option value="Employee">Employee</option>
               </select>
 
-              <input name="employeeId" placeholder="Employee ID"
+              <input
+                name="employeeId"
+                placeholder="Employee ID"
                 className="w-full border px-3 py-2 rounded"
-                value={form.employeeId} onChange={handleChange} required />
+                value={form.employeeId}
+                onChange={handleChange}
+                required
+              />
 
-              <button type="submit"
-                className="w-full bg-blue-600 text-white py-2 rounded-lg">
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 rounded-lg"
+              >
                 {isEdit ? "Update User" : "Save User"}
               </button>
             </form>

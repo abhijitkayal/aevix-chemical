@@ -280,7 +280,6 @@
 //   reference: ""
 // });
 
-
 //   return (
 //     <div className="p-6 mt-10 min-h-screen">
 //       <div className="max-w-7xl mx-auto">
@@ -304,7 +303,7 @@
 //               <DollarSign className="text-green-600" size={40} />
 //             </div>
 //           </div>
-          
+
 //           <div className="bg-white p-6 rounded-lg shadow">
 //             <div className="flex items-center justify-between">
 //               <div>
@@ -421,7 +420,7 @@
 //               </button>
 //             </div>
 
-//             <button 
+//             <button
 //             onClick={() => setShowCreateForm(true)}
 //             className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
 //               <Plus size={20} />
@@ -548,7 +547,6 @@
 //     </div>
 //   </div>
 // )}
-
 
 //         {/* Payments Table */}
 //         <div className="bg-white rounded-lg shadow overflow-hidden">
@@ -737,9 +735,6 @@
 
 // export default Inwardpayment;
 
-
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "lucide-react";
@@ -814,65 +809,61 @@ export default function InwardPayment() {
   // };
 
   const handleSubmit = async () => {
-  try {
-    const data = new FormData();
+    try {
+      const data = new FormData();
 
-    // Append only valid values
-    Object.entries(formData).forEach(([key, value]) => {
-      if (value !== null && value !== "") {
-        data.append(key, value);
+      // Append only valid values
+      Object.entries(formData).forEach(([key, value]) => {
+        if (value !== null && value !== "") {
+          data.append(key, value);
+        }
+      });
+
+      // Basic frontend validation
+      if (
+        !formData.receiptNo ||
+        !formData.companyName ||
+        !formData.paymentDate ||
+        !formData.amount ||
+        !formData.paymentType
+      ) {
+        alert("Please fill all required fields");
+        return;
       }
-    });
 
-    // Basic frontend validation
-    if (
-      !formData.receiptNo ||
-      !formData.companyName ||
-      !formData.paymentDate ||
-      !formData.amount ||
-      !formData.paymentType
-    ) {
-      alert("Please fill all required fields");
-      return;
+      await axios.post(API_URL, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      setShowForm(false);
+      setFormData({
+        receiptNo: "",
+        companyName: "",
+        address: "",
+        paymentDate: "",
+        amount: "",
+        paymentType: "",
+        attachment: null,
+      });
+
+      fetchPayments();
+    } catch (err) {
+      console.error("Submit error:", err.response?.data || err.message);
+      alert(err.response?.data?.error || "Failed to save payment");
     }
-
-    await axios.post(API_URL, data, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
-
-    setShowForm(false);
-    setFormData({
-      receiptNo: "",
-      companyName: "",
-      address: "",
-      paymentDate: "",
-      amount: "",
-      paymentType: "",
-      attachment: null,
-    });
-
-    fetchPayments();
-  } catch (err) {
-    console.error(
-      "Submit error:",
-      err.response?.data || err.message
-    );
-    alert(err.response?.data?.error || "Failed to save payment");
-  }
-};
-
+  };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Inward Payments</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">Inward Payments</h1>
+
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
-          <Plus size={20} /> Add New
+          <Plus size={18} /> Add New
         </button>
       </div>
 
@@ -935,7 +926,6 @@ export default function InwardPayment() {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-lg rounded-lg shadow-xl p-6 space-y-4">
-
             <h2 className="text-xl font-bold">Add Inward Payment</h2>
 
             <input
@@ -993,11 +983,7 @@ export default function InwardPayment() {
               {/* <option>Online Payment</option> */}
             </select>
 
-            <input
-              type="file"
-              name="attachment"
-              onChange={handleChange}
-            />
+            <input type="file" name="attachment" onChange={handleChange} />
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -1013,7 +999,6 @@ export default function InwardPayment() {
                 Save
               </button>
             </div>
-
           </div>
         </div>
       )}

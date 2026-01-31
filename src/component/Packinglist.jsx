@@ -120,7 +120,7 @@
 
 //         {/* Packing List Document */}
 //         <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          
+
 //           {/* Header */}
 //           <div className="bg-gradient-to-r from-purple-600 to-purple-800 text-white p-6">
 //             <div className="flex justify-between items-start">
@@ -319,7 +319,7 @@
 //           <div className="px-6 pb-6">
 //             <div className="border-t pt-4">
 //               <p className="text-xs text-gray-600 italic">
-//                 We hereby certify that the above particulars are correct and that the packages are properly packed, marked, 
+//                 We hereby certify that the above particulars are correct and that the packages are properly packed, marked,
 //                 labeled and in proper condition for transportation according to applicable regulations.
 //               </p>
 //             </div>
@@ -365,12 +365,8 @@
 
 // export default Packinglist;
 
-
-
-
 import { useEffect, useState } from "react";
 import axios from "axios";
-import React from "react";
 import { Plus, X } from "lucide-react";
 
 export default function Packinglist() {
@@ -403,13 +399,18 @@ export default function Packinglist() {
     setForm({ ...form, [e.target.name]: e.target.value });
 
   const savePacking = async () => {
-    await axios.post("https://aevix-chemical-mpbw.vercel.app/api/packing-list", form);
+    await axios.post(
+      "https://aevix-chemical-mpbw.vercel.app/api/packing-list",
+      form,
+    );
     setOpen(false);
     fetchData();
   };
 
   const fetchData = async () => {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/packing-list");
+    const res = await axios.get(
+      "https://aevix-chemical-mpbw.vercel.app/api/packing-list",
+    );
     setLists(res.data);
   };
 
@@ -419,7 +420,6 @@ export default function Packinglist() {
 
   return (
     <div className="p-6 mt-15 min-h-screen">
-   
       {/* RIGHT BUTTON */}
       <div className="flex justify-end mb-4">
         <button
@@ -434,7 +434,10 @@ export default function Packinglist() {
       {open && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-6xl p-6 rounded relative">
-            <X className="absolute right-4 top-4 cursor-pointer" onClick={() => setOpen(false)} />
+            <X
+              className="absolute right-4 top-4 cursor-pointer"
+              onClick={() => setOpen(false)}
+            />
 
             <h2 className="text-xl font-bold mb-4">Create Packing List</h2>
 
@@ -442,13 +445,43 @@ export default function Packinglist() {
               {/* LEFT */}
               <div>
                 <h3 className="font-semibold">Customer Information</h3>
-                <input name="customerName" placeholder="M/S *" className="input w-full border-2 rounded py-2 mt-2 px-2" onChange={handleChange} />
-                <textarea name="address" placeholder="Address" className="input w-full border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
+                <input
+                  name="customerName"
+                  placeholder="M/S *"
+                  className="input w-full border-2 rounded py-2 mt-2 px-2"
+                  onChange={handleChange}
+                />
+                <textarea
+                  name="address"
+                  placeholder="Address"
+                  className="input w-full border-2 rounded py-2 px-2 mt-2"
+                  onChange={handleChange}
+                />
                 <div className="grid grid-cols-2 gap-3">
-                <input name="contactPerson" placeholder="Contact Person" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="phone" placeholder="Phone No" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="gstin" placeholder="GSTIN / PAN" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="placeOfSupply" placeholder="Place of Supply *" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
+                  <input
+                    name="contactPerson"
+                    placeholder="Contact Person"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="phone"
+                    placeholder="Phone No"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="gstin"
+                    placeholder="GSTIN / PAN"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="placeOfSupply"
+                    placeholder="Place of Supply *"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
                 </div>
               </div>
 
@@ -456,26 +489,73 @@ export default function Packinglist() {
               <div>
                 <h3 className="font-semibold mb-2">Packing List Detail</h3>
                 <div className="grid grid-cols-2 gap-3">
-                <input name="packingNo" placeholder="Packing No *" className="input border-2 rounded py-2 px-2" onChange={handleChange} />
-                <input name="invoiceNo" placeholder="Invoice No *" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input type="date" name="invoiceDate" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input type="date" name="challanDate" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="poNo" placeholder="P.O. No" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input type="date" name="poDate" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="lrNo" placeholder="L.R. No" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <input name="ewayNo" placeholder="E-Way No" className="input border-2 rounded py-2 px-2 mt-2" onChange={handleChange} />
-                <select name="deliveryMode" className="input border-2 w-full rounded py-2 px-2 mt-2" onChange={handleChange}>
-                  <option value="">Select Delivery Mode</option>
-                  <option>Road</option>
-                  <option>Courier</option>
-                  <option>Transport</option>
-                </select>
+                  <input
+                    name="packingNo"
+                    placeholder="Packing No *"
+                    className="input border-2 rounded py-2 px-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="invoiceNo"
+                    placeholder="Invoice No *"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="date"
+                    name="invoiceDate"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="date"
+                    name="challanDate"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="poNo"
+                    placeholder="P.O. No"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    type="date"
+                    name="poDate"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="lrNo"
+                    placeholder="L.R. No"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <input
+                    name="ewayNo"
+                    placeholder="E-Way No"
+                    className="input border-2 rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  />
+                  <select
+                    name="deliveryMode"
+                    className="input border-2 w-full rounded py-2 px-2 mt-2"
+                    onChange={handleChange}
+                  >
+                    <option value="">Select Delivery Mode</option>
+                    <option>Road</option>
+                    <option>Courier</option>
+                    <option>Transport</option>
+                  </select>
                 </div>
               </div>
             </div>
 
             <div className="flex justify-end mt-6">
-              <button onClick={savePacking} className="bg-blue-600 text-white px-6 py-2 rounded">
+              <button
+                onClick={savePacking}
+                className="bg-blue-600 text-white px-6 py-2 rounded"
+              >
                 Save Packing List
               </button>
             </div>
@@ -483,27 +563,37 @@ export default function Packinglist() {
         </div>
       )}
 
-      {/* LIST VIEW */}
-      {lists.map((pl) => (
-        <div key={pl._id} className="bg-white grid grid-cols-2 p-4 rounded shadow mb-4 justify-between">
-         <div className="mb-3 text-left">
-          <h2 className="text-lg font-bold underline">Customer Details</h2>
-          <p><b>Address:</b> {pl.address}</p>
-          <p><b>Customer:</b> {pl.customerName}</p>
-          <p><b>Contact:</b> {pl.phone}</p>
-          <p><b>GST No:</b> {pl.gstin}</p>
-        </div>
-        {/* <hr/> */}
-        <div className="text-left ml-10">
-          <h2 className="text-lg font-bold underline">Packing Details</h2>
-          <p><b>Packing No:</b> {pl.packingNo}</p>
-          {/* <p><b>Customer:</b> {pl.customerName}</p> */}
-          <p><b>Invoice:</b> {pl.invoiceNo}</p>
-          <p><b>Place of Suply:</b>{pl.placeOfSupply}</p>
-          <p><b>Delivery:</b> {pl.deliveryMode}</p>
-        </div>
-        </div>
-      ))}
+      <div className="w-full overflow-x-auto">
+        <table className="min-w-225 w-full border border-gray-300 rounded bg-white">
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="border p-3 text-left">Customer</th>
+              <th className="border p-3 text-left">Address</th>
+              <th className="border p-3 text-left">Contact</th>
+              <th className="border p-3 text-left">GST No</th>
+              <th className="border p-3 text-left">Packing No</th>
+              <th className="border p-3 text-left">Invoice</th>
+              <th className="border p-3 text-left">Place of Supply</th>
+              <th className="border p-3 text-left">Delivery</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {lists.map((pl) => (
+              <tr key={pl._id} className="hover:bg-gray-50">
+                <td className="border p-3">{pl.customerName}</td>
+                <td className="border p-3">{pl.address}</td>
+                <td className="border p-3">{pl.phone}</td>
+                <td className="border p-3">{pl.gstin}</td>
+                <td className="border p-3 font-medium">{pl.packingNo}</td>
+                <td className="border p-3">{pl.invoiceNo}</td>
+                <td className="border p-3">{pl.placeOfSupply}</td>
+                <td className="border p-3">{pl.deliveryMode}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

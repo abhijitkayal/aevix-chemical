@@ -695,7 +695,6 @@
 
 // export default Jobwork;
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, Search, Package } from "lucide-react";
@@ -707,7 +706,9 @@ export default function Jobwork() {
   const [search, setSearch] = useState("");
 
   const fetchJobs = async () => {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/jobworks");
+    const res = await axios.get(
+      "https://aevix-chemical-mpbw.vercel.app/api/jobworks",
+    );
     setJobWorks(res.data.data || []);
   };
 
@@ -718,17 +719,19 @@ export default function Jobwork() {
   const filteredJobs = jobWorks.filter(
     (j) =>
       j.jobWorkNo?.toLowerCase().includes(search.toLowerCase()) ||
-      j.customerName?.toLowerCase().includes(search.toLowerCase())
+      j.customerName?.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
     <div className="p-6 mt-10">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Job Work Management</h1>
+
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">Job Work Management</h1>
+
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-emerald-600 text-white px-4 py-2 rounded-lg"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
           <Plus size={18} /> Create Job Work
         </button>

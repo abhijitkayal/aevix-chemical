@@ -149,7 +149,7 @@
 //     setShowModal(true);
 //   };
 //    const [showCreateForm, setShowCreateForm] = useState(false);
-  
+
 //   const [formData, setFormData] = useState({
 //     date: "",
 //     customer: "",
@@ -237,7 +237,7 @@
 //             />
 //           </div>
 
-//           <button 
+//           <button
 //           onClick={() => setShowCreateForm(true)}
 //           className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg">
 //             <Plus size={18} />
@@ -248,7 +248,7 @@
 //         {showCreateForm && (
 //   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 //     <div className="bg-white rounded-lg shadow-xl w-full max-w-lg">
-      
+
 //       {/* Header */}
 //       <div className="p-4 bg-orange-600 text-white flex justify-between items-center">
 //         <h2 className="text-xl font-bold">Create Credit Note</h2>
@@ -449,8 +449,6 @@
 // };
 
 // export default Debitnote;
-
-
 
 // import React, { useState } from 'react';
 // import { FileText, Download, Printer, RefreshCw, Search, Filter, Calendar, Plus, Eye, AlertCircle } from 'lucide-react';
@@ -799,7 +797,6 @@
 //   status: "Pending",
 // });
 
-
 //   return (
 //     <div className="p-6 mt-10 min-h-screen">
 //       <div className="max-w-7xl mx-auto">
@@ -823,7 +820,7 @@
 //               <FileText className="text-orange-600" size={40} />
 //             </div>
 //           </div>
-          
+
 //           <div className="bg-white p-6 rounded-lg shadow">
 //             <div className="flex items-center justify-between">
 //               <div>
@@ -946,7 +943,7 @@
 //               </button>
 //             </div>
 
-//             <button 
+//             <button
 //             onClick={() => setShowCreateForm(true)}
 //             className="flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700">
 //               <Plus size={20} />
@@ -957,7 +954,7 @@
 //         {showCreateForm && (
 //   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
 //     <div className="bg-white rounded-lg shadow-xl w-full max-w-lg">
-      
+
 //       {/* Header */}
 //       <div className="p-4 bg-orange-600 text-white flex justify-between items-center">
 //         <h2 className="text-xl font-bold">Create Credit Note</h2>
@@ -1074,7 +1071,6 @@
 //   </div>
 // )}
 
-
 //         {/* Credit Notes Table */}
 //         {/* Credit Notes Table */}
 // <div className="bg-white rounded-lg shadow overflow-hidden w-full">
@@ -1118,7 +1114,6 @@
 //     </table>
 //   </div>
 // </div>
-
 
 //         {/* Credit Note Details Modal */}
 //         {showModal && selectedNote && (
@@ -1278,8 +1273,6 @@
 
 // export default Creditnote;
 
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus } from "lucide-react";
@@ -1335,16 +1328,18 @@ export default function CreditNote() {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-between mb-6">
-        <h1 className="text-3xl font-bold">Debit Notes</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-3xl font-bold flex items-center gap-2">
+          Debit Notes
+        </h1>
+
         <button
           onClick={() => setShowForm(true)}
-          className="bg-orange-600 text-white px-4 py-2 rounded-lg flex gap-2"
+          className="bg-orange-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
-          <Plus /> Add Note
+          <Plus size={18} /> Add New
         </button>
       </div>
 
@@ -1378,29 +1373,73 @@ export default function CreditNote() {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center">
           <div className="bg-white p-6 rounded-lg w-full max-w-4xl">
-
             <h2 className="text-xl font-bold mb-4">Create Debit Note</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <input name="ms" placeholder="M/S *" onChange={handleChange} className="border p-2" />
-              <input name="dnNo" placeholder="D.N. No *" onChange={handleChange} className="border p-2" />
-              <input type="date" name="dnDate" onChange={handleChange} className="border p-2" />
-              <input name="invoiceNo" placeholder="Invoice No *" onChange={handleChange} className="border p-2" />
-              <input type="date" name="invoiceDate" onChange={handleChange} className="border p-2" />
-              <input name="placeOfSupply" placeholder="Place of Supply *" onChange={handleChange} className="border p-2" />
-              <input name="amount" placeholder="Amount *" onChange={handleChange} className="border p-2" />
-              <input name="deliveryMode" placeholder="Delivery Mode" onChange={handleChange} className="border p-2" />
+              <input
+                name="ms"
+                placeholder="M/S *"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                name="dnNo"
+                placeholder="D.N. No *"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                type="date"
+                name="dnDate"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                name="invoiceNo"
+                placeholder="Invoice No *"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                type="date"
+                name="invoiceDate"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                name="placeOfSupply"
+                placeholder="Place of Supply *"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                name="amount"
+                placeholder="Amount *"
+                onChange={handleChange}
+                className="border p-2"
+              />
+              <input
+                name="deliveryMode"
+                placeholder="Delivery Mode"
+                onChange={handleChange}
+                className="border p-2"
+              />
             </div>
 
             <div className="flex justify-end gap-3 mt-6">
-              <button onClick={() => setShowForm(false)} className="px-4 py-2 bg-gray-200 rounded">
+              <button
+                onClick={() => setShowForm(false)}
+                className="px-4 py-2 bg-gray-200 rounded"
+              >
                 Cancel
               </button>
-              <button onClick={handleSubmit} className="px-4 py-2 bg-orange-600 text-white rounded">
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 bg-orange-600 text-white rounded"
+              >
                 Save
               </button>
             </div>
-
           </div>
         </div>
       )}

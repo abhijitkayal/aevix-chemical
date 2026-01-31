@@ -308,7 +308,6 @@
 //   );
 // }
 
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
@@ -331,7 +330,9 @@ export default function Warehouses() {
   /* ---------------- FETCH WAREHOUSES ---------------- */
   const fetchWarehouses = async () => {
     try {
-      const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/warehouses");
+      const res = await axios.get(
+        "https://aevix-chemical-mpbw.vercel.app/api/warehouses",
+      );
       setWarehouses(res.data);
     } catch (err) {
       console.error("Failed to fetch warehouses", err);
@@ -359,12 +360,15 @@ export default function Warehouses() {
     }
 
     try {
-      await axios.post("https://aevix-chemical-mpbw.vercel.app/api/warehouses", {
-        warehouse: form.warehouse,
-        location: form.location,
-        totalItems: Number(form.totalItems),
-        capacity: Number(form.capacity),
-      });
+      await axios.post(
+        "https://aevix-chemical-mpbw.vercel.app/api/warehouses",
+        {
+          warehouse: form.warehouse,
+          location: form.location,
+          totalItems: Number(form.totalItems),
+          capacity: Number(form.capacity),
+        },
+      );
 
       setForm({
         warehouse: "",
@@ -384,16 +388,15 @@ export default function Warehouses() {
   /* ---------------- UI ---------------- */
   return (
     <div className="p-6 mt-15 min-h-screen">
-
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Warehouses</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">Warehouse Management</h1>
 
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
-          <Plus size={16} /> Add Warehouse
+          <Plus size={18} /> Add Warehouse
         </button>
       </div>
 
@@ -405,7 +408,9 @@ export default function Warehouses() {
             onClick={() => navigate(`/warehouse/${w._id}`)}
             className="bg-white p-5 rounded-xl shadow cursor-pointer hover:shadow-lg transition"
           >
-            <h3 className="text-lg font-semibold">Warehouse Name - {w.warehouse}</h3>
+            <h3 className="text-lg font-semibold">
+              Warehouse Name - {w.warehouse}
+            </h3>
             <p className="text-gray-500">Location - {w.location}</p>
 
             <p className="text-sm mt-1">
@@ -421,9 +426,7 @@ export default function Warehouses() {
               <div className="mt-3">
                 <div className="flex justify-between text-xs mb-1">
                   <span>Utilization</span>
-                  <span>
-                    {Math.round((w.totalItems / w.capacity) * 100)}%
-                  </span>
+                  <span>{Math.round((w.totalItems / w.capacity) * 100)}%</span>
                 </div>
                 <div className="h-2 bg-gray-200 rounded-full">
                   <div
@@ -431,7 +434,7 @@ export default function Warehouses() {
                     style={{
                       width: `${Math.min(
                         (w.totalItems / w.capacity) * 100,
-                        100
+                        100,
                       )}%`,
                     }}
                   />
@@ -446,15 +449,12 @@ export default function Warehouses() {
       {showModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-md p-6 rounded-xl relative">
-
             <X
               className="absolute right-4 top-4 cursor-pointer"
               onClick={() => setShowModal(false)}
             />
 
-            <h2 className="text-xl font-bold mb-4">
-              Add Warehouse
-            </h2>
+            <h2 className="text-xl font-bold mb-4">Add Warehouse</h2>
 
             <div className="space-y-3">
               <input

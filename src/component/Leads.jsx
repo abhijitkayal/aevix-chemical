@@ -596,7 +596,6 @@
 //   </div>
 // </div>
 
-
 //       {/* ================= MODAL ================= */}
 //       {showModal && (
 //         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
@@ -692,6 +691,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Plus } from "lucide-react";
 
 const API = "https://aevix-chemical-mpbw.vercel.app/api/leads";
 
@@ -768,9 +768,7 @@ export default function Leads() {
       gstin: lead.gstin || "",
       pan: lead.pan || "",
       placeOfSupply: lead.placeOfSupply || "",
-      reminderDate: lead.reminderDate
-        ? lead.reminderDate.substring(0, 10)
-        : "",
+      reminderDate: lead.reminderDate ? lead.reminderDate.substring(0, 10) : "",
       reminderNote: lead.reminderNote || "",
     });
 
@@ -785,135 +783,132 @@ export default function Leads() {
     fetchLeads();
   };
 
-  /* ================= UI ================= */
   return (
-    <div style={{ padding: 24 }} className="mt-10">
-      <div className="flex justify-between">
+    <div className="p-6 mt-16 min-h-screen bg-gray-50">
+      {/* HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-800">Leads</h2>
 
-    <h2>Leads</h2>
-
-      <button onClick={() => setShowModal(true)}>➕ Add Lead</button>
-      </div>
-      
-
-      <table
-        style={{
-          width: "100%",
-          marginTop: 20,
-          borderCollapse: "collapse",
-        }}
-      >
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>ID</th>
-            <th>Phone</th>
-            <th>Place of Supply</th>
-            <th>Address</th>
-            <th>Reminder Date</th>
-            <th>Reminder Note</th>
-            <th style={{ textAlign: "right" }}>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {leads.map((lead) => (
-            <tr key={lead._id} style={{ borderTop: "1px solid #ddd" }}>
-              <td>{lead.customerName}</td>
-              <td>{lead.customerId}</td>
-              <td>{lead.phone}</td>
-              <td>{lead.placeOfSupply}</td>
-              <td>{lead.address || "-"}</td>
-              <td>
-                {lead.reminderDate
-                  ? new Date(lead.reminderDate).toLocaleDateString()
-                  : "-"}
-              </td>
-              <td >{lead?.reminderNote || "-"}</td>
-
-              {/* ACTIONS RIGHT SIDE */}
-              <td style={{ textAlign: "right" }} className="flex">
-                <button className="flex" onClick={() => handleEdit(lead)}>✏️ Edit</button>
-                <button
-                  onClick={() => handleDelete(lead._id)}
-                  style={{ marginLeft: 8 }}
-                  className="flex"
-                >
-                  🗑 Delete
-                </button>
-              </td>
-            </tr>
-          ))}
-
-          {leads.length === 0 && (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center", padding: 20 }}>
-                No leads found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-
-      {/* ================= MODAL ================= */}
-      {showModal && (
-        <div
-          style={{
-            position: "fixed",
-            inset: 0,
-            background: "rgba(0,0,0,.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
+          <Plus size={18} /> Add Lead
+        </button>
+      </div>
+
+      {/* TABLE */}
+      <div className="overflow-x-auto bg-white rounded shadow">
+        <table className="w-full border-collapse">
+          <thead className="bg-gray-100 text-left text-sm">
+            <tr>
+              <th className="p-3">Customer</th>
+              <th className="p-3">ID</th>
+              <th className="p-3">Phone</th>
+              <th className="p-3">Place of Supply</th>
+              <th className="p-3">Address</th>
+              <th className="p-3">Reminder Date</th>
+              <th className="p-3">Reminder Note</th>
+              <th className="p-3 text-right">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody className="text-sm">
+            {leads.map((lead) => (
+              <tr key={lead._id} className="border-t hover:bg-gray-50">
+                <td className="p-3">{lead.customerName}</td>
+                <td className="p-3">{lead.customerId}</td>
+                <td className="p-3">{lead.phone}</td>
+                <td className="p-3">{lead.placeOfSupply}</td>
+                <td className="p-3">{lead.address || "-"}</td>
+                <td className="p-3">
+                  {lead.reminderDate
+                    ? new Date(lead.reminderDate).toLocaleDateString()
+                    : "-"}
+                </td>
+                <td className="p-3">{lead.reminderNote || "-"}</td>
+
+                <td className="p-3 text-right flex gap-3 justify-end">
+                  <button
+                    onClick={() => handleEdit(lead)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(lead._id)}
+                    className="text-red-600 hover:underline"
+                  >
+                    🗑 Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+
+            {leads.length === 0 && (
+              <tr>
+                <td colSpan="8" className="text-center p-6 text-gray-500">
+                  No leads found
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+
+      {/* MODAL */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <form
             onSubmit={handleSubmit}
-            style={{ background: "#fff", padding: 20, width: 400 }}
+            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-3"
           >
-            <h3>{editingId ? "Edit Lead" : "Add Lead"}</h3>
+            <h3 className="text-lg font-bold mb-2">
+              {editingId ? "Edit Lead" : "Add Lead"}
+            </h3>
 
             <input
+              className="border p-2 w-full rounded"
               name="customerName"
               placeholder="Customer Name"
               value={form.customerName}
               onChange={handleChange}
               required
             />
-
             <input
+              className="border p-2 w-full rounded"
               name="customerId"
               placeholder="Customer ID"
               value={form.customerId}
               onChange={handleChange}
               required
             />
-
             <input
+              className="border p-2 w-full rounded"
               name="phone"
               placeholder="Phone"
               value={form.phone}
               onChange={handleChange}
               required
             />
-
             <input
+              className="border p-2 w-full rounded"
               name="placeOfSupply"
               placeholder="Place of Supply"
               value={form.placeOfSupply}
               onChange={handleChange}
               required
             />
-
             <input
+              className="border p-2 w-full rounded"
               name="address"
               placeholder="Address"
               value={form.address}
               onChange={handleChange}
             />
-
             <input
               type="date"
+              className="border p-2 w-full rounded"
               name="reminderDate"
               value={form.reminderDate}
               onChange={handleChange}
@@ -921,6 +916,7 @@ export default function Leads() {
 
             {form.reminderDate && (
               <textarea
+                className="border p-2 w-full rounded"
                 name="reminderNote"
                 placeholder="Reminder note"
                 value={form.reminderNote}
@@ -929,19 +925,22 @@ export default function Leads() {
               />
             )}
 
-            <div style={{ marginTop: 10 }}>
-              <button type="submit">
-                {editingId ? "Update" : "Save"}
-              </button>
+            <div className="flex justify-end gap-3 pt-2">
               <button
                 type="button"
                 onClick={() => {
                   setShowModal(false);
                   resetForm();
                 }}
-                style={{ marginLeft: 10 }}
+                className="px-4 py-2 border rounded"
               >
                 Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-600 text-white rounded"
+              >
+                {editingId ? "Update" : "Save"}
               </button>
             </div>
           </form>

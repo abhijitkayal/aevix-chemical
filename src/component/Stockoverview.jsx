@@ -818,10 +818,9 @@
 //   );
 // }
 
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus,Pencil, Eye, X } from "lucide-react";
+import { Plus, Pencil, Eye, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function StockOverview() {
@@ -848,41 +847,50 @@ export default function StockOverview() {
   /* ================= GET WAREHOUSE NAME ================= */
   const getWarehouseName = (warehouseId) => {
     if (!warehouseId) {
-      console.log('No warehouse ID provided');
-      return 'N/A';
+      console.log("No warehouse ID provided");
+      return "N/A";
     }
-    
-    console.log('Looking for warehouse:', warehouseId, 'Type:', typeof warehouseId);
-    console.log('Available warehouses:', warehouses.map(w => ({ id: w._id, name: w.warehouse })));
-    
-    // Try to find by exact match on warehouse name or ID
-    const warehouse = warehouses.find(wh => 
-      wh._id === warehouseId || 
-      wh.warehouse === warehouseId ||
-      wh._id === String(warehouseId) ||
-      wh.warehouse === String(warehouseId)
+
+    console.log(
+      "Looking for warehouse:",
+      warehouseId,
+      "Type:",
+      typeof warehouseId,
     );
-    
-    console.log('Found warehouse:', warehouse);
-    
+    console.log(
+      "Available warehouses:",
+      warehouses.map((w) => ({ id: w._id, name: w.warehouse })),
+    );
+
+    // Try to find by exact match on warehouse name or ID
+    const warehouse = warehouses.find(
+      (wh) =>
+        wh._id === warehouseId ||
+        wh.warehouse === warehouseId ||
+        wh._id === String(warehouseId) ||
+        wh.warehouse === String(warehouseId),
+    );
+
+    console.log("Found warehouse:", warehouse);
+
     if (warehouse) {
       return warehouse.warehouse;
     }
-    
+
     // If not found, return the original value or N/A
-    return warehouseId || 'N/A';
+    return warehouseId || "N/A";
   };
-
-
 
   /* ================= FETCH STOCK ================= */
   const fetchStocks = async () => {
     try {
-      const res = await axios.get(`https://aevix-chemical-mpbw.vercel.app/api/products/`);
-      console.log('Products fetched:', res.data);
+      const res = await axios.get(
+        `https://aevix-chemical-mpbw.vercel.app/api/products/`,
+      );
+      console.log("Products fetched:", res.data);
       if (res.data && res.data.length > 0) {
-        console.log('Full first product structure:', res.data[0]);
-        console.log('All product keys:', Object.keys(res.data[0]));
+        console.log("Full first product structure:", res.data[0]);
+        console.log("All product keys:", Object.keys(res.data[0]));
       }
       setStocks(res.data);
     } catch (err) {
@@ -902,80 +910,83 @@ export default function StockOverview() {
     // Navigate to warehouse detail page with the warehouse ID
     // Extract the warehouse ID (handle both object and string cases)
     let warehouseId;
-    if (typeof item.warehouseId === 'object' && item.warehouseId !== null) {
+    if (typeof item.warehouseId === "object" && item.warehouseId !== null) {
       warehouseId = item.warehouseId._id || item.warehouseId;
     } else {
       warehouseId = item.warehouseId;
     }
-    
-    console.log('Navigating to warehouse:', warehouseId);
+
+    console.log("Navigating to warehouse:", warehouseId);
     navigate(`/warehouse/${warehouseId}`);
   };
 
-
   /* ================= SUBMIT ================= */
-const handleSubmit = async () => {
-  try {
-    const payload = {
-      ...form,
-      status:
-        Number(form.currentStock) <= Number(form.reorderLevel) * 0.5
-          ? "Critical"
-          : Number(form.currentStock) <= Number(form.reorderLevel)
-          ? "Low"
-          : "Good",
-    };
+  const handleSubmit = async () => {
+    try {
+      const payload = {
+        ...form,
+        status:
+          Number(form.currentStock) <= Number(form.reorderLevel) * 0.5
+            ? "Critical"
+            : Number(form.currentStock) <= Number(form.reorderLevel)
+              ? "Low"
+              : "Good",
+      };
 
-    if (editingId) {
-      await axios.put(
-        `https://aevix-chemical-mpbw.vercel.app/api/stocks/${editingId}`,
-        payload
-      );
-    } else {
-      await axios.post("https://aevix-chemical-mpbw.vercel.app/api/stocks", payload);
+      if (editingId) {
+        await axios.put(
+          `https://aevix-chemical-mpbw.vercel.app/api/stocks/${editingId}`,
+          payload,
+        );
+      } else {
+        await axios.post(
+          "https://aevix-chemical-mpbw.vercel.app/api/stocks",
+          payload,
+        );
+      }
+
+      setShowModal(false);
+      setEditingId(null);
+      fetchStocks();
+
+      setForm({
+        itemCode: "",
+        itemName: "",
+        category: "",
+        currentStock: "",
+        unit: "",
+        unitPrice: "",
+        reorderLevel: "",
+        warehouse: "",
+        supplier: "",
+        expiryDate: "",
+      });
+    } catch (err) {
+      alert(err.response?.data?.message || "Error saving stock");
     }
-
-    setShowModal(false);
-    setEditingId(null);
-    fetchStocks();
-
-    setForm({
-      itemCode: "",
-      itemName: "",
-      category: "",
-      currentStock: "",
-      unit: "",
-      unitPrice: "",
-      reorderLevel: "",
-      warehouse: "",
-      supplier: "",
-      expiryDate: "",
-    });
-  } catch (err) {
-    alert(err.response?.data?.message || "Error saving stock");
-  }
-};
+  };
 
   const fetchWarehouses = async () => {
-  try {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/warehouses");
-    setWarehouses(res.data);
-    console.log('Warehouses fetched:', res.data);
-  } catch (err) {
-    console.error('Error fetching warehouses:', err);
-  }
-};
-
-useEffect(() => {
-  const loadData = async () => {
-    setLoading(true);
-    await fetchWarehouses();
-    await fetchStocks();
-    setLoading(false);
+    try {
+      const res = await axios.get(
+        "https://aevix-chemical-mpbw.vercel.app/api/warehouses",
+      );
+      setWarehouses(res.data);
+      console.log("Warehouses fetched:", res.data);
+    } catch (err) {
+      console.error("Error fetching warehouses:", err);
+    }
   };
-  loadData();
-}, []);
 
+  useEffect(() => {
+    const loadData = async () => {
+      setLoading(true);
+      await fetchWarehouses();
+      await fetchStocks();
+      setLoading(false);
+    };
+    loadData();
+  }, []);
 
   if (loading) {
     return (
@@ -986,13 +997,16 @@ useEffect(() => {
   }
 
   return (
-    <div className="p-6 mt-10 space-y-6">
+    <div className="p-4 md:p-6 mt-16">
       {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Stock Inventory</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <h1 className="text-xl md:text-2xl font-bold">
+          Order Acknowledgements
+        </h1>
+
         <button
           onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
           <Plus size={18} /> Add Stock Item
         </button>
@@ -1038,23 +1052,20 @@ useEffect(() => {
                   </span>
                 </td>
                 <td className="p-3 text-center">
-  <button
-    onClick={() => handleEdit(item)}
-    className="text-blue-600 hover:text-blue-800"
-  >
-    <Pencil size={18} />
-  </button>
-</td>
-
+                  <button
+                    onClick={() => handleEdit(item)}
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    <Pencil size={18} />
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
 
         {stocks.length === 0 && (
-          <p className="p-6 text-center text-gray-500">
-            No stock items found
-          </p>
+          <p className="p-6 text-center text-gray-500">No stock items found</p>
         )}
       </div>
 
@@ -1070,38 +1081,94 @@ useEffect(() => {
             <h2 className="text-xl font-bold mb-4">Add Stock Item</h2>
 
             <div className="grid grid-cols-2 gap-4">
-              <Input label="Item Code" name="itemCode" value={form.itemCode} onChange={handleChange} />
-              <Input label="Item Name" name="itemName" value={form.itemName} onChange={handleChange} />
-              <Select label="Category" name="category" value={form.category} onChange={handleChange}
-                options={["Chemicals","Raw Materials","Packaging","Equipment"]}
+              <Input
+                label="Item Code"
+                name="itemCode"
+                value={form.itemCode}
+                onChange={handleChange}
+              />
+              <Input
+                label="Item Name"
+                name="itemName"
+                value={form.itemName}
+                onChange={handleChange}
+              />
+              <Select
+                label="Category"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+                options={[
+                  "Chemicals",
+                  "Raw Materials",
+                  "Packaging",
+                  "Equipment",
+                ]}
               />
               <div>
-  <label className="block text-sm font-medium mb-1">
-    Warehouse
-  </label>
-  <select
-    name="warehouse"
-    value={form.warehouse}
-    onChange={handleChange}
-    className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-black"
-  >
-    <option value="">Select Warehouse</option>
-    {warehouses.map((wh) => (
-      <option key={wh._id} value={wh.warehouse} className="text-black">
-        {wh.warehouse}
-      </option>
-    ))}
-  </select>
-</div>
+                <label className="block text-sm font-medium mb-1">
+                  Warehouse
+                </label>
+                <select
+                  name="warehouse"
+                  value={form.warehouse}
+                  onChange={handleChange}
+                  className="w-full border rounded px-3 py-2 focus:ring-2 focus:ring-black"
+                >
+                  <option value="">Select Warehouse</option>
+                  {warehouses.map((wh) => (
+                    <option
+                      key={wh._id}
+                      value={wh.warehouse}
+                      className="text-black"
+                    >
+                      {wh.warehouse}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              <Input label="Current Stock" name="currentStock" type="number" value={form.currentStock} onChange={handleChange} />
-              <Select label="Unit" name="unit" value={form.unit} onChange={handleChange}
-                options={["Liters","Kg","Pieces","Boxes"]}
+              <Input
+                label="Current Stock"
+                name="currentStock"
+                type="number"
+                value={form.currentStock}
+                onChange={handleChange}
               />
-              <Input label="Reorder Level" name="reorderLevel" type="number" value={form.reorderLevel} onChange={handleChange} />
-              <Input label="Unit Price (₹)" name="unitPrice" type="number" value={form.unitPrice} onChange={handleChange} />
-              <Input label="Supplier" name="supplier" value={form.supplier} onChange={handleChange} />
-              <Input label="Expiry Date" name="expiryDate" type="date" value={form.expiryDate} onChange={handleChange} />
+              <Select
+                label="Unit"
+                name="unit"
+                value={form.unit}
+                onChange={handleChange}
+                options={["Liters", "Kg", "Pieces", "Boxes"]}
+              />
+              <Input
+                label="Reorder Level"
+                name="reorderLevel"
+                type="number"
+                value={form.reorderLevel}
+                onChange={handleChange}
+              />
+              <Input
+                label="Unit Price (₹)"
+                name="unitPrice"
+                type="number"
+                value={form.unitPrice}
+                onChange={handleChange}
+              />
+              <Input
+                label="Supplier"
+                name="supplier"
+                value={form.supplier}
+                onChange={handleChange}
+              />
+              <Input
+                label="Expiry Date"
+                name="expiryDate"
+                type="date"
+                value={form.expiryDate}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="flex gap-3 mt-6">

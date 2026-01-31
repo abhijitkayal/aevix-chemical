@@ -510,7 +510,6 @@
 
 // export default Role;
 
-;
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Shield, Plus, X, Edit, CheckCircle } from "lucide-react";
@@ -594,7 +593,9 @@ const Role = () => {
 
   /* ================= FETCH ROLES ================= */
   const fetchRoles = async () => {
-    const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/roles");
+    const res = await axios.get(
+      "https://aevix-chemical-mpbw.vercel.app/api/roles",
+    );
     setRoles(res.data);
   };
 
@@ -639,9 +640,15 @@ const Role = () => {
     e.preventDefault();
 
     if (isEdit) {
-      await axios.put(`https://aevix-chemical-mpbw.vercel.app/api/roles/${editId}`, form);
+      await axios.put(
+        `https://aevix-chemical-mpbw.vercel.app/api/roles/${editId}`,
+        form,
+      );
     } else {
-      await axios.post("https://aevix-chemical-mpbw.vercel.app/api/roles", form);
+      await axios.post(
+        "https://aevix-chemical-mpbw.vercel.app/api/roles",
+        form,
+      );
     }
 
     setShowModal(false);
@@ -651,7 +658,7 @@ const Role = () => {
   const filteredRoles = roles.filter(
     (r) =>
       r.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      r.roleId.toLowerCase().includes(searchTerm.toLowerCase())
+      r.roleId.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const toggleSelectAll = (permissions) => {
@@ -667,9 +674,9 @@ const Role = () => {
 
   /* ================= UI ================= */
   return (
-    <div className="p-6 mt-10 min-h-screen">
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold text-black">Role Management</h1>
         <button
           onClick={openAddModal}
@@ -695,7 +702,7 @@ const Role = () => {
             className="bg-white border rounded-lg overflow-hidden"
           >
             {/* HEADER */}
-            <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 flex justify-between">
+            <div className="bg-linear-to-r from-blue-500 to-purple-600 p-4 flex justify-between">
               <div className="flex items-center gap-3">
                 <Shield className="text-white" size={28} />
                 <div>
@@ -790,7 +797,7 @@ const Role = () => {
                   {Object.entries(ALL_PERMISSIONS).map(
                     ([category, permissions]) => {
                       const isAllSelected = permissions.every((p) =>
-                        form.permissions.includes(p)
+                        form.permissions.includes(p),
                       );
 
                       return (
@@ -830,7 +837,7 @@ const Role = () => {
                           </div>
                         </div>
                       );
-                    }
+                    },
                   )}
                 </div>
               </div>

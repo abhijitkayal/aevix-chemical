@@ -73,10 +73,9 @@ const OutwardPayment = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-
+    <div className="p-6 mt-15 min-h-screen">
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <ArrowUpCircle className="text-red-600" />
           Outward Payments
@@ -84,10 +83,9 @@ const OutwardPayment = () => {
 
         <button
           onClick={() => setShowForm(true)}
-          className="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+          className="bg-green-600 text-white px-4 py-2 rounded flex items-center gap-2 w-full sm:w-auto justify-center"
         >
-          <Plus size={20} />
-          Add New
+          <Plus size={18} /> Add New
         </button>
       </div>
 
@@ -160,7 +158,6 @@ const OutwardPayment = () => {
       {showForm && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white w-full max-w-lg rounded-lg shadow-xl p-6 space-y-4">
-
             <h2 className="text-xl font-bold">Add Outward Payment</h2>
 
             <input
@@ -219,11 +216,7 @@ const OutwardPayment = () => {
               <option>Online Payment</option>
             </select>
 
-            <input
-              type="file"
-              name="attachment"
-              onChange={handleChange}
-            />
+            <input type="file" name="attachment" onChange={handleChange} />
 
             <div className="flex justify-end gap-3 pt-2">
               <button
@@ -239,7 +232,6 @@ const OutwardPayment = () => {
                 Save
               </button>
             </div>
-
           </div>
         </div>
       )}
@@ -249,12 +241,25 @@ const OutwardPayment = () => {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-white max-w-lg w-full rounded-lg p-6 space-y-2">
             <h2 className="text-xl font-bold">Payment Details</h2>
-            <p><b>Payment No:</b> {selectedPayment.paymentNo}</p>
-            <p><b>Company:</b> {selectedPayment.companyName}</p>
-            <p><b>Address:</b> {selectedPayment.address}</p>
-            <p><b>Date:</b> {new Date(selectedPayment.paymentDate).toLocaleDateString()}</p>
-            <p><b>Amount:</b> ₹{selectedPayment.amount}</p>
-            <p><b>Payment Type:</b> {selectedPayment.paymentType}</p>
+            <p>
+              <b>Payment No:</b> {selectedPayment.paymentNo}
+            </p>
+            <p>
+              <b>Company:</b> {selectedPayment.companyName}
+            </p>
+            <p>
+              <b>Address:</b> {selectedPayment.address}
+            </p>
+            <p>
+              <b>Date:</b>{" "}
+              {new Date(selectedPayment.paymentDate).toLocaleDateString()}
+            </p>
+            <p>
+              <b>Amount:</b> ₹{selectedPayment.amount}
+            </p>
+            <p>
+              <b>Payment Type:</b> {selectedPayment.paymentType}
+            </p>
 
             <div className="text-right pt-4">
               <button
@@ -267,7 +272,6 @@ const OutwardPayment = () => {
           </div>
         </div>
       )}
-
     </div>
   );
 };
