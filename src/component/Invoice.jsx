@@ -585,12 +585,12 @@ const Invoice = () => {
                             >
                               <Mail size={16} /> Email
                             </button>
-                            <button
+                            {/* <button
                               onClick={() => window.print()}
                               className="bg-black text-white px-3 py-1 rounded"
                             >
                               Print
-                            </button>
+                            </button> */}
                             <button
                               onClick={() => setPreviewInvoice(null)}
                               className="text-red-600 font-bold text-xl"
