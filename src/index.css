@@ -251,7 +251,7 @@ button:focus-visible {
 .pdf-page .amount-words {
   flex: 1;
   border: 1px solid #000;
-  padding: 10px;
+  /* padding: 10px; */
   text-align: left;
 }
 
@@ -302,7 +302,7 @@ button:focus-visible {
 .pdf-page .bank-details {
   flex: 1;
   border: 1px solid #000;
-  padding: 10px;
+  padding: 0px;
 }
 
 .pdf-page .bank-details h4 {

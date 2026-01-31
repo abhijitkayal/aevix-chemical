@@ -28,6 +28,20 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
     return `RUPEES ${num.toLocaleString("en-IN")} ONLY`;
   };
 
+  // Format date to DD-MM-YYYY
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      return `${day}-${month}-${year}`;
+    } catch (error) {
+      return dateString;
+    }
+  };
+
   const consignee = invoice.consignee || {};
 
   return (
@@ -54,6 +68,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
           {/* COMPANY DETAILS */}
           <div className="text-sm leading-snug text-left mr-10">
+            {/* <img src={logo} /> */}
             <p className="font-bold text-base">AEVIX CHEMICAL</p>
             <p>
               115, VILL. UTTAR JOJRA, PO. ROHANDA, PS. MADHYAMGRAM, KOLKATA,
@@ -98,9 +113,9 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       </div>
 
       {/* BUYER & CONSIGNEE */}
-      <div className="two-col">
+      <div className="grid grid-cols-3 gap-2">
         <div className="buyer-section">
-          <h4>Details of Buyer | Billed to :</h4>
+          <h4 className="bg-black text-white w-55 text-center mb-3">Details of Buyer | Billed to :</h4>
           <p>
             <strong>Name:</strong> {invoice.customer}
           </p>
@@ -123,9 +138,8 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <strong>Place of Supply:</strong> {invoice.placeOfSupply}
           </p>
         </div>
-
-        <div className="consignee-section">
-          <h4>Details of Consignee | Shipped to :</h4>
+         <div className="consignee-section">
+          <h4 className="bg-black text-white w-55 mb-3 text-center">Details of Consignee | Shipped to :</h4>
           <p>
             <strong>Name:</strong> {consignee.name || invoice.customer}
           </p>
@@ -141,6 +155,17 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           </p>
           <p>
             <strong>State:</strong> {consignee.state || invoice.state}
+          </p>
+        </div>
+
+        <div className="consignee-section">
+          <h4 className="bg-black text-white w-55 mb-3 text-center">Shipping Details :</h4>
+          <p>
+            <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
+          </p>
+          <p>
+            <strong>Shipping Date:</strong>{" "}
+            {formatDate(invoice.shippingDetails?.shippingDate)}
           </p>
         </div>
       </div>
@@ -184,14 +209,21 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               <td>{igst.toFixed(2)}</td>
             )}
           </tr>
+          {/* <div className="h-30"></div> */}
         </tbody>
       </table>
 
       {/* TOTALS & BANK */}
       <div className="bottom-section">
         <div className="amount-words">
-          <h4>Total in Words</h4>
-          <p>{amountInWords(total)}</p>
+          <h4 className="bg-black text-white">Total in Words</h4>
+          <p className="px-6">{amountInWords(total)}</p>
+          <hr/>
+          <h4 className="bg-black text-white">Payment Method</h4>
+          <p className="px-6"><strong>Payment Date:</strong>{invoice.payment?.paymentDate || " Till not payment"}</p>
+          <p className="px-6"><strong>Payment Type:</strong> {invoice.payment?.paymentType || " Till not payment"}</p>
+          <p className="px-6"><strong>Paid Amount:</strong> {invoice.payment?.paidAmount || " Till not payment"}</p>
+          <p className="px-6"><strong>Remaining Amount:</strong>{invoice.payment?.remainingAmount || " Till not payment"}</p>
         </div>
 
         <div className="tax-summary">
@@ -240,8 +272,11 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* BANK DETAILS & SIGNATURE */}
       <div className="footer-section">
         <div className="bank-details">
-          <h4>Bank Details</h4>
-          <p>
+          <h4 className="text-white bg-black items-center justify-center">Bank Details</h4>
+          <p className="px-6"><strong>Account No:</strong>Aevix Chemical India Limited</p>
+          
+          <div className="grid grid-cols-2 px-6">
+            <p>
             <strong>Bank:</strong> State Bank Of India{" "}
           </p>
           <p>
@@ -253,6 +288,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <p>
             <strong>IFSC:</strong> IFSC- SBIN0015197
           </p>
+          </div>
         </div>
 
         <div className="signature">
