@@ -138,6 +138,16 @@ const invoiceSchema = new mongoose.Schema(
         trim: true,
       },
     },
+    driverDetails: {
+  driverName: { type: String },
+  driverPhone: { type: String },
+  vehicleNo: { type: String },
+  transportMode: {
+    type: String,
+    enum: ["Road", "Rail", "Air", "Sea"],
+  },
+},
+
 
     /* ================= PAYMENT DETAILS ================= */
     payment: {

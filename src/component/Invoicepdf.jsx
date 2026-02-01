@@ -160,6 +160,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         <div className="consignee-section">
           <h4 className="bg-black text-white w-55 mb-3 text-center">Shipping Details :</h4>
+          <p><strong>Freight: </strong>{invoice.driverDetails?.transportMode || "-"}</p>
           <p>
             <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
           </p>
@@ -219,6 +220,11 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <h4 className="bg-black text-white">Total in Words</h4>
           <p className="px-6">{amountInWords(total)}</p>
           <hr/>
+          <h4 className="bg-black text-white">Terms of Sale and Other Comments</h4>
+          <p className="px-6"><strong>transportMode: </strong>{invoice.driverDetails?.transportMode || " Not specified"}</p>
+          <p className="px-6"><strong>Driver call: </strong>{invoice.driverDetails?.driverPhone || " Not specified"}</p>
+          <p className="px-6"><strong>Vehicle No: </strong>{invoice.driverDetails?.vehicleNo || " Not specified"}</p>
+          <hr/>
           <h4 className="bg-black text-white">Payment Method</h4>
           <p className="px-6"><strong>Payment Date:</strong>{invoice.payment?.paymentDate || " Till not payment"}</p>
           <p className="px-6"><strong>Payment Type:</strong> {invoice.payment?.paymentType || " Till not payment"}</p>
@@ -255,7 +261,22 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   <td>{igst.toFixed(2)}</td>
                 </tr>
               )}
-
+              <tr>
+                <td>
+                  <strong>GST Amount</strong>
+                </td>
+                <td>
+                  <strong>{(cgst + sgst + igst).toFixed(2)}</strong>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Freight</strong>
+                </td>
+                <td>
+                  <strong>{invoice.driverDetails?.transportMode || "-"}</strong>
+                </td>
+              </tr>
               <tr className="grand">
                 <td>
                   <strong>Total Amount</strong>

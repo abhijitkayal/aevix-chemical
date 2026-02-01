@@ -43,6 +43,13 @@ const Invoice = () => {
       netWeight: "",
       additionalNote: "",
     },
+    driverDetails: {
+  driverName: "",
+  driverPhone: "",
+  vehicleNo: "",
+  transportMode: "",
+},
+
   });
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -166,6 +173,17 @@ const Invoice = () => {
     }
 
     setForm({ ...form, [name]: value });
+    if (name.startsWith("driverDetails.")) {
+  const field = name.split(".")[1];
+  setForm({
+    ...form,
+    driverDetails: {
+      ...form.driverDetails,
+      [field]: value,
+    },
+  });
+  return;
+}
 
     // Trigger customer suggestion
     if (name === "customer") {
@@ -190,6 +208,8 @@ const Invoice = () => {
     setCustomerSuggestions([]);
     setShowSuggestions(false);
   };
+
+  
 
   const [previewInvoice, setPreviewInvoice] = useState(null);
 
@@ -411,6 +431,7 @@ const Invoice = () => {
         date: form.date,
         notes: form.notes,
         shippingDetails: form.shippingDetails,
+         driverDetails: form.driverDetails,
       };
 
       if (selectedInvoice) {
@@ -421,7 +442,7 @@ const Invoice = () => {
         );
       } else {
         // ✅ CREATE
-        await axios.post(`${API_URL}/api/invoices`, payload);
+        await axios.post(`https://aevix-chemical-mpbw.vercel.app/api/invoices`, payload);
       }
 
       setShowModal(false);
@@ -932,6 +953,50 @@ const Invoice = () => {
                 value={form.shippingDetails.additionalNote}
               />
             </div>
+            {/* DRIVER DETAILS */}
+<div className="mt-6 border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-3">Driver & Transport Details</h3>
+
+  <div className="grid grid-cols-2 gap-4">
+    <input
+      name="driverDetails.driverName"
+      placeholder="Driver Name"
+      className="border px-3 py-2 rounded"
+      value={form.driverDetails.driverName}
+      onChange={handleChange}
+    />
+
+    <input
+      name="driverDetails.driverPhone"
+      placeholder="Driver Phone"
+      className="border px-3 py-2 rounded"
+      value={form.driverDetails.driverPhone}
+      onChange={handleChange}
+    />
+
+    <input
+      name="driverDetails.vehicleNo"
+      placeholder="Vehicle Number"
+      className="border px-3 py-2 rounded"
+      value={form.driverDetails.vehicleNo}
+      onChange={handleChange}
+    />
+
+    <select
+      name="driverDetails.transportMode"
+      className="border px-3 py-2 rounded"
+      value={form.driverDetails.transportMode}
+      onChange={handleChange}
+    >
+      <option value="">Transport Mode</option>
+      <option value="Road">Road</option>
+      <option value="Rail">Rail</option>
+      <option value="Air">Air</option>
+      <option value="Sea">Sea</option>
+    </select>
+  </div>
+</div>
+
 
             <button
               onClick={handleSubmit}
