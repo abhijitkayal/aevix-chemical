@@ -388,7 +388,7 @@ export default function CreditNote() {
       {/* FORM MODAL */}
       {showForm && (
         <div className="fixed inset-0 b flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-4xl">
+          <div className="bg-white p-6 rounded-lg ml-50 w-full max-w-4xl">
             <h2 className="text-xl font-bold mb-4">Create Debit Note</h2>
 
             <div className="grid grid-cols-2 gap-4">
