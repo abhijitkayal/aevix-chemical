@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import logo from "../assets/AEVIX LOGO BLACK.png";
+import logo from "../assets/AEVIX LOGO BLACK (1).png";
 
 const InvoicePDF = forwardRef(({ invoice }, ref) => {
   const isWestBengal = (invoice.state || "")
@@ -56,20 +56,21 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       }}
     >
       {/* HEADER */}
+        <img
+            src={logo}
+            alt="Company Logo"
+            className="h-10 object-contain"
+          />
       <div className="flex justify-between items-start mb-6">
         {/* LEFT SIDE (LOGO + DETAILS) */}
         <div className="flex items-start gap-4 w-[65%]">
           {/* LOGO */}
-          <img
-            src={logo}
-            alt="Company Logo"
-            className="w-[120px] object-contain"
-          />
+        
 
           {/* COMPANY DETAILS */}
           <div className="text-sm leading-snug text-left mr-10">
             {/* <img src={logo} /> */}
-            <p className="font-bold text-base">AEVIX CHEMICAL</p>
+            <p className="font-bold text-base">AEVIX CHEMICAL INDIA LIMITED</p>
             <p>
               115, VILL. UTTAR JOJRA, PO. ROHANDA, PS. MADHYAMGRAM, KOLKATA,
               WEST BENGAL - 700135
@@ -86,7 +87,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         </div>
 
         {/* RIGHT SIDE (TAX INVOICE) */}
-        <div className="w-[40%] text-left">
+        <div className="w-[40%] -mt-10 text-left">
           <h2 className="text-lg font-bold mb-2">TAX INVOICE</h2>
 
           <table className="w-full border border-black border-collapse text-sm">
@@ -100,11 +101,27 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                 </td>
               </tr>
               <tr>
-                <td className="border border-black px-2 py-1 font-medium">
+                <td className="border border-black py-1 font-medium">
                   Invoice Date
                 </td>
                 <td className="border border-black px-2 py-1">
                   {new Date(invoice.date).toLocaleDateString("en-IN")}
+                </td>
+              </tr>
+                <tr>
+                <td className="border border-black px-2 py-1 font-medium">
+                  PI NO:
+                </td>
+                <td className="border border-black px-2 py-1">
+                  {invoice.piNumber}
+                </td>
+              </tr>
+                <tr>
+                <td className="border border-black px-2 py-1 font-medium">
+                  PO NO:
+                </td>
+                <td className="border border-black px-2 py-1">
+                  {invoice.poNumber}
                 </td>
               </tr>
             </tbody>
@@ -115,7 +132,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* BUYER & CONSIGNEE */}
       <div className="grid grid-cols-3 gap-2">
         <div className="buyer-section">
-          <h4 className="bg-black text-white w-55 text-center mb-3">Details of Buyer | Billed to :</h4>
+          <h4 className="bg-black text-white w-55 mb-3 h-8">BILL TO : /CUSTOMER</h4>
           <p>
             <strong>Name:</strong> {invoice.customer}
           </p>
@@ -139,7 +156,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           </p>
         </div>
          <div className="consignee-section">
-          <h4 className="bg-black text-white w-55 mb-3 text-center">Details of Consignee | Shipped to :</h4>
+          <h4 className="bg-black text-white w-55 h-8 mb-3">SHIP TO :</h4>
           <p>
             <strong>Name:</strong> {consignee.name || invoice.customer}
           </p>
@@ -159,7 +176,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         </div>
 
         <div className="consignee-section">
-          <h4 className="bg-black text-white w-55 mb-3 text-center">Shipping Details :</h4>
+          <h4 className="bg-black text-white w-55 h-8 mb-3">SHIPPING DETAILS :</h4>
           <p><strong>Freight: </strong>{invoice.driverDetails?.transportMode || "-"}</p>
           <p>
             <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
@@ -173,8 +190,8 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
       {/* ITEMS TABLE */}
       <table className="items">
-        <thead>
-          <tr>
+        <thead className="bg-black text-white">
+          <tr className="bg-black">
             <th>Sr</th>
             <th>Product / Service</th>
             <th>HSN</th>
@@ -210,6 +227,25 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               <td>{igst.toFixed(2)}</td>
             )}
           </tr>
+         
+          {Array.from({ length: 5 }).map((_, i) => (
+    <tr key={i}>
+      <td>&nbsp;</td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+      {isWestBengal ? (
+        <>
+          <td></td>
+          <td className="text-right">-</td>
+        </>
+      ) : (
+        <td className="text-right">-</td>
+      )}
+    </tr>
+  ))}
           {/* <div className="h-30"></div> */}
         </tbody>
       </table>
@@ -234,13 +270,9 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         <div className="tax-summary">
           <table>
-            {/* <tr><td>Taxable Amount</td><td>{taxable.toFixed(2)}</td></tr>
-              <tr><td>Add : CGST</td><td>{cgst.toFixed(2)}</td></tr>
-              <tr><td>Add : SGST</td><td>{sgst.toFixed(2)}</td></tr>
-              <tr className="grand"><td><strong>Total Amount</strong></td><td><strong>{total.toFixed(2)}</strong></td></tr> */}
             <tbody>
               <tr>
-                <td>Taxable Amount</td>
+                <td >Taxable Amount</td>
                 <td>{taxable.toFixed(2)}</td>
               </tr>
 

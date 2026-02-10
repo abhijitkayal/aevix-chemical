@@ -10,14 +10,26 @@ export default function OrderAckForm({ onClose, onSuccess }) {
     buyer: { name: "", address: "", gst: "" },
     shippingAddress: "",
 
-    product: {
-      productName: "",
-      hsn: "",
-      quantity: 0,
-      unitPrice: 0,
-      gstAmount: 0,
-      totalAmount: 0,
-    },
+    // product: {
+    //   productName: "",
+    //   hsn: "",
+    //   quantity: 0,
+    //   unitPrice: 0,
+    //   gstAmount: 0,
+    //   totalAmount: 0,
+    // },
+
+    products: [
+  {
+    productName: "",
+    hsn: "",
+    quantity: 0,
+    unitPrice: 0,
+    gstAmount: 0,
+    totalAmount: 0,
+  },
+],
+
 
     quotation: {
       quotationNumber: "",
@@ -51,6 +63,48 @@ export default function OrderAckForm({ onClose, onSuccess }) {
 
   });
 
+  const addProduct = () => {
+  setForm((prev) => ({
+    ...prev,
+    products: [
+      ...prev.products,
+      {
+        productName: "",
+        hsn: "",
+        quantity: 0,
+        unitPrice: 0,
+        gstAmount: 0,
+        totalAmount: 0,
+      },
+    ],
+  }));
+};
+
+const removeProduct = (index) => {
+  setForm((prev) => ({
+    ...prev,
+    products: prev.products.filter((_, i) => i !== index),
+  }));
+};
+
+const updateProduct = (index, key, value) => {
+  const products = [...form.products];
+  const product = { ...products[index], [key]: value };
+
+  product.totalAmount =
+    Number(product.quantity) * Number(product.unitPrice) + Number(product.gstAmount);
+
+  products[index] = product;
+
+  setForm({ ...form, products });
+};
+
+const grandTotal = form.products.reduce(
+  (sum, p) => sum + (Number(p.totalAmount) || 0),
+  0
+);
+
+
   const update = (path, value) => {
     const copy = structuredClone(form);
     path.split(".").reduce((o, k, i, arr) => {
@@ -61,39 +115,66 @@ export default function OrderAckForm({ onClose, onSuccess }) {
   };
 
   /* Auto calculate total */
-  const updateProduct = (key, value) => {
-    const product = { ...form.product, [key]: value };
-    product.totalAmount =
-      product.quantity * product.unitPrice + product.gstAmount;
-    setForm({ ...form, product });
-  };
+  // const updateProduct = (key, value) => {
+  //   const product = { ...form.product, [key]: value };
+  //   product.totalAmount =
+  //     product.quantity * product.unitPrice + product.gstAmount;
+  //   setForm({ ...form, product });
+  // };
 
-  const submit = async () => {
-    try {
-      // Convert product object to items array
-      // const dataToSend = {
-      //   ...form,
-      //   items: [form.product],
-      //   totalAmount: form.product.totalAmount
-      // };
-      const dataToSend = {
-  ...form,
-  items: [form.product],
-  totalAmount: form.product.totalAmount,
-};
+//   const submit = async () => {
+//     try {
+//       // Convert product object to items array
+//       // const dataToSend = {
+//       //   ...form,
+//       //   items: [form.product],
+//       //   totalAmount: form.product.totalAmount
+//       // };
+//       const dataToSend = {
+//   ...form,
+//   items: [form.product],
+//   totalAmount: form.product.totalAmount,
+// };
 
-      delete dataToSend.product; // Remove product field
+//       delete dataToSend.product; // Remove product field
       
-      console.log("Sending data:", dataToSend);
-      const response = await axios.post("https://aevix-chemical-mpbw.vercel.app/api/order-acknowledgements", dataToSend);
-      console.log("Response:", response.data);
-      onSuccess();
-      onClose();
-    } catch (error) {
-      console.error("Error details:", error.response?.data);
-      alert(`Error: ${error.response?.data?.message || error.message}`);
-    }
-  };
+//       console.log("Sending data:", dataToSend);
+//       const response = await axios.post("https://aevix-chemical-mpbw.vercel.app/api/order-acknowledgements", dataToSend);
+//       console.log("Response:", response.data);
+//       onSuccess();
+//       onClose();
+//     } catch (error) {
+//       console.error("Error details:", error.response?.data);
+//       alert(`Error: ${error.response?.data?.message || error.message}`);
+//     }
+//   };
+
+
+const submit = async () => {
+  try {
+    const dataToSend = {
+      ...form,
+      items: form.products,
+      totalAmount: grandTotal,
+    };
+
+    delete dataToSend.products;
+
+    console.log("Sending data:", dataToSend);
+
+    const response = await axios.post(
+      "https://aevix-chemical-mpbw.vercel.app/api/order-acknowledgements",
+      dataToSend
+    );
+
+    console.log("Response:", response.data);
+    onSuccess();
+    onClose();
+  } catch (error) {
+    console.error("Error details:", error.response?.data);
+    alert(`Error: ${error.response?.data?.message || error.message}`);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
@@ -134,17 +215,74 @@ export default function OrderAckForm({ onClose, onSuccess }) {
         </Section>
 
         {/* PRODUCT SECTION */}
-        <Section title="Product Details">
-          <Input label="Product Name" onChange={(v) => updateProduct("productName", v)} />
-          <Input label="HSN" onChange={(v) => updateProduct("hsn", v)} />
-          <Input type="number" label="Quantity" onChange={(v) => updateProduct("quantity", +v)} />
-          <Input type="number" label="Unit Price" onChange={(v) => updateProduct("unitPrice", +v)} />
-          <Input type="number" label="GST Amount" onChange={(v) => updateProduct("gstAmount", +v)} />
+       {/* PRODUCT SECTION */}
+<Section title="Product Details">
+  <div className="col-span-3 flex justify-between items-center mb-3">
+    <p className="font-semibold">Add multiple products</p>
 
-          <div className="font-bold text-lg col-span-3">
-            Total Amount: ₹ {form.product.totalAmount}
-          </div>
-        </Section>
+    <button
+      type="button"
+      onClick={addProduct}
+      className="bg-blue-600 text-white px-4 py-2 rounded text-sm"
+    >
+      + Add Product
+    </button>
+  </div>
+
+  {form.products.map((product, index) => (
+    <div key={index} className="col-span-3 border rounded p-4 mb-4">
+      <div className="flex justify-between items-center mb-3">
+        <h4 className="font-semibold">Product {index + 1}</h4>
+
+        {form.products.length > 1 && (
+          <button
+            type="button"
+            onClick={() => removeProduct(index)}
+            className="text-red-600 text-sm font-semibold"
+          >
+            Remove
+          </button>
+        )}
+      </div>
+
+      <div className="grid grid-cols-3 gap-3">
+        <Input
+          label="Product Name"
+          onChange={(v) => updateProduct(index, "productName", v)}
+        />
+
+        <Input label="HSN" onChange={(v) => updateProduct(index, "hsn", v)} />
+
+        <Input
+          type="number"
+          label="Quantity"
+          onChange={(v) => updateProduct(index, "quantity", +v)}
+        />
+
+        <Input
+          type="number"
+          label="Unit Price"
+          onChange={(v) => updateProduct(index, "unitPrice", +v)}
+        />
+
+        <Input
+          type="number"
+          label="GST Amount"
+          onChange={(v) => updateProduct(index, "gstAmount", +v)}
+        />
+
+        <div className="font-bold text-lg col-span-3">
+          Product Total: ₹ {product.totalAmount}
+        </div>
+      </div>
+    </div>
+  ))}
+
+  <div className="font-bold text-xl col-span-3 text-right">
+    Grand Total: ₹ {grandTotal}
+  </div>
+</Section>
+
 
         {/* QUOTATION */}
         <Section title="Quotation / PO Details">

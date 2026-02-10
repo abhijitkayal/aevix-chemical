@@ -106,6 +106,25 @@ const invoiceSchema = new mongoose.Schema(
       // required: true,
     },
 
+    /* ================= PI/PO DETAILS ================= */
+    piNumber: {
+      type: String,
+      trim: true,
+    },
+
+    poNumber: {
+      type: String,
+      trim: true,
+    },
+
+    piDate: {
+      type: Date,
+    },
+
+    poDate: {
+      type: Date,
+    },
+
     /* ================= OTHER ================= */
     notes: String,
 
@@ -131,6 +150,14 @@ const invoiceSchema = new mongoose.Schema(
       },
       netWeight: {
         type: String, // or Number
+        trim: true,
+      },
+      totalPackages: {
+        type: String,
+        trim: true,
+      },
+      shippingAddress: {
+        type: String,
         trim: true,
       },
       additionalNote: {

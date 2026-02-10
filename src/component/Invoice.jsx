@@ -33,6 +33,10 @@ const Invoice = () => {
     warehouse: "",
     date: "",
     dueDate: "",
+    piNumber: "",
+    poNumber: "",
+    piDate: "",
+    poDate: "",
     product: "",
     quantity: "",
     rate: "",
@@ -42,6 +46,8 @@ const Invoice = () => {
       grossWeight: "",
       netWeight: "",
       additionalNote: "",
+      totalPackages: "",
+      shippingAddress: "",
     },
     driverDetails: {
   driverName: "",
@@ -209,7 +215,49 @@ const Invoice = () => {
     setShowSuggestions(false);
   };
 
-  
+  // Reset form to initial state
+  const resetForm = () => {
+    setForm({
+      customer: "",
+      customerId: "",
+      phone: "",
+      address: "",
+      gstin: "",
+      pan: "",
+      state: "",
+      placeOfSupply: "",
+      bankName: "",
+      bankAccount: "",
+      ifsc: "",
+      warehouse: "",
+      date: "",
+      dueDate: "",
+      piNumber: "",
+      poNumber: "",
+      piDate: "",
+      poDate: "",
+      product: "",
+      quantity: "",
+      rate: "",
+      unit: "",
+      notes: "",
+      shippingDetails: {
+        shippingDate: "",
+        grossWeight: "",
+        netWeight: "",
+        additionalNote: "",
+        totalPackages: "",
+        shippingAddress: "",
+      },
+      driverDetails: {
+        driverName: "",
+        driverPhone: "",
+        vehicleNo: "",
+        transportMode: "",
+      },
+    });
+    setSelectedInvoice(null);
+  };
 
   const [previewInvoice, setPreviewInvoice] = useState(null);
 
@@ -431,8 +479,16 @@ const Invoice = () => {
         date: form.date,
         notes: form.notes,
         shippingDetails: form.shippingDetails,
-         driverDetails: form.driverDetails,
+        driverDetails: form.driverDetails,
       };
+
+      // Add PI/PO fields only if they have values
+      if (form.piNumber) payload.piNumber = form.piNumber;
+      if (form.poNumber) payload.poNumber = form.poNumber;
+      if (form.piDate) payload.piDate = form.piDate;
+      if (form.poDate) payload.poDate = form.poDate;
+
+      console.log("Submitting invoice payload:", payload);
 
       if (selectedInvoice) {
         // ✅ UPDATE
@@ -446,7 +502,7 @@ const Invoice = () => {
       }
 
       setShowModal(false);
-      setSelectedInvoice(null);
+      resetForm();
       fetchInvoices();
     } catch (error) {
       alert(error.response?.data?.message || "Invoice save failed");
@@ -461,7 +517,10 @@ const Invoice = () => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl md:text-3xl font-bold">Invoice Management</h1>
         <button
-          onClick={() => setShowModal(true)}
+          onClick={() => {
+            resetForm();
+            setShowModal(true);
+          }}
           className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded w-full sm:w-auto"
         >
           <Plus size={18} /> Add Invoice
@@ -538,7 +597,8 @@ const Invoice = () => {
 
                 <td className="p-3 text-right flex justify-end gap-3">
                   {/* EDIT BUTTON */}
-                  <button
+                  {/* <button
+                
                     onClick={() => {
                       setForm({
                         customer: inv.customer,
@@ -551,6 +611,10 @@ const Invoice = () => {
                         placeOfSupply: inv.placeOfSupply,
                         warehouse: inv.warehouseId?._id || "",
                         date: inv.date?.slice(0, 10),
+                        piNumber: inv.piNumber || "",
+                        poNumber: inv.poNumber || "",
+                        piDate: inv.piDate?.slice(0, 10) || "",
+                        poDate: inv.poDate?.slice(0, 10) || "",
                         product: inv.productName,
                         quantity: inv.quantity,
                         unit: inv.unit,
@@ -561,6 +625,14 @@ const Invoice = () => {
                           grossWeight: "",
                           netWeight: "",
                           additionalNote: "",
+                          totalPackages: "",
+                          shippingAddress: "",
+                        },
+                        driverDetails: inv.driverDetails || {
+                          driverName: "",
+                          driverPhone: "",
+                          vehicleNo: "",
+                          transportMode: "",
                         },
                       });
 
@@ -570,7 +642,7 @@ const Invoice = () => {
                     className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200"
                   >
                     <Pencil size={14} />
-                  </button>
+                  </button> */}
 
                   {/* DOWNLOAD */}
                   <button
@@ -730,7 +802,10 @@ const Invoice = () => {
           <div className="bg-white w-full max-w-3xl p-6 rounded-xl relative overflow-y-auto max-h-[90vh]">
             <X
               className="absolute right-4 top-4 cursor-pointer"
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                setShowModal(false);
+                resetForm();
+              }}
             />
 
             <h2 className="text-2xl font-bold mb-4">
@@ -864,13 +939,16 @@ const Invoice = () => {
             </select>
 
             <div className="grid grid-cols-2 gap-4 mt-3">
-              <input
-                type="date"
-                name="date"
-                className="input border-2 rounded px-2 "
-                onChange={handleChange}
-                value={form.date}
-              />
+              <div>
+                <label className="block text-sm font-medium mb-1">Invoice Date</label>
+                <input
+                  type="date"
+                  name="date"
+                  className="input border-2 rounded px-2 py-2 w-full"
+                  onChange={handleChange}
+                  value={form.date}
+                />
+              </div>
 
               <input
                 name="product"
@@ -879,6 +957,53 @@ const Invoice = () => {
                 onChange={handleChange}
                 value={form.product}
               />
+            </div>
+
+            {/* PI/PO Details Section */}
+            <div className="mt-6 border rounded-lg p-4">
+              <h3 className="text-lg font-semibold mb-3">PI/PO Details</h3>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium mb-1">PI Number</label>
+                  <input
+                    name="piNumber"
+                    placeholder="PI Number"
+                    className="border px-3 py-2 rounded w-full"
+                    onChange={handleChange}
+                    value={form.piNumber}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">PO Number</label>
+                  <input
+                    name="poNumber"
+                    placeholder="PO Number"
+                    className="border px-3 py-2 rounded w-full"
+                    onChange={handleChange}
+                    value={form.poNumber}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">PI Date</label>
+                  <input
+                    type="date"
+                    name="piDate"
+                    className="border px-3 py-2 rounded w-full"
+                    onChange={handleChange}
+                    value={form.piDate}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">PO Date</label>
+                  <input
+                    type="date"
+                    name="poDate"
+                    className="border px-3 py-2 rounded w-full"
+                    onChange={handleChange}
+                    value={form.poDate}
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-3 gap-4 mt-3">
@@ -922,6 +1047,7 @@ const Invoice = () => {
                 <input
                   type="date"
                   name="shippingDetails.shippingDate"
+                  placeholder="Shipping Date"
                   className="border px-3 py-2 rounded"
                   onChange={handleChange}
                   value={form.shippingDetails.shippingDate}
@@ -937,12 +1063,31 @@ const Invoice = () => {
 
                 <input
                   name="shippingDetails.netWeight"
-                  placeholder="Shipping address"
+                  placeholder="Net Weight"
                   className="border px-3 py-2 rounded"
                   onChange={handleChange}
                   value={form.shippingDetails.netWeight}
                 />
               </div>
+
+              <div className="grid grid-cols-1 gap-4 mt-4">
+                <input
+                  name="shippingDetails.totalPackages"
+                  placeholder="Total Packages"
+                  className="border px-3 py-2 rounded"
+                  onChange={handleChange}
+                  value={form.shippingDetails.totalPackages}
+                />
+              </div>
+
+              <textarea
+                name="shippingDetails.shippingAddress"
+                placeholder="Shipping Address"
+                rows={3}
+                className="border px-3 py-2 rounded w-full mt-4"
+                onChange={handleChange}
+                value={form.shippingDetails.shippingAddress}
+              />
 
               <textarea
                 name="shippingDetails.additionalNote"

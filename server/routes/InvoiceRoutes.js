@@ -1,4 +1,5 @@
 import express from "express";
+import mongoose from "mongoose";
 import Invoice from "../models/Invoice.js";
 import Product from "../models/Product.js";
 import Stock from "../models/Stock.js";
@@ -108,6 +109,73 @@ router.get("/ledger", async (req, res) => {
   }
 });
 
+/* ======================
+   SEARCH INVOICES
+====================== */
+router.get("/search", async (req, res) => {
+  try {
+    const q = req.query.q || "";
+    console.log("Search query:", q);
+
+    if (!q || q.length < 3) {
+      return res.json([]);
+    }
+
+    let invoices = [];
+
+    // Check if q looks like an ObjectId (hex characters)
+    const isObjectIdLike = /^[0-9a-fA-F]{3,24}$/.test(q);
+
+    if (isObjectIdLike) {
+      console.log("Searching by ObjectId-like string:", q);
+      
+      // For full 24-character ObjectId, do exact match
+      if (q.length === 24 && mongoose.Types.ObjectId.isValid(q)) {
+        const exactMatch = await Invoice.findById(q).lean();
+        if (exactMatch) {
+          console.log("Found exact match");
+          return res.json([exactMatch]);
+        }
+      }
+      
+      // For partial ObjectId - simple string matching
+      const allInvoices = await Invoice.find({})
+        .sort({ createdAt: -1 })
+        .limit(100)
+        .lean();
+      
+      invoices = allInvoices
+        .filter(inv => inv._id.toString().includes(q))
+        .slice(0, 10);
+      
+      console.log(`Found ${invoices.length} matches by ID`);
+      return res.json(invoices);
+    }
+
+    // Search by customer name or customerId
+    console.log("Searching by customer/customerId");
+    invoices = await Invoice.find({
+      $or: [
+        { customer: { $regex: q, $options: "i" } },
+        { customerId: { $regex: q, $options: "i" } },
+      ]
+    })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .lean();
+
+    console.log(`Found ${invoices.length} matches by text`);
+    return res.json(invoices);
+
+  } catch (error) {
+    console.error("SEARCH INVOICE ERROR:", error.message);
+    console.error("Stack:", error.stack);
+    return res.status(500).json({ 
+      message: "Search failed", 
+      error: error.message 
+    });
+  }
+});
 
 router.get("/:id", async (req, res) => {
   try {
@@ -136,6 +204,8 @@ router.post("/", async (req, res) => {
       productName,
       quantity,
     } = req.body;
+
+    console.log("Received invoice data:", JSON.stringify(req.body, null, 2));
 
     /* ======================
        1️⃣ BASIC VALIDATION
@@ -182,6 +252,7 @@ router.post("/", async (req, res) => {
        5️⃣ CREATE INVOICE
     ====================== */
     const invoice = await Invoice.create(req.body);
+    console.log("Invoice created successfully:", JSON.stringify(invoice, null, 2));
 
     /* ======================
        6️⃣ UPDATE PRODUCT STOCK (ALWAYS)
@@ -313,6 +384,8 @@ router.put("/:id/payment", async (req, res) => {
 ====================== */
 router.put("/:id", async (req, res) => {
   try {
+    console.log("Updating invoice with data:", JSON.stringify(req.body, null, 2));
+    
     const updatedInvoice = await Invoice.findByIdAndUpdate(
       req.params.id,
       req.body,
