@@ -101,7 +101,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                 </td>
               </tr>
               <tr>
-                <td className="border border-black py-1 font-medium">
+                <td className="border border-black py-1 px-2 font-medium">
                   Invoice Date
                 </td>
                 <td className="border border-black px-2 py-1">
@@ -279,17 +279,17 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               {isWestBengal ? (
                 <>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add : CGST (9%)</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Add:CGST(9%)</td>
                     <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
                   </tr>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add : SGST (9%)</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add:SGST(9%)</td>
                     <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
                   </tr>
                 </>
               ) : (
                 <tr>
-                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add : IGST (18%)</td>
+                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add:IGST(18%)</td>
                   <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
                 </tr>
               )}
@@ -325,7 +325,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* BANK DETAILS & SIGNATURE */}
       <div className="footer-section">
         <div className="bank-details">
-          <h4 className="text-white bg-black flex">Bank Details</h4>
+          <h4 className="bg-black text-white flex items-center px-3">Bank Details</h4>
           <p className="px-6"><strong>Account No:</strong>Aevix Chemical India Limited</p>
           
           <div className="grid grid-cols-2 px-6">

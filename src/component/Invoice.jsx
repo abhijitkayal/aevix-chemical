@@ -380,8 +380,10 @@ const Invoice = () => {
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
-      tempDiv.style.width = '210mm'; // A4 width
+      tempDiv.style.width = '794px'; // A4 width in pixels at 96 DPI
       tempDiv.style.backgroundColor = '#ffffff';
+      tempDiv.style.margin = '0';
+      tempDiv.style.padding = '0';
       document.body.appendChild(tempDiv);
       
       // Render InvoicePDF component into temp div
@@ -397,12 +399,16 @@ const Invoice = () => {
 
       // Generate canvas from the rendered content
       const canvas = await html2canvas(tempDiv, {
-        scale: 2,
+        scale: 1.2,
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
-        windowWidth: tempDiv.scrollWidth,
-        windowHeight: tempDiv.scrollHeight,
+        width: tempDiv.offsetWidth,
+        height: tempDiv.offsetHeight,
+        windowWidth: tempDiv.offsetWidth,
+        windowHeight: tempDiv.offsetHeight,
+        x: 0,
+        y: 0,
         onclone: (clonedDoc) => {
           const allElements = clonedDoc.querySelectorAll('*');
           allElements.forEach((el) => {
@@ -426,24 +432,28 @@ const Invoice = () => {
 
       console.log("Canvas generated, creating PDF...");
       
-      const imgData = canvas.toDataURL("image/png");
-      const pdf = new jsPDF("p", "mm", "a4");
+      // Use JPEG with compression for smaller file size
+      const imgData = canvas.toDataURL("image/jpeg", 0.85);
+      const pdf = new jsPDF({
+        orientation: "p",
+        unit: "mm",
+        format: "a4",
+        compress: true
+      });
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = canvas.width;
-      const imgHeight = canvas.height;
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-      const imgX = (pdfWidth - imgWidth * ratio) / 2;
-      const imgY = 0;
-
+      
+      // Add image to fill entire PDF page with no margins
       pdf.addImage(
         imgData,
-        "PNG",
-        imgX,
-        imgY,
-        imgWidth * ratio,
-        imgHeight * ratio,
+        "JPEG",
+        0,
+        0,
+        pdfWidth,
+        pdfHeight,
+        undefined,
+        "FAST"
       );
       
       console.log("Saving PDF...");

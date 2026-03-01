@@ -97,17 +97,13 @@ button:focus-visible {
   } */
 }
 @media print {
-  body * {
-    visibility: hidden;
+  body {
+    margin: 0;
+    padding: 0;
   }
-  .pdf-page, .pdf-page * {
-    visibility: visible;
-  }
-  .pdf-page {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
+
+  @page {
+    margin: 0;
   }
 }
 
@@ -364,8 +360,6 @@ button:focus-visible {
   border-bottom: 1px solid #000;
   padding: 8px 10px;
   display: flex;
-  align-items: center;
-  justify-content: center;
   min-height: 32px;
 }
 
