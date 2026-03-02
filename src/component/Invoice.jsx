@@ -380,10 +380,8 @@ const Invoice = () => {
       tempDiv.style.position = 'absolute';
       tempDiv.style.left = '-9999px';
       tempDiv.style.top = '0';
-      tempDiv.style.width = '794px'; // A4 width in pixels at 96 DPI
+      tempDiv.style.width = '210mm'; // A4 width
       tempDiv.style.backgroundColor = '#ffffff';
-      tempDiv.style.margin = '0';
-      tempDiv.style.padding = '0';
       document.body.appendChild(tempDiv);
       
       // Render InvoicePDF component into temp div
@@ -403,12 +401,8 @@ const Invoice = () => {
         useCORS: true,
         logging: false,
         backgroundColor: "#ffffff",
-        width: tempDiv.offsetWidth,
-        height: tempDiv.offsetHeight,
-        windowWidth: tempDiv.offsetWidth,
-        windowHeight: tempDiv.offsetHeight,
-        x: 0,
-        y: 0,
+        windowWidth: tempDiv.scrollWidth,
+        windowHeight: tempDiv.scrollHeight,
         onclone: (clonedDoc) => {
           const allElements = clonedDoc.querySelectorAll('*');
           allElements.forEach((el) => {
@@ -443,15 +437,19 @@ const Invoice = () => {
 
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = pdf.internal.pageSize.getHeight();
-      
-      // Add image to fill entire PDF page with no margins
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 0;
+
       pdf.addImage(
         imgData,
         "JPEG",
-        0,
-        0,
-        pdfWidth,
-        pdfHeight,
+        imgX,
+        imgY,
+        imgWidth * ratio,
+        imgHeight * ratio,
         undefined,
         "FAST"
       );

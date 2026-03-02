@@ -198,8 +198,8 @@ button:focus-visible {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  padding: 0 10px;
-  margin: 0 0 10px 0;
+  /* padding: 0 10px; */
+  /* margin: 0 0 10px 5px; */
 }
 
 .pdf-page .consignee-section {
@@ -280,7 +280,7 @@ button:focus-visible {
   font-weight: bold;
   margin: 0;
   border-bottom: 1px solid #000;
-  padding: 8px 10px;
+  /* padding: 8px 10px; */
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -304,7 +304,7 @@ button:focus-visible {
 }
 
 .pdf-page .tax-summary table td {
-  padding: 12px 8px;
+  /* padding: 12px 8px; */
   font-size: 9pt;
   border-bottom: 1px solid #000;
   vertical-align: middle;
@@ -358,7 +358,7 @@ button:focus-visible {
   font-weight: bold;
   margin: 0;
   border-bottom: 1px solid #000;
-  padding: 8px 10px;
+  /* padding: 8px 10px; */
   display: flex;
   min-height: 32px;
 }

@@ -93,34 +93,34 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <table className="w-full border border-black border-collapse text-sm">
             <tbody>
               <tr>
-                <td className="border border-black px-2 py-1 font-medium">
+                <td className="border border-black px-2 pb-3 pt-0 font-medium">
                   Invoice No
                 </td>
-                <td className="border border-black px-2 py-1">
+                <td className="border border-black px-2 pb-3 pt-0">
                   {invoice.invoiceNo || invoice._id}
                 </td>
               </tr>
               <tr>
-                <td className="border border-black py-1 px-2 font-medium">
+                <td className="border border-black pb-3 pt-0 px-2 font-medium">
                   Invoice Date
                 </td>
-                <td className="border border-black px-2 py-1">
+                <td className="border border-black px-2 pb-3 pt-0">
                   {new Date(invoice.date).toLocaleDateString("en-IN")}
                 </td>
               </tr>
                 <tr>
-                <td className="border border-black px-2 py-1 font-medium">
+                <td className="border border-black px-2 pb-3 pt-0 font-medium">
                   PI NO:
                 </td>
-                <td className="border border-black px-2 py-1">
+                <td className="border border-black px-2 pb-3 pt-0">
                   {invoice.piNumber}
                 </td>
               </tr>
                 <tr>
-                <td className="border border-black px-2 py-1 font-medium">
+                <td className="border border-black px-2 pb-3 pt-0 font-medium">
                   PO NO:
                 </td>
-                <td className="border border-black px-2 py-1">
+                <td className="border border-black px-2 pb-3 pt-0">
                   {invoice.poNumber}
                 </td>
               </tr>
@@ -132,7 +132,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* BUYER & CONSIGNEE */}
       <div className="grid grid-cols-3 gap-2">
         <div className="buyer-section">
-          <h4 className="bg-black text-white w-55 mb-3 h-8 flex items-center px-3">BILL TO : /CUSTOMER</h4>
+          <h4 className="bg-black text-white w-55 pt-1 pb-3 h-8 flex items-center px-3">BILL TO : /CUSTOMER</h4>
           <p>
             <strong>Name:</strong> {invoice.customer}
           </p>
@@ -156,7 +156,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           </p>
         </div>
          <div className="consignee-section">
-          <h4 className="bg-black text-white w-55 h-8 mb-3 flex items-center px-3">SHIP TO :</h4>
+          <h4 className="bg-black text-white w-55 h-8 pt-1 pb-3 flex items-center px-3">SHIP TO :</h4>
           <p>
             <strong>Name:</strong> {consignee.name || invoice.customer}
           </p>
@@ -176,7 +176,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         </div>
 
         <div className="consignee-section">
-          <h4 className="bg-black text-white w-55 h-8 mb-3 flex items-center px-3">SHIPPING DETAILS :</h4>
+          <h4 className="bg-black text-white w-55 h-8 pt-1 pb-3 flex items-center px-3">SHIPPING DETAILS :</h4>
           <p><strong>Freight: </strong>{invoice.driverDetails?.transportMode || "-"}</p>
           <p>
             <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
@@ -192,19 +192,19 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       <table className="items">
         <thead className="bg-black text-white">
           <tr className="bg-black">
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Sr</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Product / Service</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>HSN</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Qty</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Rate</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Taxable</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Sr</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Product / Service</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>HSN</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Qty</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Rate</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable</th>
             {isWestBengal ? (
               <>
-                <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>CGST</th>
-                <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>SGST</th>
+                <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>CGST</th>
+                <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>SGST</th>
               </>
             ) : (
-              <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>IGST</th>
+              <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>IGST</th>
             )}
           </tr>
         </thead>
@@ -253,15 +253,15 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* TOTALS & BANK */}
       <div className="bottom-section">
         <div className="amount-words">
-          <h4 className="bg-black text-white flex items-center px-3">Total in Words</h4>
+          <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Total in Words</h4>
           <p className="px-6">{amountInWords(total)}</p>
           <hr/>
-          <h4 className="bg-black text-white flex items-center px-3">Terms of Sale and Other Comments</h4>
+          <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Terms of Sale and Other Comments</h4>
           <p className="px-6"><strong>transportMode: </strong>{invoice.driverDetails?.transportMode || " Not specified"}</p>
           <p className="px-6"><strong>Driver call: </strong>{invoice.driverDetails?.driverPhone || " Not specified"}</p>
           <p className="px-6"><strong>Vehicle No: </strong>{invoice.driverDetails?.vehicleNo || " Not specified"}</p>
           <hr/>
-          <h4 className="bg-black text-white flex items-center px-3">Payment Method</h4>
+          <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Payment Method</h4>
           <p className="px-6"><strong>Payment Date:</strong>{invoice.payment?.paymentDate || " Till not payment"}</p>
           <p className="px-6"><strong>Payment Type:</strong> {invoice.payment?.paymentType || " Till not payment"}</p>
           <p className="px-6"><strong>Paid Amount:</strong> {invoice.payment?.paidAmount || " Till not payment"}</p>
@@ -272,48 +272,48 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <table>
             <tbody>
               <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Taxable Amount</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable Amount</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
               </tr>
 
               {isWestBengal ? (
                 <>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>Add:CGST(9%)</td>
-                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:CGST(9%)</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
                   </tr>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add:SGST(9%)</td>
-                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:SGST(9%)</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
                   </tr>
                 </>
               ) : (
                 <tr>
-                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>Add:IGST(18%)</td>
-                  <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
+                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:IGST(18%)</td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
                 </tr>
               )}
               <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>GST Amount</strong>
                 </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>{(cgst + sgst + igst).toFixed(2)}</strong>
                 </td>
               </tr>
               <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>Freight</strong>
                 </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>{invoice.driverDetails?.transportMode || "-"}</strong>
                 </td>
               </tr>
               <tr className="grand">
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>Total Amount</strong>
                 </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 8px', lineHeight: '1.4' }}>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>{total.toFixed(2)}</strong>
                 </td>
               </tr>
@@ -325,7 +325,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       {/* BANK DETAILS & SIGNATURE */}
       <div className="footer-section">
         <div className="bank-details">
-          <h4 className="bg-black text-white flex items-center px-3">Bank Details</h4>
+          <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Bank Details</h4>
           <p className="px-6"><strong>Account No:</strong>Aevix Chemical India Limited</p>
           
           <div className="grid grid-cols-2 px-6">
