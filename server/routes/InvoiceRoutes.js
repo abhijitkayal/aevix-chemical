@@ -201,8 +201,7 @@ router.post("/", async (req, res) => {
     const {
       customer,
       warehouseId,
-      productName,
-      quantity,
+      products,
     } = req.body;
 
     console.log("Received invoice data:", JSON.stringify(req.body, null, 2));
@@ -210,86 +209,103 @@ router.post("/", async (req, res) => {
     /* ======================
        1️⃣ BASIC VALIDATION
     ====================== */
-    if (!warehouseId || !productName || !quantity) {
+    if (!warehouseId || !products || !Array.isArray(products) || products.length === 0) {
       return res.status(400).json({
-        message: "warehouseId, productName and quantity are required",
+        message: "warehouseId and products array (with at least one product) are required",
       });
     }
 
     /* ======================
-       2️⃣ PRODUCT STOCK CHECK
+       2️⃣ VALIDATE & CHECK STOCK FOR ALL PRODUCTS
     ====================== */
-    const product = await Product.findOne({
-      warehouseId,
-      productName,
-    });
+    const stockErrors = [];
+    const productUpdates = [];
 
-    if (!product) {
-      return res.status(404).json({
-        message: `Product "${productName}" not found in this warehouse`,
+    for (const invoiceProduct of products) {
+      const { productName, quantity } = invoiceProduct;
+
+      if (!productName || !quantity) {
+        return res.status(400).json({
+          message: "Each product must have productName and quantity",
+        });
+      }
+
+      const product = await Product.findOne({
+        warehouseId,
+        productName,
+      });
+
+      if (!product) {
+        stockErrors.push(`Product "${productName}" not found in this warehouse`);
+        continue;
+      }
+
+      if (product.quantity < quantity) {
+        stockErrors.push(
+          `Insufficient stock for "${productName}". Available: ${product.quantity}, Requested: ${quantity}`
+        );
+        continue;
+      }
+
+      productUpdates.push({
+        product,
+        quantity,
+        productName,
       });
     }
 
-    if (product.quantity < quantity) {
+    if (stockErrors.length > 0) {
       return res.status(400).json({
-        message: `Insufficient stock. Available: ${product.quantity}, Requested: ${quantity}`,
+        message: "Stock validation failed",
+        errors: stockErrors,
       });
     }
 
     /* ======================
-       3️⃣ FIND CLIENT (OPTIONAL)
-    ====================== */
-    const client = await Client.findOne({
-      clientName: customer,
-    });
-
-    /* ======================
-       4️⃣ LEDGER CHECK (ONLY IF CLIENT EXISTS)
-    ====================== */
-  
-
-    /* ======================
-       5️⃣ CREATE INVOICE
+       3️⃣ CREATE INVOICE
     ====================== */
     const invoice = await Invoice.create(req.body);
     console.log("Invoice created successfully:", JSON.stringify(invoice, null, 2));
 
     /* ======================
-       6️⃣ UPDATE PRODUCT STOCK (ALWAYS)
+       4️⃣ UPDATE PRODUCT STOCKS
     ====================== */
-    product.quantity -= quantity;
-    await product.save();
+    for (const update of productUpdates) {
+      update.product.quantity -= update.quantity;
+      await update.product.save();
 
-    /* ======================
-       6️⃣-B UPDATE STOCK COLLECTION (FOR NOTIFICATIONS)
-    ====================== */
-    // Try to find and update the corresponding stock item
-    const stockItem = await Stock.findOne({ 
-      itemName: { $regex: new RegExp(productName, 'i') }
-    });
+      // Update Stock collection for notifications
+      const stockItem = await Stock.findOne({
+        itemName: { $regex: new RegExp(update.productName, "i") },
+      });
 
-    if (stockItem) {
-      stockItem.currentStock -= quantity;
-      
-      // Recalculate status based on new stock level
-      let status = "Good";
-      if (stockItem.currentStock <= stockItem.reorderLevel * 0.5) {
-        status = "Critical";
-      } else if (stockItem.currentStock <= stockItem.reorderLevel) {
-        status = "Low";
+      if (stockItem) {
+        stockItem.currentStock -= update.quantity;
+
+        // Recalculate status
+        let status = "Good";
+        if (stockItem.currentStock <= stockItem.reorderLevel * 0.5) {
+          status = "Critical";
+        } else if (stockItem.currentStock <= stockItem.reorderLevel) {
+          status = "Low";
+        }
+        stockItem.status = status;
+
+        await stockItem.save();
       }
-      stockItem.status = status;
-      
-      await stockItem.save();
     }
 
     /* ======================
-       7️⃣ UPDATE CLIENT LEDGER (ONLY IF FOUND)
+       5️⃣ UPDATE CLIENT LEDGER (OPTIONAL)
     ====================== */
-    let ledgerUpdate = null;
+    const client = await Client.findOne({
+      clientName: customer,
+    });
 
+    let ledgerUpdate = null;
     if (client) {
-      client.totalQuantity -= quantity;
+      const totalQuantity = products.reduce((sum, p) => sum + p.quantity, 0);
+      client.totalQuantity -= totalQuantity;
       await client.save();
 
       ledgerUpdate = {
@@ -299,29 +315,28 @@ router.post("/", async (req, res) => {
     }
 
     /* ======================
-       8️⃣ UPDATE WAREHOUSE TOTAL
+       6️⃣ UPDATE WAREHOUSE TOTAL
     ====================== */
     const warehouse = await Warehouse.findById(warehouseId);
     if (warehouse) {
-      const products = await Product.find({ warehouseId });
-      warehouse.totalItems = products.reduce(
-        (sum, p) => sum + p.quantity,
-        0
-      );
+      const allProducts = await Product.find({ warehouseId });
+      warehouse.totalItems = allProducts.reduce((sum, p) => sum + p.quantity, 0);
       await warehouse.save();
     }
 
     /* ======================
-       9️⃣ RESPONSE
+       7️⃣ RESPONSE
     ====================== */
     res.status(201).json({
       message: "Invoice created successfully",
       invoice,
       updates: {
-        product: {
-          productName: product.productName,
-          remainingQuantity: product.quantity,
-        },
+        productsUpdated: productUpdates.length,
+        products: productUpdates.map(u => ({
+          productName: u.productName,
+          quantityDeducted: u.quantity,
+          remainingStock: u.product.quantity,
+        })),
         ledger: ledgerUpdate, // null if client not found
       },
     });

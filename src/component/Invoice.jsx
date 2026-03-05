@@ -38,10 +38,7 @@ const Invoice = () => {
     poNumber: "",
     piDate: "",
     poDate: "",
-    product: "",
-    quantity: "",
-    rate: "",
-    freight: "",
+    products: [], // Changed to array
     notes: "",
     shippingDetails: {
       shippingDate: "",
@@ -62,6 +59,14 @@ const Invoice = () => {
 
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+  const [productInput, setProductInput] = useState({
+    productName: "",
+    quantity: "",
+    unit: "",
+    rate: "",
+    freight: "",
+  });
 
   const [paymentForm, setPaymentForm] = useState({
     paymentDate: "",
@@ -210,7 +215,14 @@ const Invoice = () => {
     // Fetch products when warehouse changes
     if (name === "warehouse") {
       fetchProductsByWarehouse(value);
-      setForm({ ...form, warehouse: value, product: "" });
+      setForm({ ...form, warehouse: value, products: [] });
+      setProductInput({
+        productName: "",
+        quantity: "",
+        unit: "",
+        rate: "",
+        freight: "",
+      });
       return;
     }
 
@@ -261,11 +273,7 @@ const Invoice = () => {
       poNumber: "",
       piDate: "",
       poDate: "",
-      product: "",
-      quantity: "",
-      rate: "",
-      freight: "",
-      unit: "",
+      products: [],
       notes: "",
       shippingDetails: {
         shippingDate: "",
@@ -283,6 +291,55 @@ const Invoice = () => {
       },
     });
     setSelectedInvoice(null);
+    setProductInput({
+      productName: "",
+      quantity: "",
+      unit: "",
+      rate: "",
+      freight: "",
+    });
+  };
+
+  // Handle product input changes
+  const handleProductInputChange = (e) => {
+    const { name, value } = e.target;
+    setProductInput({ ...productInput, [name]: value });
+  };
+
+  // Add product to the products array
+  const handleAddProduct = () => {
+    if (!productInput.productName || !productInput.quantity || !productInput.unit || !productInput.rate) {
+      alert("Please fill in all product fields (Product Name, Quantity, Unit, Rate)");
+      return;
+    }
+
+    const newProduct = {
+      productName: productInput.productName,
+      quantity: Number(productInput.quantity),
+      unit: productInput.unit,
+      rate: Number(productInput.rate),
+      freight: Number(productInput.freight) || 0,
+    };
+
+    setForm({
+      ...form,
+      products: [...form.products, newProduct],
+    });
+
+    // Reset product input
+    setProductInput({
+      productName: "",
+      quantity: "",
+      unit: "",
+      rate: "",
+      freight: "",
+    });
+  };
+
+  // Remove product from array
+  const handleRemoveProduct = (index) => {
+    const updatedProducts = form.products.filter((_, i) => i !== index);
+    setForm({ ...form, products: updatedProducts });
   };
 
   const [previewInvoice, setPreviewInvoice] = useState(null);
@@ -496,6 +553,12 @@ const Invoice = () => {
 
   const handleSubmit = async () => {
     try {
+      // Validate products array
+      if (!form.products || form.products.length === 0) {
+        alert("Please add at least one product");
+        return;
+      }
+
       const payload = {
         customer: form.customer,
         customerId: form.customerId,
@@ -506,11 +569,7 @@ const Invoice = () => {
         state: form.state,
         placeOfSupply: form.placeOfSupply,
         warehouseId: form.warehouse,
-        productName: form.product,
-        quantity: Number(form.quantity),
-        unit: form.unit,
-        rate: Number(form.rate),
-        freight: Number(form.freight) || 0,
+        products: form.products, // Array of products
         date: form.date,
         notes: form.notes,
         shippingDetails: form.shippingDetails,
@@ -606,7 +665,22 @@ const Invoice = () => {
                 <td className="p-3">{inv.date?.slice(0, 10)}</td>
                 <td className="p-3">{inv.customer}</td>
                 <td className="p-3">{inv.warehouseId?.warehouse}</td>
-                <td className="p-3">{inv.productName}</td>
+                <td className="p-3">
+                  {inv.products && inv.products.length > 0 ? (
+                    inv.products.length === 1 ? (
+                      inv.products[0].productName
+                    ) : (
+                      <span className="text-sm">
+                        {inv.products.length} products
+                        <span className="text-xs text-gray-500 block">
+                          {inv.products.map(p => p.productName).join(", ")}
+                        </span>
+                      </span>
+                    )
+                  ) : (
+                    <span className="text-gray-400">No products</span>
+                  )}
+                </td>
 
                 <td className="p-3 text-right font-semibold">
                   ₹{inv.totalAmount}
@@ -1021,21 +1095,128 @@ const Invoice = () => {
                   value={form.date}
                 />
               </div>
+            </div>
 
-              <select
-                name="product"
-                className="input mt-3 border-2 rounded px-2 py-2"
-                onChange={handleChange}
-                value={form.product}
-                disabled={!form.warehouse}
-              >
-                <option value="">{form.warehouse ? "Select Product" : "Select Warehouse First"}</option>
-                {products.map((p) => (
-                  <option key={p._id} value={p.productName}>
-                    {p.productName}
-                  </option>
-                ))}
-              </select>
+            {/* PRODUCTS SECTION */}
+            <div className="mt-6 border rounded-lg p-4 bg-gray-50">
+              <h3 className="text-lg font-semibold mb-3">Products</h3>
+              
+              {/* Product Input Form */}
+              <div className="bg-white p-4 rounded border mb-4">
+                <select
+                  name="productName"
+                  className="input border-2 rounded px-2 py-2 w-full mb-3"
+                  onChange={handleProductInputChange}
+                  value={productInput.productName}
+                  disabled={!form.warehouse}
+                >
+                  <option value="">{form.warehouse ? "Select Product" : "Select Warehouse First"}</option>
+                  {products.map((p) => (
+                    <option key={p._id} value={p.productName}>
+                      {p.productName}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="grid grid-cols-4 gap-3 mb-3">
+                  <input
+                    name="quantity"
+                    type="number"
+                    placeholder="Quantity"
+                    className="input border-2 rounded px-2 py-2"
+                    onChange={handleProductInputChange}
+                    value={productInput.quantity}
+                  />
+                  <input
+                    name="unit"
+                    placeholder="Unit (e.g., Kg, L)"
+                    className="input border-2 rounded px-2 py-2"
+                    onChange={handleProductInputChange}
+                    value={productInput.unit}
+                  />
+                  <input
+                    name="rate"
+                    type="number"
+                    placeholder="Rate per Unit"
+                    className="input border-2 rounded px-2 py-2"
+                    onChange={handleProductInputChange}
+                    value={productInput.rate}
+                  />
+                  <input
+                    name="freight"
+                    type="number"
+                    placeholder="Freight"
+                    className="input border-2 rounded px-2 py-2"
+                    onChange={handleProductInputChange}
+                    value={productInput.freight}
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleAddProduct}
+                  className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-full"
+                  disabled={!form.warehouse}
+                >
+                  <Plus size={16} className="inline mr-2" />
+                  Add Product
+                </button>
+              </div>
+
+              {/* Added Products List */}
+              {form.products.length > 0 && (
+                <div className="bg-white rounded border">
+                  <table className="w-full text-sm">
+                    <thead className="bg-gray-100">
+                      <tr>
+                        <th className="p-2 text-left">Product</th>
+                        <th className="p-2 text-right">Quantity</th>
+                        <th className="p-2 text-left">Unit</th>
+                        <th className="p-2 text-right">Rate</th>
+                        <th className="p-2 text-right">Freight</th>
+                        <th className="p-2 text-right">Total</th>
+                        <th className="p-2 text-center">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {form.products.map((product, index) => (
+                        <tr key={index} className="border-t">
+                          <td className="p-2">{product.productName}</td>
+                          <td className="p-2 text-right">{product.quantity}</td>
+                          <td className="p-2">{product.unit}</td>
+                          <td className="p-2 text-right">₹{product.rate}</td>
+                          <td className="p-2 text-right">₹{product.freight}</td>
+                          <td className="p-2 text-right font-semibold">
+                            ₹{(product.quantity * product.rate + product.freight).toFixed(2)}
+                          </td>
+                          <td className="p-2 text-center">
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveProduct(index)}
+                              className="text-red-600 hover:text-red-800"
+                            >
+                              <X size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                      <tr className="border-t bg-gray-50 font-bold">
+                        <td colSpan="5" className="p-2 text-right">Grand Total:</td>
+                        <td className="p-2 text-right">
+                          ₹{form.products.reduce((sum, p) => sum + (p.quantity * p.rate + p.freight), 0).toFixed(2)}
+                        </td>
+                        <td></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              )}
+
+              {form.products.length === 0 && (
+                <p className="text-gray-500 text-center py-4 bg-white rounded border">
+                  No products added yet. Add products using the form above.
+                </p>
+              )}
             </div>
 
             {/* PI/PO Details Section */}
@@ -1083,42 +1264,6 @@ const Invoice = () => {
                   />
                 </div>
               </div>
-            </div>
-
-            <div className="grid grid-cols-3 gap-4 mt-3">
-              <input
-                name="quantity"
-                placeholder="Quantity"
-                className="input border-2 rounded px-2 py-2"
-                onChange={handleChange}
-                value={form.quantity}
-              />
-              <input
-                name="unit"
-                placeholder="Unit"
-                className="input border-2 rounded px-2 py-2"
-                onChange={handleChange}
-                value={form.unit}
-              />
-              <input
-                name="rate"
-                type="number"
-                placeholder="Rate"
-                className="input border-2 rounded px-2 py-2"
-                onChange={handleChange}
-                value={form.rate}
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-4 mt-3">
-              <input
-                name="freight"
-                type="number"
-                placeholder="Freight Charges"
-                className="input border-2 rounded px-2 py-2"
-                onChange={handleChange}
-                value={form.freight}
-              />
             </div>
 
             <textarea

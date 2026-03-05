@@ -6,26 +6,43 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
     .toLowerCase()
     .includes("west bengal");
 
-  // Calculate amounts matching server-side logic
-  // const qty = invoice.quantity || 0;
-  // const rate = invoice.rate || 0;
-  // const taxable = qty * rate;
-  // const cgst = taxable * 0.09;
-  // const sgst = taxable * 0.09;
-  // const total = taxable + cgst + sgst;
+  // Handle both old (single product) and new (products array) format
+  const products = invoice.products && invoice.products.length > 0 
+    ? invoice.products 
+    : [{
+        productName: invoice.productName,
+        quantity: invoice.quantity,
+        unit: invoice.unit,
+        rate: invoice.rate,
+        freight: invoice.freight || 0,
+      }];
 
-  const qty = invoice.quantity || 0;
-  const rate = invoice.rate || 0;
-  const taxable = qty * rate;
+  // Calculate totals for all products
+  let totalTaxable = 0;
+  let totalCgst = 0;
+  let totalSgst = 0;
+  let totalIgst = 0;
+  let grandTotal = 0;
 
-  const cgst = isWestBengal ? taxable * 0.09 : 0;
-  const sgst = isWestBengal ? taxable * 0.09 : 0;
-  const igst = !isWestBengal ? taxable * 0.18 : 0;
+  products.forEach(product => {
+    const qty = product.quantity || 0;
+    const rate = product.rate || 0;
+    const freight = product.freight || 0;
+    const taxable = (qty * rate) + freight;
 
-  const total = taxable + cgst + sgst + igst;
+    const cgst = isWestBengal ? taxable * 0.09 : 0;
+    const sgst = isWestBengal ? taxable * 0.09 : 0;
+    const igst = !isWestBengal ? taxable * 0.18 : 0;
+
+    totalTaxable += taxable;
+    totalCgst += cgst;
+    totalSgst += sgst;
+    totalIgst += igst;
+    grandTotal += taxable + cgst + sgst + igst;
+  });
 
   const amountInWords = (num) => {
-    return `RUPEES ${num.toLocaleString("en-IN")} ONLY`;
+    return `RUPEES ${Math.round(num).toLocaleString("en-IN")} ONLY`;
   };
 
   // Format date to DD-MM-YYYY
@@ -209,26 +226,38 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>1</td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{invoice.productName}</td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{invoice.hsn || "-"}</td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>
-              {qty} {invoice.unit}
-            </td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{rate.toFixed(2)}</td>
-            <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
-            {isWestBengal ? (
-              <>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
-              </>
-            ) : (
-              <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
-            )}
-          </tr>
+          {products.map((product, index) => {
+            const qty = product.quantity || 0;
+            const rate = product.rate || 0;
+            const freight = product.freight || 0;
+            const taxable = (qty * rate) + freight;
+            const cgst = isWestBengal ? taxable * 0.09 : 0;
+            const sgst = isWestBengal ? taxable * 0.09 : 0;
+            const igst = !isWestBengal ? taxable * 0.18 : 0;
+
+            return (
+              <tr key={index}>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{index + 1}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{product.productName}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{invoice.hsn || "-"}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>
+                  {qty} {product.unit}
+                </td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{rate.toFixed(2)}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
+                {isWestBengal ? (
+                  <>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
+                  </>
+                ) : (
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
+                )}
+              </tr>
+            );
+          })}
          
-          {Array.from({ length: 5 }).map((_, i) => (
+          {Array.from({ length: Math.max(0, 5 - products.length) }).map((_, i) => (
     <tr key={i}>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>&nbsp;</td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
@@ -254,7 +283,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       <div className="bottom-section">
         <div className="amount-words">
           <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Total in Words</h4>
-          <p className="px-6">{amountInWords(total)}</p>
+          <p className="px-6">{amountInWords(grandTotal)}</p>
           <hr/>
           <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Terms of Sale and Other Comments</h4>
           <p className="px-6"><strong>Transport Mode: </strong>{invoice.driverDetails?.transportMode || " Not specified"}</p>
@@ -273,24 +302,24 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <tbody>
               <tr>
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable Amount</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalTaxable.toFixed(2)}</td>
               </tr>
 
               {isWestBengal ? (
                 <>
                   <tr>
                     <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:CGST(9%)</td>
-                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{cgst.toFixed(2)}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalCgst.toFixed(2)}</td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:SGST(9%)</td>
-                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{sgst.toFixed(2)}</td>
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalSgst.toFixed(2)}</td>
                   </tr>
                 </>
               ) : (
                 <tr>
                   <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:IGST(18%)</td>
-                  <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{igst.toFixed(2)}</td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalIgst.toFixed(2)}</td>
                 </tr>
               )}
               <tr>
@@ -298,7 +327,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   <strong>GST Amount</strong>
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
-                  <strong>{(cgst + sgst + igst).toFixed(2)}</strong>
+                  <strong>{(totalCgst + totalSgst + totalIgst).toFixed(2)}</strong>
                 </td>
               </tr>
               <tr>
@@ -314,7 +343,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   <strong>Total Amount</strong>
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
-                  <strong>{total.toFixed(2)}</strong>
+                  <strong>{grandTotal.toFixed(2)}</strong>
                 </td>
               </tr>
             </tbody>

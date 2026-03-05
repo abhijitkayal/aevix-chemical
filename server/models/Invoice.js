@@ -74,32 +74,33 @@ const invoiceSchema = new mongoose.Schema(
       required: true,
     },
 
-    productName: {
-      type: String,
-      required: true,
-    },
-
-    quantity: {
-      type: Number,
-      required: true,
-      min: 1,
-    },
-    unit:{
-      type: String,
-      required: true,
-    },
-
-    rate: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    freight: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
+    products: [
+      {
+        productName: {
+          type: String,
+          required: true,
+        },
+        quantity: {
+          type: Number,
+          required: true,
+          min: 1,
+        },
+        unit: {
+          type: String,
+          required: true,
+        },
+        rate: {
+          type: Number,
+          required: true,
+          min: 0,
+        },
+        freight: {
+          type: Number,
+          default: 0,
+          min: 0,
+        },
+      },
+    ],
 
     /* ================= DATES ================= */
     date: {
@@ -143,7 +144,12 @@ const invoiceSchema = new mongoose.Schema(
     totalAmount: {
       type: Number,
       default: function () {
-        return this.quantity * this.rate;
+        if (this.products && this.products.length > 0) {
+          return this.products.reduce((sum, product) => {
+            return sum + (product.quantity * product.rate + (product.freight || 0));
+          }, 0);
+        }
+        return 0;
       },
     },
     shippingDetails: {
