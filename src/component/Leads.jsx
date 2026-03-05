@@ -863,7 +863,7 @@ export default function Leads() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <form
             onSubmit={handleSubmit}
-            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-3"
+            className="bg-white rounded-lg shadow-lg w-full max-w-md p-6 space-y-3 max-h-[90vh] overflow-y-auto"
           >
             <h3 className="text-lg font-bold mb-2">
               {editingId ? "Edit Lead" : "Add Lead"}

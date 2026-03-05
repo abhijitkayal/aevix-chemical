@@ -375,7 +375,7 @@ const baseTabs = [
     subtabs: [
       { name: "Users", path: "/users-crm/users" },
       { name: "Roles", path: "/users-crm/roles" },
-      { name: "Leads", path: "/users-crm/leads" },
+      { name: "Customer / Vendors", path: "/users-crm/leads" },
       { name: "Activity Logs", path: "/users-crm/activity-logs" },
       { name: "Security", path: "/users-crm/security" },
     ],

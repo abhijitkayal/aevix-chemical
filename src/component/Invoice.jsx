@@ -240,12 +240,15 @@ const Invoice = () => {
       customer: customer.customerName,
       customerId: customer.customerId,
       phone: customer.phone,
-      // address: customer.address || "",
       state: customer.state || "",
       gstin: customer.gstin || "",
       pan: customer.pan || "",
       placeOfSupply: customer.placeOfSupply || "",
       address: customer.address || "",
+      shippingDetails: {
+        ...form.shippingDetails,
+        shippingAddress: customer.shippingAddress || "",
+      },
     });
 
     setCustomerSuggestions([]);
@@ -298,6 +301,55 @@ const Invoice = () => {
       rate: "",
       freight: "",
     });
+  };
+
+  // Handle edit invoice
+  const handleEdit = async (inv) => {
+    // Fetch products for the warehouse first
+    if (inv.warehouseId?._id) {
+      await fetchProductsByWarehouse(inv.warehouseId._id);
+    }
+
+    // Populate form with invoice data
+    setForm({
+      customer: inv.customer || "",
+      customerId: inv.customerId || "",
+      phone: inv.phone || "",
+      address: inv.address || "",
+      gstin: inv.gstin || "",
+      pan: inv.pan || "",
+      state: inv.state || "",
+      placeOfSupply: inv.placeOfSupply || "",
+      bankName: "",
+      bankAccount: "",
+      ifsc: "",
+      warehouse: inv.warehouseId?._id || "",
+      date: inv.date?.slice(0, 10) || "",
+      dueDate: inv.dueDate?.slice(0, 10) || "",
+      piNumber: inv.piNumber || "",
+      poNumber: inv.poNumber || "",
+      piDate: inv.piDate?.slice(0, 10) || "",
+      poDate: inv.poDate?.slice(0, 10) || "",
+      products: inv.products || [],
+      notes: inv.notes || "",
+      shippingDetails: inv.shippingDetails || {
+        shippingDate: "",
+        grossWeight: "",
+        netWeight: "",
+        additionalNote: "",
+        totalPackages: "",
+        shippingAddress: "",
+      },
+      driverDetails: inv.driverDetails || {
+        driverName: "",
+        driverPhone: "",
+        vehicleNo: "",
+        transportMode: "",
+      },
+    });
+
+    setSelectedInvoice(inv);
+    setShowModal(true);
   };
 
   // Handle product input changes
@@ -553,8 +605,8 @@ const Invoice = () => {
 
   const handleSubmit = async () => {
     try {
-      // Validate products array
-      if (!form.products || form.products.length === 0) {
+      // Validate products array - only required for NEW invoices
+      if (!selectedInvoice && (!form.products || form.products.length === 0)) {
         alert("Please add at least one product");
         return;
       }
@@ -706,52 +758,13 @@ const Invoice = () => {
 
                 <td className="p-3 text-right flex justify-end gap-3">
                   {/* EDIT BUTTON */}
-                  {/* <button
-                
-                    onClick={() => {
-                      setForm({
-                        customer: inv.customer,
-                        customerId: inv.customerId,
-                        phone: inv.phone,
-                        address: inv.address,
-                        gstin: inv.gstin,
-                        pan: inv.pan,
-                        state: inv.state,
-                        placeOfSupply: inv.placeOfSupply,
-                        warehouse: inv.warehouseId?._id || "",
-                        date: inv.date?.slice(0, 10),
-                        piNumber: inv.piNumber || "",
-                        poNumber: inv.poNumber || "",
-                        piDate: inv.piDate?.slice(0, 10) || "",
-                        poDate: inv.poDate?.slice(0, 10) || "",
-                        product: inv.productName,
-                        quantity: inv.quantity,
-                        unit: inv.unit,
-                        rate: inv.rate,
-                        notes: inv.notes,
-                        shippingDetails: inv.shippingDetails || {
-                          shippingDate: "",
-                          grossWeight: "",
-                          netWeight: "",
-                          additionalNote: "",
-                          totalPackages: "",
-                          shippingAddress: "",
-                        },
-                        driverDetails: inv.driverDetails || {
-                          driverName: "",
-                          driverPhone: "",
-                          vehicleNo: "",
-                          transportMode: "",
-                        },
-                      });
-
-                      setSelectedInvoice(inv);
-                      setShowModal(true);
-                    }}
+                  <button
+                    onClick={() => handleEdit(inv)}
                     className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs font-semibold hover:bg-blue-200"
+                    title="Edit Invoice"
                   >
                     <Pencil size={14} />
-                  </button> */}
+                  </button>
 
                   {/* DOWNLOAD */}
                   <button
@@ -939,12 +952,17 @@ const Invoice = () => {
                       <li
                         key={cust._id}
                         onClick={() => handleCustomerSelect(cust)}
-                        className="px-3 py-2 cursor-pointer hover:bg-gray-100"
+                        className="px-3 py-2 cursor-pointer hover:bg-gray-100 border-b last:border-b-0"
                       >
-                        <p className="font-medium">{cust.customerName}</p>
-                        <p className="text-xs text-gray-500">
+                        <p className="font-medium text-gray-900">{cust.customerName}</p>
+                        <p className="text-xs text-gray-600">
                           {cust.customerId} • {cust.phone}
                         </p>
+                        {cust.shippingAddress && (
+                          <p className="text-xs text-gray-500 mt-1">
+                            📦 {cust.shippingAddress}
+                          </p>
+                        )}
                       </li>
                     ))}
                   </ul>

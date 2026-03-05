@@ -42,7 +42,44 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
   });
 
   const amountInWords = (num) => {
-    return `RUPEES ${Math.round(num).toLocaleString("en-IN")} ONLY`;
+    const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
+    const teens = ['TEN', 'ELEVEN', 'TWELVE', 'THIRTEEN', 'FOURTEEN', 'FIFTEEN', 'SIXTEEN', 'SEVENTEEN', 'EIGHTEEN', 'NINETEEN'];
+    const tens = ['', '', 'TWENTY', 'THIRTY', 'FORTY', 'FIFTY', 'SIXTY', 'SEVENTY', 'EIGHTY', 'NINETY'];
+
+    // Round to nearest integer
+    num = Math.round(num);
+
+    if (num === 0) return 'ZERO RUPEES ONLY';
+
+    const convertToWords = (n) => {
+      if (n < 10) return ones[n];
+      if (n < 20) return teens[n - 10];
+      if (n < 100) return tens[Math.floor(n / 10)] + (n % 10 !== 0 ? ' ' + ones[n % 10] : '');
+      if (n < 1000) return ones[Math.floor(n / 100)] + ' HUNDRED' + (n % 100 !== 0 ? ' AND ' + convertToWords(n % 100) : '');
+      return '';
+    };
+
+    const crore = Math.floor(num / 10000000);
+    const lakh = Math.floor((num % 10000000) / 100000);
+    const thousand = Math.floor((num % 100000) / 1000);
+    const hundred = Math.floor(num % 1000);
+
+    let words = '';
+
+    if (crore > 0) {
+      words += convertToWords(crore) + ' CRORE ';
+    }
+    if (lakh > 0) {
+      words += convertToWords(lakh) + ' LAKH ';
+    }
+    if (thousand > 0) {
+      words += convertToWords(thousand) + ' THOUSAND ';
+    }
+    if (hundred > 0) {
+      words += convertToWords(hundred);
+    }
+
+    return 'RUPEES ' + words.trim() + ' ONLY';
   };
 
   // Format date to DD-MM-YYYY
@@ -110,7 +147,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <table className="w-full border border-black border-collapse text-sm">
             <tbody>
               <tr>
-                <td className="border border-black px-2 pb-3 pt-0 font-medium">
+                <td className="border border-black px-1 pb-3 pt-0 font-medium">
                   Invoice No
                 </td>
                 <td className="border border-black px-2 pb-3 pt-0">
@@ -118,7 +155,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                 </td>
               </tr>
               <tr>
-                <td className="border border-black pb-3 pt-0 px-2 font-medium">
+                <td className="border border-black pb-3 pt-0 ">
                   Invoice Date
                 </td>
                 <td className="border border-black px-2 pb-3 pt-0">
@@ -194,7 +231,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         <div className="consignee-section">
           <h4 className="bg-black text-white w-55 h-8 pt-1 pb-3 flex items-center px-3">SHIPPING DETAILS :</h4>
-          <p><strong>Freight: </strong>{invoice.driverDetails?.transportMode || "-"}</p>
+          <p><strong>Freight: </strong>{invoice.shippingDetails?.freight || "-"}</p>
           <p>
             <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
           </p>
@@ -214,6 +251,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>HSN</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Qty</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Rate</th>
+            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Freight</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable</th>
             {isWestBengal ? (
               <>
@@ -244,6 +282,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   {qty} {product.unit}
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{rate.toFixed(2)}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{freight.toFixed(2)}</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
                 {isWestBengal ? (
                   <>
@@ -260,6 +299,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           {Array.from({ length: Math.max(0, 5 - products.length) }).map((_, i) => (
     <tr key={i}>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>&nbsp;</td>
+      <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
@@ -331,12 +371,12 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                 </td>
               </tr>
               <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
+                {/* <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>Freight</strong>
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
                   <strong>{invoice.driverDetails?.transportMode || "-"}</strong>
-                </td>
+                </td> */}
               </tr>
               <tr className="grand">
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
