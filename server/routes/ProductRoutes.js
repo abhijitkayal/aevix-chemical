@@ -40,6 +40,19 @@ router.put("/:id", async (req, res) => {
 });
 
 
+/* GET ALL PRODUCTS (for debugging) - Must come before /:warehouseId */
+router.get("/all", async (req, res) => {
+  try {
+    const products = await Product.find().populate('warehouseId');
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({
+      message: "Failed to fetch all products",
+      error: err.message,
+    });
+  }
+});
+
 /* GET PRODUCTS BY WAREHOUSE */
 router.get("/:warehouseId", async (req, res) => {
   try {
@@ -51,19 +64,6 @@ router.get("/:warehouseId", async (req, res) => {
   } catch (err) {
     res.status(500).json({
       message: "Failed to fetch products",
-      error: err.message,
-    });
-  }
-});
-
-/* GET ALL PRODUCTS (for debugging) */
-router.get("/", async (req, res) => {
-  try {
-    const products = await Product.find().populate('warehouseId');
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({
-      message: "Failed to fetch all products",
       error: err.message,
     });
   }

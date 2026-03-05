@@ -168,7 +168,7 @@ const Invoice = () => {
       return;
     }
     try {
-      const res = await axios.get(`${API_URL}/api/products?warehouseId=${warehouseId}`);
+      const res = await axios.get(`${API_URL}/api/products/${warehouseId}`);
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to fetch products:", err);
