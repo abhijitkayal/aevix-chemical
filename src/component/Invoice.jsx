@@ -9,6 +9,7 @@ import jsPDF from "jspdf";
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
+  const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const pdfRef = useRef(null);
   const [dateFilter, setDateFilter] = useState({
@@ -40,6 +41,7 @@ const Invoice = () => {
     product: "",
     quantity: "",
     rate: "",
+    freight: "",
     notes: "",
     shippingDetails: {
       shippingDate: "",
@@ -155,6 +157,20 @@ const Invoice = () => {
     setWarehouses(res.data);
   };
 
+  const fetchProductsByWarehouse = async (warehouseId) => {
+    if (!warehouseId) {
+      setProducts([]);
+      return;
+    }
+    try {
+      const res = await axios.get(`${API_URL}/api/products?warehouseId=${warehouseId}`);
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Failed to fetch products:", err);
+      setProducts([]);
+    }
+  };
+
   useEffect(() => {
     fetchInvoices();
     fetchWarehouses();
@@ -178,18 +194,27 @@ const Invoice = () => {
       return;
     }
 
-    setForm({ ...form, [name]: value });
+    // Handle nested driver fields
     if (name.startsWith("driverDetails.")) {
-  const field = name.split(".")[1];
-  setForm({
-    ...form,
-    driverDetails: {
-      ...form.driverDetails,
-      [field]: value,
-    },
-  });
-  return;
-}
+      const field = name.split(".")[1];
+      setForm({
+        ...form,
+        driverDetails: {
+          ...form.driverDetails,
+          [field]: value,
+        },
+      });
+      return;
+    }
+
+    // Fetch products when warehouse changes
+    if (name === "warehouse") {
+      fetchProductsByWarehouse(value);
+      setForm({ ...form, warehouse: value, product: "" });
+      return;
+    }
+
+    setForm({ ...form, [name]: value });
 
     // Trigger customer suggestion
     if (name === "customer") {
@@ -239,6 +264,7 @@ const Invoice = () => {
       product: "",
       quantity: "",
       rate: "",
+      freight: "",
       unit: "",
       notes: "",
       shippingDetails: {
@@ -484,6 +510,7 @@ const Invoice = () => {
         quantity: Number(form.quantity),
         unit: form.unit,
         rate: Number(form.rate),
+        freight: Number(form.freight) || 0,
         date: form.date,
         notes: form.notes,
         shippingDetails: form.shippingDetails,
@@ -894,13 +921,50 @@ const Invoice = () => {
                 onChange={handleChange}
                 value={form.address}
               />
-              <input
+              <select
                 name="placeOfSupply"
-                placeholder="Place of Supply"
                 className="input mt-3 border-2 rounded px-2 py-2"
                 onChange={handleChange}
                 value={form.placeOfSupply}
-              />
+              >
+                <option value="">Select Place of Supply</option>
+                <option value="Andhra Pradesh">Andhra Pradesh</option>
+                <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                <option value="Assam">Assam</option>
+                <option value="Bihar">Bihar</option>
+                <option value="Chhattisgarh">Chhattisgarh</option>
+                <option value="Goa">Goa</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Haryana">Haryana</option>
+                <option value="Himachal Pradesh">Himachal Pradesh</option>
+                <option value="Jharkhand">Jharkhand</option>
+                <option value="Karnataka">Karnataka</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Madhya Pradesh">Madhya Pradesh</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Manipur">Manipur</option>
+                <option value="Meghalaya">Meghalaya</option>
+                <option value="Mizoram">Mizoram</option>
+                <option value="Nagaland">Nagaland</option>
+                <option value="Odisha">Odisha</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Sikkim">Sikkim</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Telangana">Telangana</option>
+                <option value="Tripura">Tripura</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Uttarakhand">Uttarakhand</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                <option value="Chandigarh">Chandigarh</option>
+                <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                <option value="Ladakh">Ladakh</option>
+                <option value="Lakshadweep">Lakshadweep</option>
+                <option value="Puducherry">Puducherry</option>
+              </select>
             </div>
 
             {/* BANK */}
@@ -958,13 +1022,20 @@ const Invoice = () => {
                 />
               </div>
 
-              <input
+              <select
                 name="product"
-                placeholder="Product Name"
                 className="input mt-3 border-2 rounded px-2 py-2"
                 onChange={handleChange}
                 value={form.product}
-              />
+                disabled={!form.warehouse}
+              >
+                <option value="">{form.warehouse ? "Select Product" : "Select Warehouse First"}</option>
+                {products.map((p) => (
+                  <option key={p._id} value={p.productName}>
+                    {p.productName}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {/* PI/PO Details Section */}
@@ -1036,6 +1107,17 @@ const Invoice = () => {
                 className="input border-2 rounded px-2 py-2"
                 onChange={handleChange}
                 value={form.rate}
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 mt-3">
+              <input
+                name="freight"
+                type="number"
+                placeholder="Freight Charges"
+                className="input border-2 rounded px-2 py-2"
+                onChange={handleChange}
+                value={form.freight}
               />
             </div>
 

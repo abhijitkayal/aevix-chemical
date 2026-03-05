@@ -709,6 +709,7 @@ export default function Leads() {
     gstin: "",
     pan: "",
     placeOfSupply: "",
+    shippingAddress: "",
     reminderDate: "",
     reminderNote: "",
   });
@@ -737,6 +738,7 @@ export default function Leads() {
       gstin: "",
       pan: "",
       placeOfSupply: "",
+      shippingAddress: "",
       reminderDate: "",
       reminderNote: "",
     });
@@ -905,6 +907,35 @@ export default function Leads() {
               placeholder="Address"
               value={form.address}
               onChange={handleChange}
+            />
+            <input
+              className="border p-2 w-full rounded"
+              name="pan"
+              placeholder="PAN No"
+              value={form.pan}
+              onChange={handleChange}
+            />
+            <input
+              className="border p-2 w-full rounded"
+              name="gstin"
+              placeholder="GST No"
+              value={form.gstin}
+              onChange={handleChange}
+            />
+            <input
+              className="border p-2 w-full rounded"
+              name="state"
+              placeholder="State"
+              value={form.state}
+              onChange={handleChange}
+            />
+            <textarea
+              className="border p-2 w-full rounded"
+              name="shippingAddress"
+              placeholder="Shipping Address"
+              value={form.shippingAddress}
+              onChange={handleChange}
+              rows={3}
             />
             <input
               type="date"

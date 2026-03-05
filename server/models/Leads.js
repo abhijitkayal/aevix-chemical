@@ -68,6 +68,7 @@ const LeadSchema = new mongoose.Schema(
     gstin: String,
     pan: String,
     placeOfSupply: { type: String, required: true },
+    shippingAddress: String,
 
     // OPTIONAL DATE
     followUpDate: {

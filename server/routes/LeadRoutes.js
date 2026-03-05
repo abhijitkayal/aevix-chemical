@@ -105,6 +105,7 @@ router.post("/", async (req, res) => {
       gstin,
       pan,
       placeOfSupply,
+      shippingAddress,
       reminderDate,
       reminderNote,
     } = req.body;
@@ -134,6 +135,7 @@ router.post("/", async (req, res) => {
       gstin,
       pan,
       placeOfSupply,
+      shippingAddress,
       reminderDate: reminderDate || null,
       reminderNote: reminderNote || "",
     });

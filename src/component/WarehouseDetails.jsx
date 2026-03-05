@@ -55,12 +55,12 @@ export default function WarehouseDetails() {
   if (editingProductId) {
     // ✅ UPDATE PRODUCT
     await axios.put(
-      `${API_URL}/api/products/${editingProductId}`,
+      `https://aevix-chemical-mpbw.vercel.app/api/products/${editingProductId}`,
       payload
     );
   } else {
     // ✅ ADD PRODUCT
-    await axios.post("${API_URL}/api/products", payload);
+    await axios.post("https://aevix-chemical-mpbw.vercel.app/api/products", payload);
   }
 
   setForm({
@@ -74,7 +74,7 @@ export default function WarehouseDetails() {
   setEditingProductId(null);
   setShowForm(false);
 
-  const res = await axios.get(`${API_URL}/api/products/${id}`);
+  const res = await axios.get(`https://aevix-chemical-mpbw.vercel.app/api/products/${id}`);
   setProducts(res.data);
 };
 

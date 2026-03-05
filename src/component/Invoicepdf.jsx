@@ -257,7 +257,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <p className="px-6">{amountInWords(total)}</p>
           <hr/>
           <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Terms of Sale and Other Comments</h4>
-          <p className="px-6"><strong>transportMode: </strong>{invoice.driverDetails?.transportMode || " Not specified"}</p>
+          <p className="px-6"><strong>Transport Mode: </strong>{invoice.driverDetails?.transportMode || " Not specified"}</p>
           <p className="px-6"><strong>Driver call: </strong>{invoice.driverDetails?.driverPhone || " Not specified"}</p>
           <p className="px-6"><strong>Vehicle No: </strong>{invoice.driverDetails?.vehicleNo || " Not specified"}</p>
           <hr/>

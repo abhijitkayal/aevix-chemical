@@ -95,6 +95,12 @@ const invoiceSchema = new mongoose.Schema(
       min: 0,
     },
 
+    freight: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
     /* ================= DATES ================= */
     date: {
       type: Date,
