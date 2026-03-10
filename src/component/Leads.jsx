@@ -699,9 +699,12 @@ export default function Leads() {
   const [leads, setLeads] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [companySuggestions, setCompanySuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const [form, setForm] = useState({
     customerName: "",
+    companyName: "",
     customerId: "",
     phone: "",
     address: "",
@@ -725,12 +728,33 @@ export default function Leads() {
   }, []);
 
   /* ================= FORM ================= */
-  const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
+
+    // Autocomplete for company name
+    if (name === "companyName" && value.length >= 1) {
+      const uniqueCompanies = [...new Set(
+        leads
+          .map(lead => lead.companyName)
+          .filter(company => company && company.toLowerCase().includes(value.toLowerCase()))
+      )];
+      setCompanySuggestions(uniqueCompanies);
+      setShowSuggestions(true);
+    } else if (name === "companyName" && value.length === 0) {
+      setShowSuggestions(false);
+    }
+  };
+
+  const selectCompanySuggestion = (company) => {
+    setForm({ ...form, companyName: company });
+    setShowSuggestions(false);
+  };
 
   const resetForm = () => {
     setForm({
       customerName: "",
+      companyName: "",
       customerId: "",
       phone: "",
       address: "",
@@ -743,6 +767,7 @@ export default function Leads() {
       reminderNote: "",
     });
     setEditingId(null);
+    setShowSuggestions(false);
   };
 
   const handleSubmit = async (e) => {
@@ -763,6 +788,7 @@ export default function Leads() {
   const handleEdit = (lead) => {
     setForm({
       customerName: lead.customerName || "",
+      companyName: lead.companyName || "",
       customerId: lead.customerId || "",
       phone: lead.phone || "",
       address: lead.address || "",
@@ -770,6 +796,7 @@ export default function Leads() {
       gstin: lead.gstin || "",
       pan: lead.pan || "",
       placeOfSupply: lead.placeOfSupply || "",
+      shippingAddress: lead.shippingAddress || "",
       reminderDate: lead.reminderDate ? lead.reminderDate.substring(0, 10) : "",
       reminderNote: lead.reminderNote || "",
     });
@@ -805,6 +832,7 @@ export default function Leads() {
           <thead className="bg-gray-100 text-left text-sm">
             <tr>
               <th className="p-3">Customer</th>
+              <th className="p-3">Company</th>
               <th className="p-3">ID</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Place of Supply</th>
@@ -819,6 +847,7 @@ export default function Leads() {
             {leads.map((lead) => (
               <tr key={lead._id} className="border-t hover:bg-gray-50">
                 <td className="p-3">{lead.customerName}</td>
+                <td className="p-3">{lead.companyName || "-"}</td>
                 <td className="p-3">{lead.customerId}</td>
                 <td className="p-3">{lead.phone}</td>
                 <td className="p-3">{lead.placeOfSupply}</td>
@@ -849,7 +878,7 @@ export default function Leads() {
 
             {leads.length === 0 && (
               <tr>
-                <td colSpan="8" className="text-center p-6 text-gray-500">
+                <td colSpan="9" className="text-center p-6 text-gray-500">
                   No leads found
                 </td>
               </tr>
@@ -877,6 +906,35 @@ export default function Leads() {
               onChange={handleChange}
               required
             />
+            
+            {/* Company Name with Autocomplete */}
+            <div className="relative">
+              <input
+                className="border p-2 w-full rounded"
+                name="companyName"
+                placeholder="Company Name"
+                value={form.companyName}
+                onChange={handleChange}
+                onFocus={() => form.companyName.length >= 1 && setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+              />
+              
+              {/* Suggestions Dropdown */}
+              {showSuggestions && companySuggestions.length > 0 && (
+                <div className="absolute z-10 w-full bg-white border border-gray-300 rounded shadow-lg max-h-48 overflow-y-auto mt-1">
+                  {companySuggestions.map((company, index) => (
+                    <div
+                      key={index}
+                      className="p-2 hover:bg-blue-50 cursor-pointer text-sm"
+                      onClick={() => selectCompanySuggestion(company)}
+                    >
+                      {company}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            
             <input
               className="border p-2 w-full rounded"
               name="customerId"

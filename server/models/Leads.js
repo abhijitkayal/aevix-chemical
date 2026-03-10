@@ -61,6 +61,7 @@ import mongoose from "mongoose";
 const LeadSchema = new mongoose.Schema(
   {
     customerName: { type: String, required: true },
+    companyName: { type: String, trim: true },
     customerId: { type: String, required: true },
     phone: { type: String, required: true },
     address: String,
@@ -70,8 +71,8 @@ const LeadSchema = new mongoose.Schema(
     placeOfSupply: { type: String, required: true },
     shippingAddress: String,
 
-    // OPTIONAL DATE
-    followUpDate: {
+    // OPTIONAL REMINDER DATE
+    reminderDate: {
       type: Date,
       default: null,
     },

@@ -98,6 +98,7 @@ router.post("/", async (req, res) => {
   try {
     const {
       customerName,
+      companyName,
       customerId,
       phone,
       address,
@@ -128,6 +129,7 @@ router.post("/", async (req, res) => {
 
     const lead = await Lead.create({
       customerName,
+      companyName,
       customerId,
       phone,
       address,
@@ -162,7 +164,10 @@ router.get("/", async (req, res) => {
     let filter = {};
     if (search) {
       filter = {
-        customerName: { $regex: search, $options: "i" },
+        $or: [
+          { customerName: { $regex: search, $options: "i" } },
+          { companyName: { $regex: search, $options: "i" } },
+        ]
       };
     }
 
