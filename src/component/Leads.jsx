@@ -757,8 +757,8 @@ export default function Leads() {
       companyName: "",
       customerId: "",
       phone: "",
-      address: "",
-      state: "",
+      // address: "",
+      // state: "",
       gstin: "",
       pan: "",
       placeOfSupply: "",
@@ -791,8 +791,8 @@ export default function Leads() {
       companyName: lead.companyName || "",
       customerId: lead.customerId || "",
       phone: lead.phone || "",
-      address: lead.address || "",
-      state: lead.state || "",
+      // address: lead.address || "",
+      // state: lead.state || "",
       gstin: lead.gstin || "",
       pan: lead.pan || "",
       placeOfSupply: lead.placeOfSupply || "",
@@ -836,7 +836,7 @@ export default function Leads() {
               <th className="p-3">ID</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Place of Supply</th>
-              <th className="p-3">Address</th>
+              <th className="p-3">Shipping Address</th>
               <th className="p-3">Reminder Date</th>
               <th className="p-3">Reminder Note</th>
               <th className="p-3 text-right">Actions</th>
@@ -851,7 +851,7 @@ export default function Leads() {
                 <td className="p-3">{lead.customerId}</td>
                 <td className="p-3">{lead.phone}</td>
                 <td className="p-3">{lead.placeOfSupply}</td>
-                <td className="p-3">{lead.address || "-"}</td>
+                <td className="p-3">{lead.shippingAddress || "-"}</td>
                 <td className="p-3">
                   {lead.reminderDate
                     ? new Date(lead.reminderDate).toLocaleDateString()
@@ -898,14 +898,7 @@ export default function Leads() {
               {editingId ? "Edit Lead" : "Add Lead"}
             </h3>
 
-            <input
-              className="border p-2 w-full rounded"
-              name="customerName"
-              placeholder="Customer Name"
-              value={form.customerName}
-              onChange={handleChange}
-              required
-            />
+        
             
             {/* Company Name with Autocomplete */}
             <div className="relative">
@@ -934,6 +927,14 @@ export default function Leads() {
                 </div>
               )}
             </div>
+                <input
+              className="border p-2 w-full rounded"
+              name="customerName"
+              placeholder="Customer Name"
+              value={form.customerName}
+              onChange={handleChange}
+              required
+            />
             
             <input
               className="border p-2 w-full rounded"
@@ -951,21 +952,58 @@ export default function Leads() {
               onChange={handleChange}
               required
             />
-            <input
+            <select
               className="border p-2 w-full rounded"
               name="placeOfSupply"
-              placeholder="Place of Supply"
               value={form.placeOfSupply}
               onChange={handleChange}
               required
-            />
-            <input
+            >
+              <option value="">Select Place of Supply</option>
+              <option value="Andhra Pradesh">Andhra Pradesh</option>
+              <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+              <option value="Assam">Assam</option>
+              <option value="Bihar">Bihar</option>
+              <option value="Chhattisgarh">Chhattisgarh</option>
+              <option value="Goa">Goa</option>
+              <option value="Gujarat">Gujarat</option>
+              <option value="Haryana">Haryana</option>
+              <option value="Himachal Pradesh">Himachal Pradesh</option>
+              <option value="Jharkhand">Jharkhand</option>
+              <option value="Karnataka">Karnataka</option>
+              <option value="Kerala">Kerala</option>
+              <option value="Madhya Pradesh">Madhya Pradesh</option>
+              <option value="Maharashtra">Maharashtra</option>
+              <option value="Manipur">Manipur</option>
+              <option value="Meghalaya">Meghalaya</option>
+              <option value="Mizoram">Mizoram</option>
+              <option value="Nagaland">Nagaland</option>
+              <option value="Odisha">Odisha</option>
+              <option value="Punjab">Punjab</option>
+              <option value="Rajasthan">Rajasthan</option>
+              <option value="Sikkim">Sikkim</option>
+              <option value="Tamil Nadu">Tamil Nadu</option>
+              <option value="Telangana">Telangana</option>
+              <option value="Tripura">Tripura</option>
+              <option value="Uttar Pradesh">Uttar Pradesh</option>
+              <option value="Uttarakhand">Uttarakhand</option>
+              <option value="West Bengal">West Bengal</option>
+              <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+              <option value="Chandigarh">Chandigarh</option>
+              <option value="Dadra and Nagar Haveli and Daman and Diu">Dadra and Nagar Haveli and Daman and Diu</option>
+              <option value="Delhi">Delhi</option>
+              <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+              <option value="Ladakh">Ladakh</option>
+              <option value="Lakshadweep">Lakshadweep</option>
+              <option value="Puducherry">Puducherry</option>
+            </select>
+            {/* <input
               className="border p-2 w-full rounded"
               name="address"
               placeholder="Address"
               value={form.address}
               onChange={handleChange}
-            />
+            /> */}
             <input
               className="border p-2 w-full rounded"
               name="pan"
@@ -980,13 +1018,13 @@ export default function Leads() {
               value={form.gstin}
               onChange={handleChange}
             />
-            <input
+            {/* <input
               className="border p-2 w-full rounded"
               name="state"
               placeholder="State"
               value={form.state}
               onChange={handleChange}
-            />
+            /> */}
             <textarea
               className="border p-2 w-full rounded"
               name="shippingAddress"
