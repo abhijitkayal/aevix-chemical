@@ -903,6 +903,14 @@ export default function Leads() {
             {/* Company Name with Autocomplete */}
             <div className="relative">
               <input
+              className="border p-2 w-full rounded"
+              name="customerId"
+              placeholder="Customer ID"
+              value={form.customerId}
+              onChange={handleChange}
+              required
+            />
+              <input
                 className="border p-2 w-full rounded"
                 name="companyName"
                 placeholder="Company Name"
@@ -936,14 +944,7 @@ export default function Leads() {
               required
             />
             
-            <input
-              className="border p-2 w-full rounded"
-              name="customerId"
-              placeholder="Customer ID"
-              value={form.customerId}
-              onChange={handleChange}
-              required
-            />
+            
             <input
               className="border p-2 w-full rounded"
               name="phone"
@@ -1044,7 +1045,7 @@ export default function Leads() {
             {form.reminderDate && (
               <textarea
                 className="border p-2 w-full rounded"
-                name="reminderNote"
+                name="supply material name"
                 placeholder="Reminder note"
                 value={form.reminderNote}
                 onChange={handleChange}
