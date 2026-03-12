@@ -63,6 +63,7 @@ const LeadSchema = new mongoose.Schema(
     customerName: { type: String, required: true },
     companyName: { type: String, trim: true },
     customerId: { type: String, required: true },
+    email: { type: String, trim: true },
     phone: { type: String, required: true },
     address: String,
     state: String,

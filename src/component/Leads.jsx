@@ -706,6 +706,7 @@ export default function Leads() {
     customerName: "",
     companyName: "",
     customerId: "",
+    email: "",
     phone: "",
     address: "",
     state: "",
@@ -756,6 +757,7 @@ export default function Leads() {
       customerName: "",
       companyName: "",
       customerId: "",
+      email: "",
       phone: "",
       // address: "",
       // state: "",
@@ -790,6 +792,7 @@ export default function Leads() {
       customerName: lead.customerName || "",
       companyName: lead.companyName || "",
       customerId: lead.customerId || "",
+      email: lead.email || "",
       phone: lead.phone || "",
       // address: lead.address || "",
       // state: lead.state || "",
@@ -834,6 +837,7 @@ export default function Leads() {
               <th className="p-3">Customer</th>
               <th className="p-3">Company</th>
               <th className="p-3">ID</th>
+              <th className="p-3">Email</th>
               <th className="p-3">Phone</th>
               <th className="p-3">Place of Supply</th>
               <th className="p-3">Shipping Address</th>
@@ -849,6 +853,7 @@ export default function Leads() {
                 <td className="p-3">{lead.customerName}</td>
                 <td className="p-3">{lead.companyName || "-"}</td>
                 <td className="p-3">{lead.customerId}</td>
+                <td className="p-3">{lead.email || "-"}</td>
                 <td className="p-3">{lead.phone}</td>
                 <td className="p-3">{lead.placeOfSupply}</td>
                 <td className="p-3">{lead.shippingAddress || "-"}</td>
@@ -878,7 +883,7 @@ export default function Leads() {
 
             {leads.length === 0 && (
               <tr>
-                <td colSpan="9" className="text-center p-6 text-gray-500">
+                <td colSpan="10" className="text-center p-6 text-gray-500">
                   No leads found
                 </td>
               </tr>
@@ -944,6 +949,14 @@ export default function Leads() {
               required
             />
             
+            <input
+              className="border p-2 w-full rounded"
+              name="email"
+              type="email"
+              placeholder="Email"
+              value={form.email}
+              onChange={handleChange}
+            />
             
             <input
               className="border p-2 w-full rounded"
