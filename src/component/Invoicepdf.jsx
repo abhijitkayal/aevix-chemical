@@ -229,6 +229,11 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <strong>Shipping Date:</strong>{" "}
             {formatDate(invoice.shippingDetails?.shippingDate)}
           </p>
+          <p>
+            <strong>Freight:</strong>{" "}
+            {invoiceFreight.toFixed(2)}
+          </p>
+         
         </div>
       </div>
 
@@ -330,10 +335,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Products Total</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{productSubtotal.toFixed(2)}</td>
               </tr>
-              <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add: Freight</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{invoiceFreight.toFixed(2)}</td>
-              </tr>
+              
               <tr>
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable Amount</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalTaxable.toFixed(2)}</td>
@@ -364,13 +366,10 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   <strong>{(totalCgst + totalSgst + totalIgst).toFixed(2)}</strong>
                 </td>
               </tr>
+            
               <tr>
-                {/* <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
-                  <strong>Freight</strong>
-                </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
-                  <strong>{invoice.driverDetails?.transportMode || "-"}</strong>
-                </td> */}
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add: Freight</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{invoiceFreight.toFixed(2)}</td>
               </tr>
               <tr className="grand">
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>
