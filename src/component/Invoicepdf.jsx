@@ -1,5 +1,5 @@
 import React, { forwardRef } from "react";
-import logo from "../assets/AEVIX LOGO BLACK (1).png";
+import logo from "../assets/image.png";
 
 const InvoicePDF = forwardRef(({ invoice }, ref) => {
   const isWestBengal = (invoice.state || "")
@@ -104,7 +104,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         <img
             src={logo}
             alt="Company Logo"
-            className="h-10 object-contain"
+            className="h-20 w-30 object-contain"
           />
       <div className="flex justify-between items-start mb-6">
         {/* LEFT SIDE (LOGO + DETAILS) */}
@@ -132,7 +132,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         </div>
 
         {/* RIGHT SIDE (TAX INVOICE) */}
-        <div className="w-[40%] -mt-10 text-left">
+        <div className="w-[40%] -mt-15 text-left">
           <h2 className="text-3xl font-bold mb-2">TAX INVOICE</h2>
 
           <table className="w-full border border-black border-collapse text-sm">
