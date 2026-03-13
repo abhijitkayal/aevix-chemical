@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Pencil } from "lucide-react";
 import { API_URL } from "../config/api";
 
 const emptyForm = {
@@ -19,12 +20,13 @@ const emptyForm = {
   eWayNo: "",
   deliveryMode: "",
 
-  totalAmount: "", // ✅ ADDED
+  totalAmount: "",
 };
 
 const PurchaseInvoicePage = () => {
   const [openForm, setOpenForm] = useState(false);
   const [form, setForm] = useState(emptyForm);
+  const [editingId, setEditingId] = useState(null); // null = create mode
   const [invoices, setInvoices] = useState([]);
   const [leadSuggestions, setLeadSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -50,17 +52,60 @@ const PurchaseInvoicePage = () => {
   };
 
   /* ======================
-     Submit form
+     Open form for EDIT
+  ====================== */
+  const handleEdit = (inv) => {
+    setForm({
+      vendorName: inv.vendorName || "",
+      address: inv.address || "",
+      contactPerson: inv.contactPerson || "",
+      phone: inv.phone || "",
+      gstin: inv.gstin || "",
+      reverseCharge: inv.reverseCharge || "No",
+      placeOfSupply: inv.placeOfSupply || "West Bengal",
+      invoiceNo: inv.invoiceNo || "",
+      invoiceDate: inv.invoiceDate?.slice(0, 10) || "",
+      challanNo: inv.challanNo || "",
+      challanDate: inv.challanDate?.slice(0, 10) || "",
+      lrNo: inv.lrNo || "",
+      eWayNo: inv.eWayNo || "",
+      deliveryMode: inv.deliveryMode || "",
+      totalAmount: inv.totalAmount ?? "",
+    });
+    setEditingId(inv._id);
+    setOpenForm(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  /* ======================
+     Submit form (CREATE or UPDATE)
   ====================== */
   const handleSubmit = async () => {
-    await axios.post(`${API_URL}/api/purchase-invoices`, {
-      ...form,
-      totalAmount: Number(form.totalAmount), // ensure number
-    });
+    try {
+      const payload = { ...form, totalAmount: Number(form.totalAmount) };
 
+      if (editingId) {
+        await axios.put(`${API_URL}/api/purchase-invoices/${editingId}`, payload);
+      } else {
+        await axios.post(`${API_URL}/api/purchase-invoices`, payload);
+      }
+
+      setForm(emptyForm);
+      setEditingId(null);
+      setOpenForm(false);
+      fetchInvoices();
+    } catch (err) {
+      alert(err.response?.data?.message || "Failed to save purchase invoice");
+    }
+  };
+
+  /* ======================
+     Cancel form
+  ====================== */
+  const handleCancel = () => {
     setForm(emptyForm);
+    setEditingId(null);
     setOpenForm(false);
-    fetchInvoices();
   };
   const fetchLeads = async (searchText) => {
     try {
@@ -84,7 +129,7 @@ const PurchaseInvoicePage = () => {
         <h1 className="text-2xl font-semibold">Purchase Invoice</h1>
 
         <button
-          onClick={() => setOpenForm(true)}
+          onClick={() => { setForm(emptyForm); setEditingId(null); setOpenForm(true); }}
           className="bg-green-500 text-white px-4 py-2 rounded-lg text-lg"
         >
           ＋
@@ -96,6 +141,9 @@ const PurchaseInvoicePage = () => {
       ====================== */}
       {openForm && (
         <div className="bg-white rounded-xl p-6 shadow-md mb-6">
+          <h2 className="text-lg font-bold mb-4">
+            {editingId ? "Edit Purchase Invoice" : "New Purchase Invoice"}
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Vendor Information */}
             <div className="gap-2">
@@ -280,7 +328,7 @@ const PurchaseInvoicePage = () => {
 
           <div className="flex justify-end mt-6 gap-2">
             <button
-              onClick={() => setOpenForm(false)}
+              onClick={handleCancel}
               className="px-4 py-2 border rounded-lg"
             >
               Cancel
@@ -289,7 +337,7 @@ const PurchaseInvoicePage = () => {
               onClick={handleSubmit}
               className="px-4 py-2 bg-green-500 text-white rounded-lg"
             >
-              Save
+              {editingId ? "Update" : "Save"}
             </button>
           </div>
         </div>
@@ -308,11 +356,12 @@ const PurchaseInvoicePage = () => {
               <th className="p-2 border">Invoice No</th>
               <th className="p-2 border">Date</th>
               <th className="p-2 border">Amount</th>
+              <th className="p-2 border">Actions</th>
             </tr>
           </thead>
           <tbody>
             {invoices.map((inv) => (
-              <tr key={inv._id}>
+              <tr key={inv._id} className="hover:bg-gray-50">
                 <td className="p-2 border text-center">{inv.vendorName}</td>
                 <td className="p-2 border text-center">{inv.invoiceNo}</td>
                 <td className="p-2 border text-center">
@@ -320,6 +369,16 @@ const PurchaseInvoicePage = () => {
                 </td>
                 <td className="p-2 border text-center font-semibold">
                   ₹ {inv.totalAmount?.toLocaleString("en-IN")}
+                </td>
+                <td className="p-2 border text-center">
+                  <button
+                    title="Edit invoice"
+                    onClick={() => handleEdit(inv)}
+                    className="inline-flex items-center gap-1 px-3 py-1 text-sm rounded bg-blue-50 text-blue-700 border border-blue-300 hover:bg-blue-100 transition"
+                  >
+                    <Pencil size={14} />
+                    Edit
+                  </button>
                 </td>
               </tr>
             ))}

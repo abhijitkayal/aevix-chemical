@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import Invoice from "../models/Invoice.js";
+import InvoiceCounter from "../models/InvoiceCounter.js";
 import Product from "../models/Product.js";
 import Stock from "../models/Stock.js";
 import Warehouse from "../models/Warehouse.js";
@@ -11,6 +12,37 @@ import sgMail from '@sendgrid/mail';
 import PDFDocument from 'pdfkit';
 
 const router = express.Router();
+
+const getFinancialYearLabel = (dateValue) => {
+  const parsedDate = dateValue ? new Date(dateValue) : new Date();
+  const invoiceDate = Number.isNaN(parsedDate.getTime()) ? new Date() : parsedDate;
+  const year = invoiceDate.getFullYear();
+  const month = invoiceDate.getMonth();
+  const startYear = month >= 3 ? year : year - 1;
+  const endYear = startYear + 1;
+
+  return `${startYear}-${endYear}`;
+};
+
+const generateInvoiceNumber = async (dateValue) => {
+  const financialYear = getFinancialYearLabel(dateValue);
+  const counter = await InvoiceCounter.findOneAndUpdate(
+    { financialYear },
+    {
+      $inc: { seq: 1 },
+      $setOnInsert: { financialYear },
+    },
+    {
+      new: true,
+      upsert: true,
+    }
+  );
+
+  return {
+    invoiceNo: `INV/${counter.seq}/${financialYear}`,
+    invoiceSequence: counter.seq,
+  };
+};
 
 /* ======================
    GET ALL INVOICES
@@ -199,10 +231,15 @@ router.get("/:id", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const {
+      invoiceNo: _ignoredInvoiceNo,
+      invoiceSequence: _ignoredInvoiceSequence,
+      ...invoicePayload
+    } = req.body;
+    const {
       customer,
       warehouseId,
       products,
-    } = req.body;
+    } = invoicePayload;
 
     console.log("Received invoice data:", JSON.stringify(req.body, null, 2));
 
@@ -264,7 +301,11 @@ router.post("/", async (req, res) => {
     /* ======================
        3️⃣ CREATE INVOICE
     ====================== */
-    const invoice = await Invoice.create(req.body);
+    const generatedInvoice = await generateInvoiceNumber(invoicePayload.date);
+    const invoice = await Invoice.create({
+      ...invoicePayload,
+      ...generatedInvoice,
+    });
     console.log("Invoice created successfully:", JSON.stringify(invoice, null, 2));
 
     /* ======================

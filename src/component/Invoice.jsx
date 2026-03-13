@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Download, Edit, Eye, Pencil, Plus, X, Mail, Send } from "lucide-react";
 import { API_URL } from "../config/api";
@@ -6,12 +6,22 @@ import InvoicePDF from "./Invoicepdf";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+const getLegacyFreight = (products = []) =>
+  products.reduce((sum, product) => sum + (Number(product.freight) || 0), 0);
+
+const sanitizeProducts = (products = []) =>
+  products.map(({ productName, quantity, unit, rate }) => ({
+    productName,
+    quantity: Number(quantity) || 0,
+    unit,
+    rate: Number(rate) || 0,
+  }));
+
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [products, setProducts] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const pdfRef = useRef(null);
   const [dateFilter, setDateFilter] = useState({
     from: "",
     to: "",
@@ -39,6 +49,7 @@ const Invoice = () => {
     piDate: "",
     poDate: "",
     products: [], // Changed to array
+    freight: "",
     notes: "",
     shippingDetails: {
       shippingDate: "",
@@ -65,7 +76,6 @@ const Invoice = () => {
     quantity: "",
     unit: "",
     rate: "",
-    freight: "",
   });
 
   const [paymentForm, setPaymentForm] = useState({
@@ -79,6 +89,12 @@ const Invoice = () => {
 
   const [customerSuggestions, setCustomerSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const invoiceFreight = Number(form.freight) || 0;
+  const productsSubtotal = form.products.reduce(
+    (sum, product) => sum + Number(product.quantity || 0) * Number(product.rate || 0),
+    0,
+  );
+  const invoiceGrandTotal = productsSubtotal + invoiceFreight;
 
   /* ================= FETCH DATA ================= */
 
@@ -221,7 +237,6 @@ const Invoice = () => {
         quantity: "",
         unit: "",
         rate: "",
-        freight: "",
       });
       return;
     }
@@ -277,6 +292,7 @@ const Invoice = () => {
       piDate: "",
       poDate: "",
       products: [],
+      freight: "",
       notes: "",
       shippingDetails: {
         shippingDate: "",
@@ -299,7 +315,6 @@ const Invoice = () => {
       quantity: "",
       unit: "",
       rate: "",
-      freight: "",
     });
   };
 
@@ -330,7 +345,8 @@ const Invoice = () => {
       poNumber: inv.poNumber || "",
       piDate: inv.piDate?.slice(0, 10) || "",
       poDate: inv.poDate?.slice(0, 10) || "",
-      products: inv.products || [],
+      products: sanitizeProducts(inv.products || []),
+      freight: String(inv.freight ?? getLegacyFreight(inv.products || [])),
       notes: inv.notes || "",
       shippingDetails: inv.shippingDetails || {
         shippingDate: "",
@@ -370,7 +386,6 @@ const Invoice = () => {
       quantity: Number(productInput.quantity),
       unit: productInput.unit,
       rate: Number(productInput.rate),
-      freight: Number(productInput.freight) || 0,
     };
 
     setForm({
@@ -384,7 +399,6 @@ const Invoice = () => {
       quantity: "",
       unit: "",
       rate: "",
-      freight: "",
     });
   };
 
@@ -479,7 +493,7 @@ const Invoice = () => {
 
     setSending(true);
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API_URL}/api/invoices/${previewInvoice._id}/send-email`,
         {
           to: emailForm.to,
@@ -621,7 +635,8 @@ const Invoice = () => {
         state: form.state,
         placeOfSupply: form.placeOfSupply,
         warehouseId: form.warehouse,
-        products: form.products, // Array of products
+        products: sanitizeProducts(form.products),
+        freight: Number(form.freight) || 0,
         date: form.date,
         notes: form.notes,
         shippingDetails: form.shippingDetails,
@@ -1160,14 +1175,6 @@ const Invoice = () => {
                     onChange={handleProductInputChange}
                     value={productInput.rate}
                   />
-                  <input
-                    name="freight"
-                    type="number"
-                    placeholder="Freight"
-                    className="input border-2 rounded px-2 py-2"
-                    onChange={handleProductInputChange}
-                    value={productInput.freight}
-                  />
                 </div>
 
                 <button
@@ -1191,7 +1198,6 @@ const Invoice = () => {
                         <th className="p-2 text-right">Quantity</th>
                         <th className="p-2 text-left">Unit</th>
                         <th className="p-2 text-right">Rate</th>
-                        <th className="p-2 text-right">Freight</th>
                         <th className="p-2 text-right">Total</th>
                         <th className="p-2 text-center">Action</th>
                       </tr>
@@ -1203,9 +1209,8 @@ const Invoice = () => {
                           <td className="p-2 text-right">{product.quantity}</td>
                           <td className="p-2">{product.unit}</td>
                           <td className="p-2 text-right">₹{product.rate}</td>
-                          <td className="p-2 text-right">₹{product.freight}</td>
                           <td className="p-2 text-right font-semibold">
-                            ₹{(product.quantity * product.rate + product.freight).toFixed(2)}
+                            ₹{(product.quantity * product.rate).toFixed(2)}
                           </td>
                           <td className="p-2 text-center">
                             <button
@@ -1218,17 +1223,40 @@ const Invoice = () => {
                           </td>
                         </tr>
                       ))}
-                      <tr className="border-t bg-gray-50 font-bold">
-                        <td colSpan="5" className="p-2 text-right">Grand Total:</td>
+                      <tr className="border-t bg-gray-50">
+                        <td colSpan="4" className="p-2 text-right font-medium">Products Total:</td>
                         <td className="p-2 text-right">
-                          ₹{form.products.reduce((sum, p) => sum + (p.quantity * p.rate + p.freight), 0).toFixed(2)}
+                          ₹{productsSubtotal.toFixed(2)}
                         </td>
+                        <td></td>
+                      </tr>
+                      <tr className="border-t bg-gray-50">
+                        <td colSpan="4" className="p-2 text-right font-medium">Invoice Freight:</td>
+                        <td className="p-2 text-right">₹{invoiceFreight.toFixed(2)}</td>
+                        <td></td>
+                      </tr>
+                      <tr className="border-t bg-gray-50 font-bold">
+                        <td colSpan="4" className="p-2 text-right">Grand Total:</td>
+                        <td className="p-2 text-right">₹{invoiceGrandTotal.toFixed(2)}</td>
                         <td></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
               )}
+
+              <div className="mt-4 bg-white p-4 rounded border">
+                <h4 className="text-base font-semibold mb-3">Invoice Charges</h4>
+                <input
+                  name="freight"
+                  type="number"
+                  min="0"
+                  placeholder="Invoice Freight"
+                  className="input border-2 rounded px-2 py-2 w-full"
+                  onChange={handleChange}
+                  value={form.freight}
+                />
+              </div>
 
               {form.products.length === 0 && (
                 <p className="text-gray-500 text-center py-4 bg-white rounded border">

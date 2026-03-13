@@ -14,32 +14,23 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         quantity: invoice.quantity,
         unit: invoice.unit,
         rate: invoice.rate,
-        freight: invoice.freight || 0,
       }];
 
-  // Calculate totals for all products
-  let totalTaxable = 0;
-  let totalCgst = 0;
-  let totalSgst = 0;
-  let totalIgst = 0;
-  let grandTotal = 0;
-
-  products.forEach(product => {
-    const qty = product.quantity || 0;
-    const rate = product.rate || 0;
-    const freight = product.freight || 0;
-    const taxable = (qty * rate) + freight;
-
-    const cgst = isWestBengal ? taxable * 0.09 : 0;
-    const sgst = isWestBengal ? taxable * 0.09 : 0;
-    const igst = !isWestBengal ? taxable * 0.18 : 0;
-
-    totalTaxable += taxable;
-    totalCgst += cgst;
-    totalSgst += sgst;
-    totalIgst += igst;
-    grandTotal += taxable + cgst + sgst + igst;
-  });
+  const legacyFreight = products.reduce(
+    (sum, product) => sum + (Number(product.freight) || 0),
+    0,
+  );
+  const invoiceFreight = Number(invoice.freight ?? legacyFreight) || 0;
+  const productSubtotal = products.reduce((sum, product) => {
+    const qty = Number(product.quantity) || 0;
+    const rate = Number(product.rate) || 0;
+    return sum + qty * rate;
+  }, 0);
+  const totalTaxable = productSubtotal + invoiceFreight;
+  const totalCgst = isWestBengal ? totalTaxable * 0.09 : 0;
+  const totalSgst = isWestBengal ? totalTaxable * 0.09 : 0;
+  const totalIgst = !isWestBengal ? totalTaxable * 0.18 : 0;
+  const grandTotal = totalTaxable + totalCgst + totalSgst + totalIgst;
 
   const amountInWords = (num) => {
     const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
@@ -142,7 +133,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         {/* RIGHT SIDE (TAX INVOICE) */}
         <div className="w-[40%] -mt-10 text-left">
-          <h2 className="text-lg font-bold mb-2">TAX INVOICE</h2>
+          <h2 className="text-3xl font-bold mb-2">TAX INVOICE</h2>
 
           <table className="w-full border border-black border-collapse text-sm">
             <tbody>
@@ -231,7 +222,6 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
 
         <div className="consignee-section">
           <h4 className="bg-black text-white w-55 h-8 pt-1 pb-3 flex items-center px-3">SHIPPING DETAILS :</h4>
-          <p><strong>Freight: </strong>{invoice.shippingDetails?.freight || "-"}</p>
           <p>
             <strong>Gross Weight:</strong> {invoice.shippingDetails?.grossWeight}
           </p>
@@ -251,7 +241,6 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>HSN</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Qty</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Rate</th>
-            <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Freight</th>
             <th style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable</th>
             {isWestBengal ? (
               <>
@@ -267,8 +256,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           {products.map((product, index) => {
             const qty = product.quantity || 0;
             const rate = product.rate || 0;
-            const freight = product.freight || 0;
-            const taxable = (qty * rate) + freight;
+            const taxable = qty * rate;
             const cgst = isWestBengal ? taxable * 0.09 : 0;
             const sgst = isWestBengal ? taxable * 0.09 : 0;
             const igst = !isWestBengal ? taxable * 0.18 : 0;
@@ -282,7 +270,6 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
                   {qty} {product.unit}
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{rate.toFixed(2)}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{freight.toFixed(2)}</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{taxable.toFixed(2)}</td>
                 {isWestBengal ? (
                   <>
@@ -299,7 +286,6 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           {Array.from({ length: Math.max(0, 5 - products.length) }).map((_, i) => (
     <tr key={i}>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>&nbsp;</td>
-      <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
       <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}></td>
@@ -340,6 +326,14 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
         <div className="tax-summary">
           <table>
             <tbody>
+              <tr>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Products Total</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{productSubtotal.toFixed(2)}</td>
+              </tr>
+              <tr>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add: Freight</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{invoiceFreight.toFixed(2)}</td>
+              </tr>
               <tr>
                 <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Taxable Amount</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalTaxable.toFixed(2)}</td>

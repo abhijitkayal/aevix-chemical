@@ -60,6 +60,22 @@ const invoiceSchema = new mongoose.Schema(
 
     placeOfSupply: String,
 
+    invoiceNo: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      uppercase: true,
+      immutable: true,
+    },
+
+    invoiceSequence: {
+      type: Number,
+      required: true,
+      min: 1,
+      immutable: true,
+    },
+
     /* ================= BANK DETAILS ================= */
     bankDetails: {
       bankName: String,
@@ -94,13 +110,13 @@ const invoiceSchema = new mongoose.Schema(
           required: true,
           min: 0,
         },
-        freight: {
-          type: Number,
-          default: 0,
-          min: 0,
-        },
       },
     ],
+
+    freight: {
+      type: Number,
+      min: 0,
+    },
 
     /* ================= DATES ================= */
     date: {
@@ -145,9 +161,14 @@ const invoiceSchema = new mongoose.Schema(
       type: Number,
       default: function () {
         if (this.products && this.products.length > 0) {
-          return this.products.reduce((sum, product) => {
-            return sum + (product.quantity * product.rate + (product.freight || 0));
+          const productTotal = this.products.reduce((sum, product) => {
+            return sum + product.quantity * product.rate;
           }, 0);
+          const legacyFreight = this.products.reduce((sum, product) => {
+            return sum + (product.freight || 0);
+          }, 0);
+
+          return productTotal + (this.freight ?? legacyFreight);
         }
         return 0;
       },
