@@ -1048,6 +1048,14 @@ export default function Leads() {
               rows={3}
             />
             <input
+                className="border p-2 w-full rounded"
+                name="reminderNote"
+                placeholder="supply material name"
+                value={form.reminderNote}
+                onChange={handleChange}
+                required
+              />
+            <input
               type="date"
               className="border p-2 w-full rounded"
               name="reminderDate"
@@ -1055,16 +1063,9 @@ export default function Leads() {
               onChange={handleChange}
             />
 
-            {form.reminderDate && (
-              <textarea
-                className="border p-2 w-full rounded"
-                name="supply material name"
-                placeholder="Reminder note"
-                value={form.reminderNote}
-                onChange={handleChange}
-                required
-              />
-            )}
+            
+              
+            
 
             <div className="flex justify-end gap-3 pt-2">
               <button
