@@ -6,6 +6,11 @@ const stockSchema = new mongoose.Schema(
     itemCode: { type: String, required: true, unique: true },
     itemName: { type: String, required: true },
     category: { type: String, required: true },
+    physicalState: {
+      type: String,
+      required: true,
+      enum: ["Gas", "Liquid", "Solid"],
+    },
     currentStock: { type: Number, required: true },
     unit: { type: String, required: true },
     unitPrice: { type: Number, required: true },

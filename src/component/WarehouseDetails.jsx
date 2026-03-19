@@ -9,6 +9,8 @@ export default function WarehouseDetails() {
   const [warehouse, setWarehouse] = useState(null);
   const [products, setProducts] = useState([]);
   const [showForm, setShowForm] = useState(false);
+  const [warehouseMax,setWarehouseMax] = useState([]);
+  const [warehouseMin,setWarehouseMin] = useState([]);
 
   const [form, setForm] = useState({
     productName: "",
@@ -35,6 +37,25 @@ export default function WarehouseDetails() {
 
     fetchData();
   }, [id]);
+
+
+  const fetchStock = async () => {
+    try{
+      const res = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/stocks");
+    //  console.log("Stock data:", res.data.warehouse);
+     
+      setWarehouseMax(res.data);
+    }
+    catch(err){
+      console.log(err);
+    }
+    };
+    useEffect(() => {
+      fetchStock();
+    }, []);
+    console.log("warehouseMax:", warehouseMax);
+    console.log("warehouseMin:", warehouseMin[0]?.warehouse);
+
 
   /* ---------------- ADD PRODUCT ---------------- */
   const addProduct = async () => {
@@ -122,6 +143,60 @@ export default function WarehouseDetails() {
               </tr>
             </thead>
            <tbody>
+  {warehouseMax.filter(p => p.warehouse === "UNIT2" && warehouse?.warehouse === "UNIT2").map((p) => (
+    <tr key={p._id} className="border-t hover:bg-gray-50">
+      <td className="p-2">{p.itemName}</td>
+      <td className="p-2 text-right">{p.currentStock}</td>
+      <td className="p-2 text-center">{p.unit}</td>
+      <td className="p-2 text-right">₹{p.unitPrice}</td>
+
+      <td className="p-2 text-center">
+        <button
+          onClick={() => {
+            setForm({
+              productName: p.productName,
+              quantity: p.quantity,
+              unit: p.unit,
+              price: p.price,
+              warehouse: p.warehouse || warehouse.warehouse,
+            });
+            setEditingProductId(p._id);
+            setShowForm(true);
+          }}
+          className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+        >
+          <Edit size={14} />
+        </button>
+      </td>
+    </tr>
+  ))}
+  {warehouseMax.filter(p => p.warehouse === "UNIT1" && warehouse?.warehouse === "UNIT1").map((p) => (
+    <tr key={p._id} className="border-t hover:bg-gray-50">
+      <td className="p-2">{p.itemName}</td>
+      <td className="p-2 text-right">{p.currentStock}</td>
+      <td className="p-2 text-center">{p.unit}</td>
+      <td className="p-2 text-right">₹{p.unitPrice}</td>
+
+      <td className="p-2 text-center">
+        <button
+          onClick={() => {
+            setForm({
+              productName: p.productName,
+              quantity: p.quantity,
+              unit: p.unit,
+              price: p.price,
+              warehouse: p.warehouse || warehouse.warehouse,
+            });
+            setEditingProductId(p._id);
+            setShowForm(true);
+          }}
+          className="px-3 py-1 bg-blue-100 text-blue-700 rounded text-xs hover:bg-blue-200"
+        >
+          <Edit size={14} />
+        </button>
+      </td>
+    </tr>
+  ))}
   {products.map((p) => (
     <tr key={p._id} className="border-t hover:bg-gray-50">
       <td className="p-2">{p.productName}</td>

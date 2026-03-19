@@ -33,7 +33,7 @@ router.put("/:id", async (req, res) => {
     const updated = await Stock.findByIdAndUpdate(
       req.params.id,
       { ...req.body, status },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     res.json(updated);

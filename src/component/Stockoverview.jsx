@@ -833,6 +833,7 @@ export default function StockOverview() {
     itemCode: "",
     itemName: "",
     category: "",
+    physicalState: "",
     currentStock: "",
     unit: "",
     unitPrice: "",
@@ -885,7 +886,7 @@ export default function StockOverview() {
   const fetchStocks = async () => {
     try {
       const res = await axios.get(
-        `https://aevix-chemical-mpbw.vercel.app/api/products/`,
+        `https://aevix-chemical-mpbw.vercel.app/api/stocks/`,
       );
       console.log("Products fetched:", res.data);
       if (res.data && res.data.length > 0) {
@@ -897,6 +898,18 @@ export default function StockOverview() {
       console.error(err);
     }
   };
+  const fetchProduct = async ()=>{
+    try{
+      const res = await axios.get(
+        `https://aevix-chemical-mpbw.vercel.app/api/stocks/`,
+      );
+      console.log("Products fetched:", res.data);
+    }
+    catch (err) {
+      console.error(err);
+    }
+
+  }
 
   useEffect(() => {
     fetchStocks();
@@ -953,6 +966,7 @@ export default function StockOverview() {
         itemCode: "",
         itemName: "",
         category: "",
+        physicalState: "",
         currentStock: "",
         unit: "",
         unitPrice: "",
@@ -1033,12 +1047,12 @@ export default function StockOverview() {
                 {/* <td className="p-3 font-mono text-blue-600">
                   {item.itemCode}
                 </td> */}
-                <td className="p-3 font-semibold">{item.productName}</td>
+                <td className="p-3 font-semibold">{item.itemName}</td>
                 {/* <td className="p-3">{item.category}</td> */}
                 <td className="p-3 text-center">
-                  {item.quantity} {item.unit}
+                  {item.currentStock} {item.unit}
                 </td>
-                <td className="p-3 text-center">₹{item.price}</td>
+                <td className="p-3 text-center">₹{item.unitPrice}</td>
                 <td className="p-3 text-center">{item.warehouse}</td>
                 <td className="p-3 text-center">
                   <span
@@ -1104,6 +1118,13 @@ export default function StockOverview() {
                   "Packaging",
                   "Equipment",
                 ]}
+              />
+              <Select
+                label="Physical State"
+                name="physicalState"
+                value={form.physicalState}
+                onChange={handleChange}
+                options={["Gas", "Liquid", "Solid"]}
               />
               <div>
                 <label className="block text-sm font-medium mb-1">
