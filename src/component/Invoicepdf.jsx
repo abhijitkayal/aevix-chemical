@@ -388,7 +388,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
       <div className="footer-section">
         <div className="bank-details">
           <h4 className="bg-black text-white flex items-center px-3 pt-1 pb-3">Bank Details</h4>
-          <p className="px-6"><strong>Account No:</strong>Aevix Chemical India Limited</p>
+          {/* <p className="px-6"><strong>Account No:</strong>Aevix Chemical India Limited</p> */}
           
           <div className="grid grid-cols-2 px-6">
             <p>
@@ -401,7 +401,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             <strong>Account No:</strong>43320503750
           </p>
           <p>
-            <strong>IFSC:</strong> IFSC- SBIN0015197
+            <strong>IFSC:</strong> SBIN0015197
           </p>
           </div>
         </div>

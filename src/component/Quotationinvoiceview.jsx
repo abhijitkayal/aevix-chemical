@@ -1,5 +1,5 @@
 import React from "react";
-import logo from '../assets/AEVIX LOGO BLACK.png';
+import logo from '../assets/azajul photo.jpeg';
 
 export default function QuotationInvoiceView({ quotation }) {
   if (!quotation) return null;
@@ -37,27 +37,27 @@ export default function QuotationInvoiceView({ quotation }) {
       {/* HEADER */}
       <div className="flex justify-between border-b pb-3 mb-4">
         <div className="flex gap-3">
-          <img src={logo} alt="logo" className="w-20 h-20" />
+          <img src={logo} alt="logo" className="w-25 h-30 -mt-5" />
           <div>
-            <h2 className="text-xl font-bold">AEVIX CHEMICAL</h2>
+            <h2 className="text-xl font-bold">AEVIX CHEMICAL INDIA LIMITED</h2>
             <p>158 Lenin Sarani, 2nd Floor</p>
             <p>Kolkata, West Bengal - 700013</p>
-            <p><b>GSTIN:</b> 19BQJPR8561B1ZG</p>
+            <p><b>GSTIN:</b> 19ABBCA1860B1Z4 </p>
           </div>
         </div>
-
+{/* 
         <div className="text-right">
           <p><b>Name:</b> Manab Roy</p>
           <p><b>Phone:</b> 9330324989</p>
           <p><b>Email:</b> manab.roy.ind@gmail.com</p>
           <p><b>PAN:</b> BQJPR8561B</p>
-        </div>
+        </div> */}
       </div>
 
       {/* GSTIN / TITLE / ORIGINAL FOR RECIPIENT */}
       <div className="flex justify-between items-center border-y py-2 mb-4">
         <div className="font-semibold">
-          <span>GSTIN : </span>19BQJPR8561B1ZG
+          <span>GSTIN : </span>19ABBCA1860B1Z4
         </div>
         <h2 className="text-xl font-bold">Quotation</h2>
         <div className="font-semibold">
@@ -194,14 +194,14 @@ export default function QuotationInvoiceView({ quotation }) {
       <div className="flex justify-between mt-6">
         <div>
           <b>Bank Details</b>
-          <p>STANDARD CHARTERED BANK</p>
-          <p>Acc: 33105223346</p>
-          <p>IFSC: SCBL0036008</p>
+          <p>STATE BANK OF INDIA</p>
+          <p>Acc: 43320503750</p>
+          <p>IFSC: SBIN0015197</p>
         </div>
 
         <div className="text-right">
           <p>Certified that the particulars given above are true.</p>
-          <p className="mt-10 font-semibold">For  AEVIX CHEMICAL</p>
+          <p className="mt-10 font-semibold">For  AEVIX CHEMICAL INDIA LIMITED</p>
           <p className="mt-6">Authorised Signatory</p>
         </div>
       </div>
