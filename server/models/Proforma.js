@@ -1,5 +1,17 @@
 import mongoose from "mongoose";
 
+const ProformaProductSchema = new mongoose.Schema(
+  {
+    productName: { type: String, trim: true },
+    unit: { type: String, trim: true },
+    description: { type: String, trim: true },
+    hsnCode: { type: String, trim: true },
+    quantity: { type: Number, default: 0, min: 0 },
+    price: { type: Number, default: 0, min: 0 },
+  },
+  { _id: false }
+);
+
 const ProformaSchema = new mongoose.Schema(
   {
     customerName: String,
@@ -23,6 +35,16 @@ const ProformaSchema = new mongoose.Schema(
     challanDate: String,
     lrNo: String,
     deliveryMode: String,
+
+    products: {
+      type: [ProformaProductSchema],
+      default: [],
+    },
+
+    freightType: String,
+    grossWeight: String,
+    netWeight: String,
+    totalPackages: String,
   },
   { timestamps: true }
 );

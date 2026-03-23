@@ -3,9 +3,42 @@ import Proforma from "../models/Proforma.js";
 
 const router = express.Router();
 
+const sanitizeProducts = (products = []) => {
+  if (!Array.isArray(products)) return [];
+
+  return products
+    .filter((item) => item && typeof item === "object")
+    .map((item) => ({
+      productName: String(item.productName || "").trim(),
+      unit: String(item.unit || "").trim(),
+      description: String(item.description || "").trim(),
+      hsnCode: String(item.hsnCode || "").trim(),
+      quantity: Number(item.quantity) || 0,
+      price: Number(item.price) || 0,
+    }))
+    .filter(
+      (item) =>
+        item.productName ||
+        item.unit ||
+        item.description ||
+        item.hsnCode ||
+        item.quantity ||
+        item.price
+    );
+};
+
+const buildPayload = (body = {}) => ({
+  ...body,
+  products: sanitizeProducts(body.products),
+  freightType: String(body.freightType || "").trim(),
+  grossWeight: String(body.grossWeight || "").trim(),
+  netWeight: String(body.netWeight || "").trim(),
+  totalPackages: String(body.totalPackages || "").trim(),
+});
+
 /* CREATE */
 router.post("/", async (req, res) => {
-  const proforma = await Proforma.create(req.body);
+  const proforma = await Proforma.create(buildPayload(req.body));
   res.json(proforma);
 });
 
@@ -19,7 +52,7 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const updated = await Proforma.findByIdAndUpdate(
     req.params.id,
-    req.body,
+    buildPayload(req.body),
     { new: true }
   );
   res.json(updated);

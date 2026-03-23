@@ -321,7 +321,7 @@ const baseTabs = [
     icon: PieChart,
     subtabs: [
       { name: "Invoices", path: "/billing/invoices" },
-      { name: "Purchases Invoice", path: "/billing/purchase-invoices" },
+      { name: "Purchases Order", path: "/billing/purchase-invoices" },
       { name: "Quotations", path: "/billing/quotations" },
       { name: "Ledgers", path: "/billing/ledgers" },
       { name: "Selling Product", path: "/billing/reports" },
