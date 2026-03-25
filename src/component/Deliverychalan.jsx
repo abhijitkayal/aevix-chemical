@@ -8,6 +8,8 @@ import { API_URL } from "../config/api";
 export default function Deliverychalan() {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
+  const [allLeads, setAllLeads] = useState([]);
+  const [leadCount, setLeadCount] = useState(0);
   const [dateFilter, setDateFilter] = useState({
     from: "",
     to: "",
@@ -43,25 +45,34 @@ const [form, setForm] = useState({
 
   const [supplyType, setSupplyType] = useState("Outward");
   const handleChange = async (e) =>{
-    setForm({ ...form, [e.target.name]: e.target.value });
      const { name, value } = e.target;
+
+    setForm((prev) => ({ ...prev, [name]: value }));
+
     if (name === "customerName") {
-    if (value.length >= 2) {
-      try {
-        const res = await axios.get(
-          `${API_URL}/api/leads?search=${encodeURIComponent(value)}`
-        );
-        setSuggestions(res.data);
+      const term = String(value || "").trim().toLowerCase();
+      if (!term) {
+        setSuggestions(allLeads.slice(0, 20));
         setShowSuggestions(true);
-      } catch (err) {
-        console.log(err);
+      } else {
+        const filteredLeads = allLeads
+          .filter(
+            (lead) =>
+              (lead.customerName || "").toLowerCase().includes(term) ||
+              (lead.companyName || "").toLowerCase().includes(term) ||
+              (lead.customerId || "").toLowerCase().includes(term),
+          )
+          .slice(0, 20);
+        setSuggestions(filteredLeads);
+        setShowSuggestions(true);
       }
-    } else {
+    }
+
+    if (name !== "customerName") {
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  }
-  }
+  };
 
   const saveChallan = async () => {
     await axios.post(
@@ -119,6 +130,19 @@ const getNextNumber = async () => {
   }));
 };
 
+const fetchLeads = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/api/leads`);
+    const leads = res.data || [];
+    setAllLeads(leads);
+    setLeadCount(leads.length);
+  } catch (err) {
+    console.error("Failed to fetch leads:", err);
+    setAllLeads([]);
+    setLeadCount(0);
+  }
+};
+
 
   
 
@@ -126,6 +150,7 @@ const getNextNumber = async () => {
   useEffect(() => {
     fetchData();
     getNextNumber();
+    fetchLeads();
   }, []);
 
   return (
@@ -135,6 +160,7 @@ const getNextNumber = async () => {
         <h1 className="text-2xl md:text-3xl font-bold mb-6">
           Delivery Challan
         </h1>
+        <p className="text-sm text-gray-600">Total Leads: {leadCount}</p>
         <button
           onClick={() => setOpen(true)}
           className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded w-full sm:w-auto"
@@ -221,6 +247,10 @@ const getNextNumber = async () => {
     className="w-full border-2 rounded px-2 py-2"
     value={form.customerName}
     onChange={handleChange}
+    onFocus={() => {
+      setSuggestions(allLeads.slice(0, 20));
+      setShowSuggestions(true);
+    }}
     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
   />
 
@@ -230,16 +260,17 @@ const getNextNumber = async () => {
         <div
           key={item._id}
           className="p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
-          onClick={() => {
+          onMouseDown={(e) => {
+            e.preventDefault();
             setForm((prev) => ({
               ...prev,
               customerName: item.customerName || item.companyName || "",
-              address: item.address || "",
-              shippingAddress: item.shippingAddress || "",
+              address: item.address || item.shippingAddress || "",
+              shippingAddress: item.shippingAddress || item.address || "",
               state: item.state || "",
-              contactPerson: item.customerName || item.companyName || "",
+              contactPerson: item.contactPerson || item.customerName || item.companyName || "",
               phone: item.phone || "",
-              gstin: item.gstin || "",
+              gstin: item.gstin || item.pan || "",
               placeOfSupply: item.placeOfSupply || "",
             }));
             setSuggestions([]);

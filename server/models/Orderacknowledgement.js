@@ -72,6 +72,13 @@ const OrderAckSchema = new mongoose.Schema(
       gst: String,
     },
 
+    warehouseId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Warehouse",
+    },
+
+    warehouseName: String,
+
     shippingAddress: String,
 
     items: [ItemSchema],

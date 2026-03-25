@@ -1,13 +1,21 @@
 ;
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { X } from "lucide-react";
+import { API_URL } from "../config/api";
 
 export default function OrderAckForm({ onClose, onSuccess }) {
+  const [leadSuggestions, setLeadSuggestions] = useState([]);
+  const [showLeadSuggestions, setShowLeadSuggestions] = useState(false);
+  const [warehouses, setWarehouses] = useState([]);
+  const [warehouseProducts, setWarehouseProducts] = useState([]);
+
   const [form, setForm] = useState({
     supplier: { name: "", address: "", shipFrom: "" },
     shippingDetails: { netWeight: "", grossWeight: "", orderDate: "", dispatchDate: "" },
     buyer: { name: "", address: "", gst: "" },
+    warehouseId: "",
+    warehouseName: "",
     shippingAddress: "",
 
     // product: {
@@ -63,6 +71,19 @@ export default function OrderAckForm({ onClose, onSuccess }) {
 
   });
 
+  useEffect(() => {
+    const fetchWarehouses = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/warehouses`);
+        setWarehouses(res.data || []);
+      } catch (error) {
+        console.error("Failed to fetch warehouses", error);
+      }
+    };
+
+    fetchWarehouses();
+  }, []);
+
   const addProduct = () => {
   setForm((prev) => ({
     ...prev,
@@ -91,6 +112,13 @@ const updateProduct = (index, key, value) => {
   const products = [...form.products];
   const product = { ...products[index], [key]: value };
 
+  if (key === "productName") {
+    const selectedProduct = warehouseProducts.find((p) => p.productName === value);
+    if (selectedProduct) {
+      product.hsn = selectedProduct.hsnCode || selectedProduct.hsn || "";
+    }
+  }
+
   product.totalAmount =
     Number(product.quantity) * Number(product.unitPrice) + Number(product.gstAmount);
 
@@ -112,6 +140,65 @@ const grandTotal = form.products.reduce(
       return o[k];
     }, copy);
     setForm(copy);
+  };
+
+  const handleBuyerNameChange = async (value) => {
+    update("buyer.name", value);
+
+    if (value.trim().length < 2) {
+      setLeadSuggestions([]);
+      setShowLeadSuggestions(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${API_URL}/api/leads?search=${encodeURIComponent(value)}`);
+      setLeadSuggestions(res.data || []);
+      setShowLeadSuggestions(true);
+    } catch (error) {
+      console.error("Failed to fetch lead suggestions", error);
+      setLeadSuggestions([]);
+      setShowLeadSuggestions(false);
+    }
+  };
+
+  const handleLeadSelect = (lead) => {
+    setForm((prev) => ({
+      ...prev,
+      buyer: {
+        ...prev.buyer,
+        name: lead.customerName || lead.companyName || "",
+        address: lead.address || "",
+        gst: lead.gstin || "",
+      },
+      shippingAddress: lead.shippingAddress || prev.shippingAddress || "",
+    }));
+    setLeadSuggestions([]);
+    setShowLeadSuggestions(false);
+  };
+
+  const handleWarehouseChange = async (warehouseId) => {
+    const selectedWarehouse = warehouses.find((w) => w._id === warehouseId);
+
+    setForm((prev) => ({
+      ...prev,
+      warehouseId,
+      warehouseName: selectedWarehouse?.warehouse || "",
+      products: prev.products.map((p) => ({ ...p, productName: "", hsn: "" })),
+    }));
+
+    if (!warehouseId) {
+      setWarehouseProducts([]);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`${API_URL}/api/products/${warehouseId}`);
+      setWarehouseProducts(res.data || []);
+    } catch (error) {
+      console.error("Failed to fetch warehouse products", error);
+      setWarehouseProducts([]);
+    }
   };
 
   /* Auto calculate total */
@@ -162,10 +249,7 @@ const submit = async () => {
 
     console.log("Sending data:", dataToSend);
 
-    const response = await axios.post(
-      "https://aevix-chemical-mpbw.vercel.app/api/order-acknowledgements",
-      dataToSend
-    );
+    const response = await axios.post(`${API_URL}/api/order-acknowledgements`, dataToSend);
 
     console.log("Response:", response.data);
     onSuccess();
@@ -201,15 +285,55 @@ const submit = async () => {
 
         {/* BUYER */}
         <Section title="Buyer Details">
-          <Input label="Buyer Name" onChange={(v) => update("buyer.name", v)} />
-          <Input label="Address" onChange={(v) => update("buyer.address", v)} />
-          <Input label="GST" onChange={(v) => update("buyer.gst", v)} />
+          <div className="col-span-3 relative">
+            <Input
+              label="Buyer Name"
+              value={form.buyer.name}
+              onChange={handleBuyerNameChange}
+            />
+
+            {showLeadSuggestions && leadSuggestions.length > 0 && (
+              <div className="absolute bg-white border w-full z-20 mt-1 max-h-44 overflow-y-auto shadow rounded">
+                {leadSuggestions.map((lead) => (
+                  <div
+                    key={lead._id}
+                    className="px-3 py-2 border-b last:border-b-0 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleLeadSelect(lead)}
+                  >
+                    <p className="font-medium text-sm">{lead.customerName || lead.companyName}</p>
+                    <p className="text-xs text-gray-600">{lead.customerId || ""} {lead.phone ? `• ${lead.phone}` : ""}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <Input label="Address" value={form.buyer.address} onChange={(v) => update("buyer.address", v)} />
+          <Input label="GST" value={form.buyer.gst} onChange={(v) => update("buyer.gst", v)} />
+        </Section>
+
+        <Section title="Warehouse Details">
+          <div className="col-span-3">
+            <select
+              className="border px-3 py-2 rounded w-full"
+              value={form.warehouseId}
+              onChange={(e) => handleWarehouseChange(e.target.value)}
+            >
+              <option value="">Select Warehouse</option>
+              {warehouses.map((warehouse) => (
+                <option key={warehouse._id} value={warehouse._id}>
+                  {warehouse.warehouse}
+                </option>
+              ))}
+            </select>
+          </div>
         </Section>
 
         {/* SHIPPING ADDRESS */}
         <Section title="Shipping Address">
           <textarea
             className="border px-3 py-2 rounded col-span-3"
+            value={form.shippingAddress}
             onChange={(e) => update("shippingAddress", e.target.value)}
           />
         </Section>
@@ -246,28 +370,42 @@ const submit = async () => {
       </div>
 
       <div className="grid grid-cols-3 gap-3">
-        <Input
-          label="Product Name"
-          onChange={(v) => updateProduct(index, "productName", v)}
-        />
+        <select
+          className="border px-3 py-2 rounded"
+          value={product.productName}
+          onChange={(e) => updateProduct(index, "productName", e.target.value)}
+          disabled={!form.warehouseId}
+        >
+          <option value="">
+            {form.warehouseId ? "Select Product" : "Select Warehouse First"}
+          </option>
+          {warehouseProducts.map((p) => (
+            <option key={p._id} value={p.productName}>
+              {p.productName}
+            </option>
+          ))}
+        </select>
 
-        <Input label="HSN" onChange={(v) => updateProduct(index, "hsn", v)} />
+        <Input label="HSN" value={product.hsn} onChange={(v) => updateProduct(index, "hsn", v)} />
 
         <Input
           type="number"
           label="Quantity"
+          value={product.quantity}
           onChange={(v) => updateProduct(index, "quantity", +v)}
         />
 
         <Input
           type="number"
           label="Unit Price"
+          value={product.unitPrice}
           onChange={(v) => updateProduct(index, "unitPrice", +v)}
         />
 
         <Input
           type="number"
           label="GST Amount"
+          value={product.gstAmount}
           onChange={(v) => updateProduct(index, "gstAmount", +v)}
         />
 
@@ -352,11 +490,12 @@ const Section = ({ title, children }) => (
   </div>
 );
 
-const Input = ({ label, type="text", onChange }) => (
+const Input = ({ label, type="text", onChange, value }) => (
   <input
     type={type}
     placeholder={label}
     className="border px-3 py-2 rounded"
+    value={value ?? ""}
     onChange={(e)=>onChange?.(e.target.value)}
   />
 );
