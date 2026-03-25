@@ -10,8 +10,10 @@ const getLegacyFreight = (products = []) =>
   products.reduce((sum, product) => sum + (Number(product.freight) || 0), 0);
 
 const sanitizeProducts = (products = []) =>
-  products.map(({ productName, quantity, unit, rate }) => ({
+  products.map(({ productName, description, hsnCode, quantity, unit, rate }) => ({
     productName,
+    description: String(description || "").trim(),
+    hsnCode: String(hsnCode || "").trim(),
     quantity: Number(quantity) || 0,
     unit,
     rate: Number(rate) || 0,
@@ -73,6 +75,8 @@ const Invoice = () => {
 
   const [productInput, setProductInput] = useState({
     productName: "",
+    description: "",
+    hsnCode: "",
     quantity: "",
     unit: "",
     rate: "",
@@ -234,6 +238,8 @@ const Invoice = () => {
       setForm({ ...form, warehouse: value, products: [] });
       setProductInput({
         productName: "",
+        description: "",
+        hsnCode: "",
         quantity: "",
         unit: "",
         rate: "",
@@ -312,6 +318,8 @@ const Invoice = () => {
     setSelectedInvoice(null);
     setProductInput({
       productName: "",
+      description: "",
+      hsnCode: "",
       quantity: "",
       unit: "",
       rate: "",
@@ -376,13 +384,15 @@ const Invoice = () => {
 
   // Add product to the products array
   const handleAddProduct = () => {
-    if (!productInput.productName || !productInput.quantity || !productInput.unit || !productInput.rate) {
-      alert("Please fill in all product fields (Product Name, Quantity, Unit, Rate)");
+    if (!productInput.productName || !productInput.hsnCode || !productInput.quantity || !productInput.unit || !productInput.rate) {
+      alert("Please fill in all product fields (Product Name, HSN Code, Quantity, Unit, Rate)");
       return;
     }
 
     const newProduct = {
       productName: productInput.productName,
+      description: productInput.description,
+      hsnCode: productInput.hsnCode,
       quantity: Number(productInput.quantity),
       unit: productInput.unit,
       rate: Number(productInput.rate),
@@ -396,6 +406,8 @@ const Invoice = () => {
     // Reset product input
     setProductInput({
       productName: "",
+      description: "",
+      hsnCode: "",
       quantity: "",
       unit: "",
       rate: "",
@@ -1151,6 +1163,22 @@ const Invoice = () => {
                   ))}
                 </select>
 
+                <input
+                  name="description"
+                  placeholder="Product Description"
+                  className="input border-2 rounded px-2 py-2 w-full mb-3"
+                  onChange={handleProductInputChange}
+                  value={productInput.description}
+                />
+
+                <input
+                  name="hsnCode"
+                  placeholder="HSN Code"
+                  className="input border-2 rounded px-2 py-2 w-full mb-3"
+                  onChange={handleProductInputChange}
+                  value={productInput.hsnCode}
+                />
+
                 <div className="grid grid-cols-4 gap-3 mb-3">
                   <input
                     name="quantity"
@@ -1195,6 +1223,7 @@ const Invoice = () => {
                     <thead className="bg-gray-100">
                       <tr>
                         <th className="p-2 text-left">Product</th>
+                        <th className="p-2 text-left">HSN Code</th>
                         <th className="p-2 text-right">Quantity</th>
                         <th className="p-2 text-left">Unit</th>
                         <th className="p-2 text-right">Rate</th>
@@ -1205,7 +1234,13 @@ const Invoice = () => {
                     <tbody>
                       {form.products.map((product, index) => (
                         <tr key={index} className="border-t">
-                          <td className="p-2">{product.productName}</td>
+                          <td className="p-2">
+                            <div className="font-medium">{product.productName}</div>
+                            {product.description ? (
+                              <div className="text-xs text-gray-500 mt-1">{product.description}</div>
+                            ) : null}
+                          </td>
+                          <td className="p-2">{product.hsnCode || "-"}</td>
                           <td className="p-2 text-right">{product.quantity}</td>
                           <td className="p-2">{product.unit}</td>
                           <td className="p-2 text-right">₹{product.rate}</td>
@@ -1224,19 +1259,19 @@ const Invoice = () => {
                         </tr>
                       ))}
                       <tr className="border-t bg-gray-50">
-                        <td colSpan="4" className="p-2 text-right font-medium">Products Total:</td>
+                        <td colSpan="5" className="p-2 text-right font-medium">Products Total:</td>
                         <td className="p-2 text-right">
                           ₹{productsSubtotal.toFixed(2)}
                         </td>
                         <td></td>
                       </tr>
                       <tr className="border-t bg-gray-50">
-                        <td colSpan="4" className="p-2 text-right font-medium">Invoice Freight:</td>
+                        <td colSpan="5" className="p-2 text-right font-medium">Invoice Freight:</td>
                         <td className="p-2 text-right">₹{invoiceFreight.toFixed(2)}</td>
                         <td></td>
                       </tr>
                       <tr className="border-t bg-gray-50 font-bold">
-                        <td colSpan="4" className="p-2 text-right">Grand Total:</td>
+                        <td colSpan="5" className="p-2 text-right">Grand Total:</td>
                         <td className="p-2 text-right">₹{invoiceGrandTotal.toFixed(2)}</td>
                         <td></td>
                       </tr>

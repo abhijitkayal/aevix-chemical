@@ -96,6 +96,16 @@ const invoiceSchema = new mongoose.Schema(
           type: String,
           required: true,
         },
+        description: {
+          type: String,
+          trim: true,
+          default: "",
+        },
+        hsnCode: {
+          type: String,
+          trim: true,
+          default: "",
+        },
         quantity: {
           type: Number,
           required: true,

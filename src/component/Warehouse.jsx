@@ -334,6 +334,7 @@ export default function Warehouses() {
         "https://aevix-chemical-mpbw.vercel.app/api/warehouses",
       );
       setWarehouses(res.data);
+      console.log(res.data);
     } catch (err) {
       console.error("Failed to fetch warehouses", err);
     }
@@ -413,13 +414,9 @@ export default function Warehouses() {
             </h3>
             <p className="text-gray-500">Location - {w.location}</p>
 
-            <p className="text-sm mt-1">
-              Total Items: <b>{w.totalItems}</b>
-            </p>
+            
 
-            <p className="text-sm mt-1">
-              Capacity: <b>{w.capacity}</b>
-            </p>
+            
 
             {/* OPTIONAL UTILIZATION */}
             {w.capacity > 0 && (

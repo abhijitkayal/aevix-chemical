@@ -11,6 +11,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
     ? invoice.products 
     : [{
         productName: invoice.productName,
+        description: invoice.description,
         quantity: invoice.quantity,
         unit: invoice.unit,
         rate: invoice.rate,
@@ -121,7 +122,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               WEST BENGAL - 700135
             </p>
             <p>Telephone: 033 31556300</p>
-            <p>Kolkata, West Bengal - 700013</p>
+            {/* <p>Kolkata, West Bengal - 700013</p> */}
             <a
               href="http://www.aevixchemical.com"
               className="text-blue-600 underline"
@@ -269,8 +270,13 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
             return (
               <tr key={index}>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{index + 1}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{product.productName}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{invoice.hsn || "-"}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>
+                  <div>{product.productName}</div>
+                  {product.description ? (
+                    <div style={{ fontSize: '10px', color: '#555', marginTop: '4px' }}>{product.description}</div>
+                  ) : null}
+                </td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>{product.hsnCode || invoice.hsn || "-"}</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '12px 5px', lineHeight: '1.4' }}>
                   {qty} {product.unit}
                 </td>

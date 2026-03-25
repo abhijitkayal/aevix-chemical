@@ -11,6 +11,7 @@ export default function WarehouseDetails() {
   const [showForm, setShowForm] = useState(false);
   const [warehouseMax,setWarehouseMax] = useState([]);
   const [warehouseMin,setWarehouseMin] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [form, setForm] = useState({
     productName: "",
@@ -21,18 +22,35 @@ export default function WarehouseDetails() {
   });
   const [editingProductId, setEditingProductId] = useState(null);
 
+  console.log("🔍 WarehouseDetails rendered with id:", id);
 
   /* ---------------- FETCH DATA ---------------- */
   useEffect(() => {
-    const fetchData = async () => {
-      const wRes = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/warehouses");
-      const selected = wRes.data.find((x) => x._id === id);
-      setWarehouse(selected);
+    // ✅ Guard: Don't fetch if id is undefined or empty
+    if (!id) {
+      console.log("⚠️ ID is undefined, skipping fetch");
+      setLoading(false);
+      return;
+    }
+    
+    console.log("✅ Fetching data for warehouse id:", id);
+    setLoading(true);
 
-      const pRes = await axios.get(
-        `https://aevix-chemical-mpbw.vercel.app/api/products/${id}`
-      );
-      setProducts(pRes.data);
+    const fetchData = async () => {
+      try {
+        const wRes = await axios.get("https://aevix-chemical-mpbw.vercel.app/api/warehouses");
+        const selected = wRes.data.find((x) => x._id === id);
+        setWarehouse(selected);
+
+        const pRes = await axios.get(
+          `https://aevix-chemical-mpbw.vercel.app/api/products/${id}`
+        );
+        setProducts(pRes.data);
+        setLoading(false);
+      } catch (err) {
+        console.error("Error fetching warehouse data:", err);
+        setLoading(false);
+      }
     };
 
     fetchData();
@@ -94,15 +112,22 @@ export default function WarehouseDetails() {
 
   setEditingProductId(null);
   setShowForm(false);
-
+  if(!id) return;
+  console.log("hi");
   const res = await axios.get(`https://aevix-chemical-mpbw.vercel.app/api/products/${id}`);
   setProducts(res.data);
 };
 
   
 
+  if (loading || !id) {
+    return <p className="p-6 text-center text-gray-500">
+      {!id ? "Invalid warehouse ID" : "Loading warehouse..."}
+    </p>;
+  }
+
   if (!warehouse) {
-    return <p className="p-6">Loading warehouse...</p>;
+    return <p className="p-6 text-center text-red-500">Warehouse not found</p>;
   }
   
 

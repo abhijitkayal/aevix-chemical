@@ -35,7 +35,15 @@ router.get("/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// Node.js example
 
+  router.get("/delivery-challan/next-number", async (req, res) => {
+  const last = await DeliveryChallan.findOne().sort({ challanNo: -1 });
+
+  const nextNo = last ? last.challanNo + 1 : 1;
+
+  res.json({ nextNo });
+});
 
 // Generate Delivery Challan PDF Buffer for email attachment
 const generateDeliveryChallanPDFBuffer = (dc) => {

@@ -920,17 +920,25 @@ export default function StockOverview() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
   const handleEdit = (item) => {
-    // Navigate to warehouse detail page with the warehouse ID
-    // Extract the warehouse ID (handle both object and string cases)
-    let warehouseId;
-    if (typeof item.warehouseId === "object" && item.warehouseId !== null) {
-      warehouseId = item.warehouseId._id || item.warehouseId;
-    } else {
-      warehouseId = item.warehouseId;
-    }
-
-    console.log("Navigating to warehouse:", warehouseId);
-    navigate(`/warehouse/${warehouseId}`);
+    // Populate form with the selected item data
+    console.log("Editing item:", item);
+    
+    setForm({
+      itemCode: item.itemCode || "",
+      itemName: item.itemName || "",
+      category: item.category || "",
+      physicalState: item.physicalState || "",
+      currentStock: item.currentStock || "",
+      unit: item.unit || "",
+      unitPrice: item.unitPrice || "",
+      reorderLevel: item.reorderLevel || "",
+      warehouse: item.warehouse || "",
+      supplier: item.supplier || "",
+      expiryDate: item.expiryDate || "",
+    });
+    
+    setEditingId(item._id);
+    setShowModal(true);
   };
 
   /* ================= SUBMIT ================= */
@@ -951,11 +959,13 @@ export default function StockOverview() {
           `https://aevix-chemical-mpbw.vercel.app/api/stocks/${editingId}`,
           payload,
         );
+        alert("Stock item updated successfully!");
       } else {
         await axios.post(
           "https://aevix-chemical-mpbw.vercel.app/api/stocks",
           payload,
         );
+        alert("Stock item created successfully!");
       }
 
       setShowModal(false);
@@ -1089,10 +1099,28 @@ export default function StockOverview() {
           <div className="bg-white w-full max-w-2xl rounded-lg p-6 relative">
             <X
               className="absolute right-4 top-4 cursor-pointer"
-              onClick={() => setShowModal(false)}
+              onClick={() => {
+                setShowModal(false);
+                setEditingId(null);
+                setForm({
+                  itemCode: "",
+                  itemName: "",
+                  category: "",
+                  physicalState: "",
+                  currentStock: "",
+                  unit: "",
+                  unitPrice: "",
+                  reorderLevel: "",
+                  warehouse: "",
+                  supplier: "",
+                  expiryDate: "",
+                });
+              }}
             />
 
-            <h2 className="text-xl font-bold mb-4">Add Stock Item</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {editingId ? "Edit Stock Item" : "Add Stock Item"}
+            </h2>
 
             <div className="grid grid-cols-2 gap-4">
               <Input
@@ -1197,10 +1225,26 @@ export default function StockOverview() {
                 onClick={handleSubmit}
                 className="bg-black text-white px-6 py-2 rounded"
               >
-                Save
+                {editingId ? "Update" : "Save"}
               </button>
               <button
-                onClick={() => setShowModal(false)}
+                onClick={() => {
+                  setShowModal(false);
+                  setEditingId(null);
+                  setForm({
+                    itemCode: "",
+                    itemName: "",
+                    category: "",
+                    physicalState: "",
+                    currentStock: "",
+                    unit: "",
+                    unitPrice: "",
+                    reorderLevel: "",
+                    warehouse: "",
+                    supplier: "",
+                    expiryDate: "",
+                  });
+                }}
                 className="px-6 py-2 bg-gray-200 rounded"
               >
                 Cancel

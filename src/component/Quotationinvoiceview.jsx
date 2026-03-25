@@ -40,8 +40,13 @@ export default function QuotationInvoiceView({ quotation }) {
           <img src={logo} alt="logo" className="w-25 h-30 -mt-5" />
           <div>
             <h2 className="text-xl font-bold">AEVIX CHEMICAL INDIA LIMITED</h2>
-            <p>158 Lenin Sarani, 2nd Floor</p>
-            <p>Kolkata, West Bengal - 700013</p>
+             <p>
+              115, VILL. UTTAR JOJRA, PO. ROHANDA, PS. MADHYAMGRAM, KOLKATA,
+              WEST BENGAL - 700135
+            </p>
+            <p>Telephone: 033 31556300</p>
+            <p>Email: connect@aevixchemical.com</p>
+            <p>Website: www.aevixchemical.com</p>
             <p><b>GSTIN:</b> 19ABBCA1860B1Z4 </p>
           </div>
         </div>

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Plus, X } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config/api";
 
 export default function Deliverychalan() {
   const [open, setOpen] = useState(false);
@@ -13,33 +14,54 @@ export default function Deliverychalan() {
   });
   const navigate = useNavigate();
 
-  const [form, setForm] = useState({
-    supplyType: "Outward",
-    customerName: "",
-    address: "",
-    shippingAddress: "",
-    state: "",
-    contactPerson: "",
-    phone: "",
-    gstin: "",
-    placeOfSupply: "",
+const currentYear = new Date().getFullYear();
 
-    productName: "",
-    quantity: "",
+const [form, setForm] = useState({
+  supplyType: "Outward",
+  customerName: "",
+  address: "",
+  shippingAddress: "",
+  state: "",
+  contactPerson: "",
+  phone: "",
+  gstin: "",
+  placeOfSupply: "",
 
-    challanPrefix: "",
-    challanNo: "",
-    challanPostfix: "",
-    challanDate: "",
-    lrNo: "",
-    ewayNo: "",
-    ewayReason: "",
-    deliveryMode: "",
-  });
+  productName: "",
+  quantity: "",
+
+  challanPrefix: "DC",   // ✅ default prefix
+  challanNo: "",
+  challanPostfix: currentYear.toString(), // ✅ year postfix
+  challanDate: "",
+  lrNo: "",
+  ewayNo: "",
+  ewayReason: "",
+  deliveryMode: "",
+  vehicleNo:"",
+});
 
   const [supplyType, setSupplyType] = useState("Outward");
-  const handleChange = (e) =>
+  const handleChange = async (e) =>{
     setForm({ ...form, [e.target.name]: e.target.value });
+     const { name, value } = e.target;
+    if (name === "customerName") {
+    if (value.length >= 2) {
+      try {
+        const res = await axios.get(
+          `${API_URL}/api/leads?search=${encodeURIComponent(value)}`
+        );
+        setSuggestions(res.data);
+        setShowSuggestions(true);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  }
+  }
 
   const saveChallan = async () => {
     await axios.post(
@@ -49,6 +71,8 @@ export default function Deliverychalan() {
     setOpen(false);
     fetchData();
   };
+  const [suggestions, setSuggestions] = useState([]);
+const [showSuggestions, setShowSuggestions] = useState(false);
   const filteredData = data.filter((dc) => {
     if (!dateFilter.from && !dateFilter.to) return true;
     if (!dc.challanDate) return false;
@@ -63,15 +87,45 @@ export default function Deliverychalan() {
     return true;
   });
 
-  const fetchData = async () => {
-    const res = await axios.get(
-      "https://aevix-chemical-mpbw.vercel.app/api/delivery-challan",
-    );
-    setData(res.data);
-  };
+const fetchData = async () => {
+  const res = await axios.get(
+    "https://aevix-chemical-mpbw.vercel.app/api/delivery-challan"
+  );
+
+  setData(res.data);
+
+  // ✅ Auto generate next challan number
+  if (res.data.length > 0) {
+    const last = res.data[res.data.length - 1]; // last entry
+    const nextNo = Number(last.challanNo || 0) + 1;
+
+    setForm((prev) => ({
+      ...prev,
+      challanNo: nextNo,
+    }));
+  } else {
+    setForm((prev) => ({
+      ...prev,
+      challanNo: 1,
+    }));
+  }
+};
+const getNextNumber = async () => {
+  const res = await axios.get(`${API_URL}/api/delivery-challan/next-number`);
+
+  setForm((prev) => ({
+    ...prev,
+    challanNo: res.data.nextNo,
+  }));
+};
+
+
+  
+
 
   useEffect(() => {
     fetchData();
+    getNextNumber();
   }, []);
 
   return (
@@ -154,18 +208,64 @@ export default function Deliverychalan() {
                   </label>
                 </div>
 
-                <input
+                {/* <input
                   name="customerName"
                   placeholder="M/S *"
                   className="w-full border-2 rounded px-2 py-2"
                   onChange={handleChange}
-                />
+                /> */}
+                <div className="relative">
+  <input
+    name="customerName"
+    placeholder="M/S *"
+    className="w-full border-2 rounded px-2 py-2"
+    value={form.customerName}
+    onChange={handleChange}
+    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+  />
+
+  {showSuggestions && suggestions.length > 0 && (
+    <div className="absolute bg-white border w-full z-10 max-h-40 overflow-y-auto shadow-md rounded">
+      {suggestions.map((item) => (
+        <div
+          key={item._id}
+          className="p-2 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+          onClick={() => {
+            setForm((prev) => ({
+              ...prev,
+              customerName: item.customerName || item.companyName || "",
+              address: item.address || "",
+              shippingAddress: item.shippingAddress || "",
+              state: item.state || "",
+              contactPerson: item.customerName || item.companyName || "",
+              phone: item.phone || "",
+              gstin: item.gstin || "",
+              placeOfSupply: item.placeOfSupply || "",
+            }));
+            setSuggestions([]);
+            setShowSuggestions(false);
+          }}
+        >
+          <p className="font-medium text-gray-900">{item.customerName || item.companyName}</p>
+          <p className="text-xs text-gray-600">{item.customerId || ""} {item.phone ? `• ${item.phone}` : ""}</p>
+        </div>
+      ))}
+    </div>
+  )}
+
+  {showSuggestions && form.customerName.length >= 2 && suggestions.length === 0 && (
+    <div className="absolute bg-white border w-full z-10 p-2 text-sm text-gray-500 shadow-md rounded">
+      No customer found
+    </div>
+  )}
+</div>
 
                 <textarea
                   name="address"
                   placeholder="Address"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.address}
                 />
 
                 <input
@@ -173,6 +273,7 @@ export default function Deliverychalan() {
                   placeholder="State"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.state}
                 />
 
                 <textarea
@@ -180,6 +281,7 @@ export default function Deliverychalan() {
                   placeholder="Shipping Address"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.shippingAddress}
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -188,12 +290,14 @@ export default function Deliverychalan() {
                     placeholder="Contact Person"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.contactPerson}
                   />
                   <input
                     name="phone"
                     placeholder="Phone No"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.phone}
                   />
                 </div>
 
@@ -203,12 +307,14 @@ export default function Deliverychalan() {
                     placeholder="GSTIN / PAN"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.gstin}
                   />
                   <input
                     name="placeOfSupply"
                     placeholder="Place of Supply *"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.placeOfSupply}
                   />
                 </div>
               </div>
@@ -219,23 +325,25 @@ export default function Deliverychalan() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <input
-                    name="challanPrefix"
-                    placeholder="Prefix"
-                    className="border-2 rounded px-2 py-2"
-                    onChange={handleChange}
-                  />
-                  <input
-                    name="challanNo"
-                    placeholder="Challan No *"
-                    className="border-2 rounded px-2 py-2"
-                    onChange={handleChange}
-                  />
-                  <input
-                    name="challanPostfix"
-                    placeholder="Postfix"
-                    className="border-2 rounded px-2 py-2"
-                    onChange={handleChange}
-                  />
+  name="challanPrefix"
+  className="border-2 rounded px-2 py-2"
+  value={form.challanPrefix}
+  readOnly
+/>
+
+<input
+  name="challanNo"
+  className="border-2 rounded px-2 py-2"
+  value={form.challanNo}
+  readOnly
+/>
+
+<input
+  name="challanPostfix"
+  className="border-2 rounded px-2 py-2"
+  value={form.challanPostfix}
+  readOnly
+/>
                 </div>
 
                 <input
@@ -243,6 +351,7 @@ export default function Deliverychalan() {
                   placeholder="Product Name"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.productName}
                 />
 
                 <input
@@ -251,6 +360,7 @@ export default function Deliverychalan() {
                   placeholder="Quantity"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.quantity}
                 />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -259,12 +369,14 @@ export default function Deliverychalan() {
                     name="challanDate"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.challanDate}
                   />
                   <input
                     name="lrNo"
                     placeholder="L.R. No"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.lrNo}
                   />
                 </div>
 
@@ -274,19 +386,29 @@ export default function Deliverychalan() {
                     placeholder="E-Way No"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.ewayNo}
                   />
                   <input
                     name="ewayReason"
                     placeholder="Reason for E-Way"
                     className="border-2 rounded px-2 py-2 mt-2"
                     onChange={handleChange}
+                    value={form.ewayReason}
                   />
                 </div>
+                 <input
+                    name="vehicleNo"
+                    placeholder="Vehicle No"
+                    className="border-2 rounded px-2 py-2 mt-2"
+                    onChange={handleChange}
+                    value={form.vehicleNo}
+                  />
 
                 <select
                   name="deliveryMode"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
+                  value={form.deliveryMode}
                 >
                   <option value="">Select Delivery Mode</option>
                   <option>Road</option>

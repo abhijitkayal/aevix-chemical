@@ -16,6 +16,7 @@ const stockSchema = new mongoose.Schema(
     unitPrice: { type: Number, required: true },
     reorderLevel: { type: Number, required: true },
     warehouse: { type: String, required: true },
+    warehouseId: { type: mongoose.Schema.Types.ObjectId, ref: "Warehouse" },
     supplier: { type: String, required: true },
     expiryDate: { type: String },
     status: { type: String, default: "Good" }

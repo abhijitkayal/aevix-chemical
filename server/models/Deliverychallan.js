@@ -58,7 +58,8 @@ const deliveryChallanSchema = new mongoose.Schema(
     ewayNo: String,
     ewayReason: String,
     deliveryMode: String,
-  },
+    vehicleNo:String,
+    },
   { timestamps: true }
 );
 

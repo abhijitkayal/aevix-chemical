@@ -136,12 +136,12 @@ const handleDownloadPDF = () => {
       </a>
           </div>
 
-          <div className="text-left text-sm">
+          {/* <div className="text-left text-sm">
             <p><b>Name:</b> Manab Roy</p>
             <p><b>Phone:</b> 9330324989</p>
             <p><b>Email:</b> manab.roy.ind@gmail.com</p>
             <p><b>PAN:</b> BQJPR8561B</p>
-          </div>
+          </div> */}
         </div>
 
         {/* TITLE */}

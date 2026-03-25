@@ -191,6 +191,15 @@ router.put("/:id", async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+router.get("/leads", async (req, res) => {
+  const { search } = req.query;
+
+  const leads = await Lead.find({
+    name: { $regex: search, $options: "i" },
+  }).limit(10);
+
+  res.json(leads);
+});
 
 /* DELETE */
 router.delete("/:id", async (req, res) => {
