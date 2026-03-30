@@ -83,6 +83,7 @@ const LeadSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    billingDate:String,
   },
   { timestamps: true }
 );

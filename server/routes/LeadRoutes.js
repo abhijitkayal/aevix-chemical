@@ -110,6 +110,7 @@ router.post("/", async (req, res) => {
       shippingAddress,
       reminderDate,
       reminderNote,
+      billingDate,
     } = req.body;
 
     // REQUIRED FIELDS
@@ -142,6 +143,7 @@ router.post("/", async (req, res) => {
       shippingAddress,
       reminderDate: reminderDate || null,
       reminderNote: reminderNote || "",
+      billingDate,
     });
 
     res.status(201).json({

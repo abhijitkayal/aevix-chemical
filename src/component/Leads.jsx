@@ -716,6 +716,7 @@ export default function Leads() {
     shippingAddress: "",
     reminderDate: "",
     reminderNote: "",
+    billingDate: "",
   });
 
   /* ================= FETCH ================= */
@@ -767,6 +768,7 @@ export default function Leads() {
       shippingAddress: "",
       reminderDate: "",
       reminderNote: "",
+      billingDate: "",
     });
     setEditingId(null);
     setShowSuggestions(false);
@@ -802,6 +804,7 @@ export default function Leads() {
       shippingAddress: lead.shippingAddress || "",
       reminderDate: lead.reminderDate ? lead.reminderDate.substring(0, 10) : "",
       reminderNote: lead.reminderNote || "",
+      billingDate: lead.billingDate || "",
     });
 
     setEditingId(lead._id);
@@ -1055,11 +1058,20 @@ export default function Leads() {
                 onChange={handleChange}
                 required
               />
+              <label className="text-sm text-gray-600">Shipping Date</label>
             <input
               type="date"
               className="border p-2 w-full rounded"
               name="reminderDate"
               value={form.reminderDate}
+              onChange={handleChange}
+            />
+            <label className="text-sm text-gray-600">Billing Date</label>
+            <input
+              type="date"
+              className="border p-2 w-full rounded"
+              name="billingDate"
+              value={form.billingDate}
               onChange={handleChange}
             />
 
