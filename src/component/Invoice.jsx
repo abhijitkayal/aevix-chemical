@@ -19,6 +19,16 @@ const sanitizeProducts = (products = []) =>
     rate: Number(rate) || 0,
   }));
 
+const formatDateForInput = (dateValue) => {
+  if (!dateValue) return "";
+  if (typeof dateValue === "string") {
+    return dateValue.includes("T") ? dateValue.slice(0, 10) : dateValue;
+  }
+
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
 const Invoice = () => {
   const [invoices, setInvoices] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
@@ -256,6 +266,9 @@ const Invoice = () => {
   };
 
   const handleCustomerSelect = (customer) => {
+    const leadBillingDate = formatDateForInput(customer.billingDate);
+    const leadShippingDate = formatDateForInput(customer.reminderDate);
+
     setForm({
       ...form,
       customer: customer.customerName,
@@ -266,8 +279,10 @@ const Invoice = () => {
       pan: customer.pan || "",
       placeOfSupply: customer.placeOfSupply || "",
       address: customer.address || "",
+      date: leadBillingDate || form.date,
       shippingDetails: {
         ...form.shippingDetails,
+        shippingDate: leadShippingDate || form.shippingDetails.shippingDate,
         shippingAddress: customer.shippingAddress || "",
       },
     });

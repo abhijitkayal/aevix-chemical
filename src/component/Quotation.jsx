@@ -5,6 +5,16 @@ import QuotationInvoiceView from "./Quotationinvoiceview";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 
+const formatDateForInput = (dateValue) => {
+  if (!dateValue) return "";
+  if (typeof dateValue === "string") {
+    return dateValue.includes("T") ? dateValue.slice(0, 10) : dateValue;
+  }
+
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
 export default function Quotation() {
   const [open, setOpen] = useState(false);
   const [viewOpen, setViewOpen] = useState(false);
@@ -83,15 +93,20 @@ export default function Quotation() {
   };
 
   const handleCustomerSelect = (cust) => {
-    setForm({
-      ...form,
+    const leadBillingDate = formatDateForInput(cust.billingDate);
+    const leadShippingDate = formatDateForInput(cust.reminderDate);
+
+    setForm((prev) => ({
+      ...prev,
       customerName: cust.customerName,
       phone: cust.phone || "",
       gstin: cust.gstin || "",
       placeOfSupply: cust.placeOfSupply || "",
       billingAddress: cust.address || "",
-      shippingAddress: cust.address || "",
-    });
+      shippingAddress: cust.shippingAddress || cust.address || "",
+      quotationDate: leadBillingDate || prev.quotationDate,
+      challanDate: leadShippingDate || prev.challanDate,
+    }));
 
     setShowSuggestions(false);
   };

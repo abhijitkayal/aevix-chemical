@@ -61,6 +61,16 @@ const normalizeFormForEdit = (proforma) => ({
   products: normalizeProducts(proforma?.products),
 });
 
+const formatDateForInput = (dateValue) => {
+  if (!dateValue) return "";
+  if (typeof dateValue === "string") {
+    return dateValue.includes("T") ? dateValue.slice(0, 10) : dateValue;
+  }
+
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
 export default function Proforma() {
   const [open, setOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
@@ -136,14 +146,19 @@ export default function Proforma() {
   };
 
   const selectLead = (lead) => {
+    const leadBillingDate = formatDateForInput(lead.billingDate);
+    const leadShippingDate = formatDateForInput(lead.reminderDate);
+
     setForm((prev) => ({
       ...prev,
       customerName: lead.customerName || "",
       billingAddress: lead.address || "",
-      shippingAddress: lead.address || "",
+      shippingAddress: lead.shippingAddress || lead.address || "",
       phone: lead.phone || "",
       gstin: lead.gstin || "",
       placeOfSupply: lead.placeOfSupply || "",
+      proformaDate: leadBillingDate || prev.proformaDate,
+      challanDate: leadShippingDate || prev.challanDate,
     }));
 
     setLeadSuggestions([]);

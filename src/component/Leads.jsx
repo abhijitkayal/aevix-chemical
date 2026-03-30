@@ -718,6 +718,7 @@ export default function Leads() {
     reminderNote: "",
     billingDate: "",
   });
+  const [searchTerm, setSearchTerm] = useState("");
 
   /* ================= FETCH ================= */
   const fetchLeads = async () => {
@@ -810,6 +811,17 @@ export default function Leads() {
     setEditingId(lead._id);
     setShowModal(true);
   };
+  const filteredLeads = leads.filter((lead) => {
+  const search = searchTerm.toLowerCase();
+
+  return (
+    lead.customerName?.toLowerCase().includes(search) ||
+    lead.companyName?.toLowerCase().includes(search) ||
+    lead.customerId?.toLowerCase().includes(search) ||
+    lead.phone?.toLowerCase().includes(search) ||
+    lead.email?.toLowerCase().includes(search)
+  );
+});
 
   /* ================= DELETE ================= */
   const handleDelete = async (id) => {
@@ -823,6 +835,13 @@ export default function Leads() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h2 className="text-xl md:text-2xl font-bold text-gray-800">Leads</h2>
+        <input
+          type="search"
+          placeholder="Search by customer, company, or ID..."
+          className="border p-2 rounded"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
 
         <button
           onClick={() => setShowModal(true)}
@@ -851,7 +870,7 @@ export default function Leads() {
           </thead>
 
           <tbody className="text-sm">
-            {leads.map((lead) => (
+            {filteredLeads.map((lead) => (
               <tr key={lead._id} className="border-t hover:bg-gray-50">
                 <td className="p-3">{lead.customerName}</td>
                 <td className="p-3">{lead.companyName || "-"}</td>

@@ -4,6 +4,16 @@ import axios from "axios";
 import { X } from "lucide-react";
 import { API_URL } from "../config/api";
 
+const formatDateForInput = (dateValue) => {
+  if (!dateValue) return "";
+  if (typeof dateValue === "string") {
+    return dateValue.includes("T") ? dateValue.slice(0, 10) : dateValue;
+  }
+
+  const parsed = new Date(dateValue);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
 export default function OrderAckForm({ onClose, onSuccess }) {
   const [leadSuggestions, setLeadSuggestions] = useState([]);
   const [showLeadSuggestions, setShowLeadSuggestions] = useState(false);
@@ -163,6 +173,9 @@ const grandTotal = form.products.reduce(
   };
 
   const handleLeadSelect = (lead) => {
+    const leadBillingDate = formatDateForInput(lead.billingDate);
+    const leadShippingDate = formatDateForInput(lead.reminderDate);
+
     setForm((prev) => ({
       ...prev,
       buyer: {
@@ -170,6 +183,11 @@ const grandTotal = form.products.reduce(
         name: lead.customerName || lead.companyName || "",
         address: lead.address || "",
         gst: lead.gstin || "",
+      },
+      shippingDetails: {
+        ...prev.shippingDetails,
+        orderDate: leadBillingDate || prev.shippingDetails.orderDate,
+        dispatchDate: leadShippingDate || prev.shippingDetails.dispatchDate,
       },
       shippingAddress: lead.shippingAddress || prev.shippingAddress || "",
     }));
@@ -279,8 +297,18 @@ const submit = async () => {
         <Section title="Shipping Details">
           <Input label="Net Weight" onChange={(v) => update("shippingDetails.netWeight", v)} />
           <Input label="Gross Weight" onChange={(v) => update("shippingDetails.grossWeight", v)} />
-          <Input type="date" label="Order Date" onChange={(v) => update("shippingDetails.orderDate", v)} />
-          <Input type="date" label="Dispatch Date" onChange={(v) => update("shippingDetails.dispatchDate", v)} />
+          <Input
+            type="date"
+            label="Order Date"
+            value={form.shippingDetails.orderDate}
+            onChange={(v) => update("shippingDetails.orderDate", v)}
+          />
+          <Input
+            type="date"
+            label="Dispatch Date"
+            value={form.shippingDetails.dispatchDate}
+            onChange={(v) => update("shippingDetails.dispatchDate", v)}
+          />
         </Section>
 
         {/* BUYER */}
