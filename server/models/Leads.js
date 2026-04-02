@@ -71,6 +71,7 @@ const LeadSchema = new mongoose.Schema(
     pan: String,
     placeOfSupply: { type: String, required: true },
     shippingAddress: String,
+    billingAddress:String,
 
     // OPTIONAL REMINDER DATE
     reminderDate: {

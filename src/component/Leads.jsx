@@ -714,6 +714,7 @@ export default function Leads() {
     pan: "",
     placeOfSupply: "",
     shippingAddress: "",
+    billingAddress: "",
     reminderDate: "",
     reminderNote: "",
     billingDate: "",
@@ -767,6 +768,7 @@ export default function Leads() {
       pan: "",
       placeOfSupply: "",
       shippingAddress: "",
+      billingAddress: "",
       reminderDate: "",
       reminderNote: "",
       billingDate: "",
@@ -803,6 +805,7 @@ export default function Leads() {
       pan: lead.pan || "",
       placeOfSupply: lead.placeOfSupply || "",
       shippingAddress: lead.shippingAddress || "",
+      billingAddress: lead.billingAddress || "",
       reminderDate: lead.reminderDate ? lead.reminderDate.substring(0, 10) : "",
       reminderNote: lead.reminderNote || "",
       billingDate: lead.billingDate || "",
@@ -1069,6 +1072,15 @@ export default function Leads() {
               onChange={handleChange}
               rows={3}
             />
+            <textarea
+              className="border p-2 w-full rounded"
+              name="billingAddress"
+              placeholder="Billing Address"
+              value={form.billingAddress}
+              onChange={handleChange}
+              rows={3}
+            />
+
             <input
                 className="border p-2 w-full rounded"
                 name="reminderNote"
