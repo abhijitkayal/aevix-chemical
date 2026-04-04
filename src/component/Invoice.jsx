@@ -278,7 +278,7 @@ const Invoice = () => {
       gstin: customer.gstin || "",
       pan: customer.pan || "",
       placeOfSupply: customer.placeOfSupply || "",
-      address: customer.address || "",
+      address: customer.billingAddress || "",
       date: leadBillingDate || form.date,
       shippingDetails: {
         ...form.shippingDetails,

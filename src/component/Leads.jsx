@@ -715,6 +715,7 @@ export default function Leads() {
     placeOfSupply: "",
     shippingAddress: "",
     billingAddress: "",
+    materialName: "",
     reminderDate: "",
     reminderNote: "",
     billingDate: "",
@@ -769,6 +770,7 @@ export default function Leads() {
       placeOfSupply: "",
       shippingAddress: "",
       billingAddress: "",
+      materialName: "",
       reminderDate: "",
       reminderNote: "",
       billingDate: "",
@@ -806,6 +808,7 @@ export default function Leads() {
       placeOfSupply: lead.placeOfSupply || "",
       shippingAddress: lead.shippingAddress || "",
       billingAddress: lead.billingAddress || "",
+      materialName: lead.materialName || "",
       reminderDate: lead.reminderDate ? lead.reminderDate.substring(0, 10) : "",
       reminderNote: lead.reminderNote || "",
       billingDate: lead.billingDate || "",
@@ -867,7 +870,7 @@ export default function Leads() {
               <th className="p-3">Place of Supply</th>
               <th className="p-3">Shipping Address</th>
               <th className="p-3">Reminder Date</th>
-              <th className="p-3">Reminder Note</th>
+              <th className="p-3">Billing Address</th>
               <th className="p-3 text-right">Actions</th>
             </tr>
           </thead>
@@ -1080,16 +1083,24 @@ export default function Leads() {
               onChange={handleChange}
               rows={3}
             />
+            <input
+                className="border p-2 w-full rounded"
+                name="materialName"
+                placeholder="Material Name"
+                value={form.materialName}
+                onChange={handleChange}
+                required
+              />
 
             <input
                 className="border p-2 w-full rounded"
                 name="reminderNote"
-                placeholder="supply material name"
+                placeholder="Reminder Note"
                 value={form.reminderNote}
                 onChange={handleChange}
                 required
               />
-              <label className="text-sm text-gray-600">Shipping Date</label>
+              <label className="text-sm text-gray-600">Reminder Date</label>
             <input
               type="date"
               className="border p-2 w-full rounded"
@@ -1097,14 +1108,14 @@ export default function Leads() {
               value={form.reminderDate}
               onChange={handleChange}
             />
-            <label className="text-sm text-gray-600">Billing Date</label>
+            {/* <label className="text-sm text-gray-600">Billing Date</label>
             <input
               type="date"
               className="border p-2 w-full rounded"
               name="billingDate"
               value={form.billingDate}
               onChange={handleChange}
-            />
+            /> */}
 
             
               

@@ -70,8 +70,10 @@ const LeadSchema = new mongoose.Schema(
     gstin: String,
     pan: String,
     placeOfSupply: { type: String, required: true },
+
     shippingAddress: String,
     billingAddress:String,
+    materialName:String,
 
     // OPTIONAL REMINDER DATE
     reminderDate: {
@@ -84,7 +86,7 @@ const LeadSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    billingDate:String,
+    // billingDate:String,
   },
   { timestamps: true }
 );
