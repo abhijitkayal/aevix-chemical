@@ -890,7 +890,7 @@ export default function Leads() {
                     ? new Date(lead.reminderDate).toLocaleDateString()
                     : "-"}
                 </td>
-                <td className="p-3">{lead.reminderNote || "-"}</td>
+                <td className="p-3">{lead.billingAddress || "-"}</td>
 
                 <td className="p-3 text-right flex gap-3 justify-end">
                   <button
