@@ -102,7 +102,7 @@ export default function Quotation() {
       phone: cust.phone || "",
       gstin: cust.gstin || "",
       placeOfSupply: cust.placeOfSupply || "",
-      billingAddress: cust.address || "",
+      billingAddress: cust.billingAddressaddress || "",
       shippingAddress: cust.shippingAddress || cust.address || "",
       quotationDate: leadBillingDate || prev.quotationDate,
       challanDate: leadShippingDate || prev.challanDate,

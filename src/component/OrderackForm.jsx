@@ -181,7 +181,7 @@ const grandTotal = form.products.reduce(
       buyer: {
         ...prev.buyer,
         name: lead.customerName || lead.companyName || "",
-        address: lead.address || "",
+        address: lead.billingAddress || "",
         gst: lead.gstin || "",
       },
       shippingDetails: {

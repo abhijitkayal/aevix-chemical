@@ -152,7 +152,7 @@ export default function Proforma() {
     setForm((prev) => ({
       ...prev,
       customerName: lead.customerName || "",
-      billingAddress: lead.address || "",
+      billingAddress: lead.billingAddress || "",
       shippingAddress: lead.shippingAddress || lead.address || "",
       phone: lead.phone || "",
       gstin: lead.gstin || "",

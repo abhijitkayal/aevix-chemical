@@ -265,7 +265,7 @@ const fetchLeads = async () => {
             setForm((prev) => ({
               ...prev,
               customerName: item.customerName || item.companyName || "",
-              address: item.address || item.shippingAddress || "",
+              address: item.address || item.billingAddress || "",
               shippingAddress: item.shippingAddress || item.address || "",
               state: item.state || "",
               contactPerson: item.contactPerson || item.customerName || item.companyName || "",
@@ -293,7 +293,7 @@ const fetchLeads = async () => {
 
                 <textarea
                   name="address"
-                  placeholder="Address"
+                  placeholder="Billing Address"
                   className="w-full border-2 rounded px-2 py-2 mt-2"
                   onChange={handleChange}
                   value={form.address}
