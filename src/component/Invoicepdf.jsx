@@ -353,17 +353,17 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               {isWestBengal ? (
                 <>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:CGST(9%)</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>CGST(9%)</td>
                     <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalCgst.toFixed(2)}</td>
                   </tr>
                   <tr>
-                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:SGST(9%)</td>
+                    <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>SGST(9%)</td>
                     <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalSgst.toFixed(2)}</td>
                   </tr>
                 </>
               ) : (
                 <tr>
-                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add:IGST(18%)</td>
+                  <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>IGST(18%)</td>
                   <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{totalIgst.toFixed(2)}</td>
                 </tr>
               )}
