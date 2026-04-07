@@ -377,7 +377,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
               </tr>
             
               <tr>
-                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Add: Freight</td>
+                <td style={{ textAlign: 'left', verticalAlign: 'middle', height: '42px', width: '100px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>Freight</td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle', height: '42px', padding: '0px 0px 8px 8px', lineHeight: '1.4' }}>{invoiceFreight.toFixed(2)}</td>
               </tr>
               <tr className="grand">
