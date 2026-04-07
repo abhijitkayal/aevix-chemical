@@ -31,7 +31,9 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
   const totalCgst = isWestBengal ? totalTaxable * 0.09 : 0;
   const totalSgst = isWestBengal ? totalTaxable * 0.09 : 0;
   const totalIgst = !isWestBengal ? totalTaxable * 0.18 : 0;
-  const grandTotal = totalTaxable + totalCgst + totalSgst + totalIgst;
+  const grandTotal = totalTaxable + totalCgst + totalSgst + totalIgst+ invoiceFreight;
+  const remainingAmount = invoice.payment?.remainingAmount + totalCgst + totalSgst + totalIgst + invoiceFreight;
+  console.log(remainingAmount);
 
   const amountInWords = (num) => {
     const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
@@ -89,6 +91,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
   };
 
   const consignee = invoice.consignee || {};
+  
 
   return (
     <div
@@ -208,7 +211,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           </p>
           <p>
             <strong>Address:</strong>{" "}
-            {consignee.address || invoice.shippingDetails?.netWeight}
+            {consignee.address || invoice.shippingDetails?.shippingAddress}
           </p>
           <p>
             <strong>Phone:</strong> {consignee.phone || invoice.phone}
@@ -331,7 +334,7 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
           <p className="px-6"><strong>Payment Date:</strong>{invoice.payment?.paymentDate || " Till not payment"}</p>
           <p className="px-6"><strong>Payment Type:</strong> {invoice.payment?.paymentType || " Till not payment"}</p>
           <p className="px-6"><strong>Paid Amount:</strong> {invoice.payment?.paidAmount || " Till not payment"}</p>
-          <p className="px-6"><strong>Remaining Amount:</strong>{invoice.payment?.remainingAmount || " Till not payment"}</p>
+          <p className="px-6"><strong>Remaining Amount:</strong> {remainingAmount || "till not payment"}</p>
         </div>
 
         <div className="tax-summary">

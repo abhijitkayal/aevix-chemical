@@ -460,6 +460,7 @@ const Invoice = () => {
     const byteArray = new Uint8Array(byteArrays);
     return new Blob([byteArray], { type });
   };
+  // const remainingAmount=inv.payment?.remainingAmount+cgst+sgst+igst;
 
   const handleWhatsAppSend = async () => {
     if (!whatsappForm.mobile || !previewInvoice) return;
@@ -777,7 +778,7 @@ const Invoice = () => {
                 </td>
 
                 <td className="p-3 text-right font-semibold">
-                  ₹{inv.totalAmount}
+                  ₹{inv.payment?.remainingAmount + (inv.totalAmount*18)/100 + inv.freight || inv.totalAmount + (inv.totalAmount*18)/100 +inv.freight}
                 </td>
                 {/* <th className="flex fext-col"> */}
                 <td className="p-3 text-center">
@@ -918,7 +919,7 @@ const Invoice = () => {
               <input
                 disabled
                 className="w-full border px-3 py-2 rounded bg-gray-100"
-                value={`Total Amount: ₹${paymentForm.totalAmount}`}
+                value={`Total Amount: ₹${paymentForm.totalAmount + (paymentForm.totalAmount*18)/100 + (selectedInvoice?.freight || 0)}`} // Display total with tax and freight
               />
 
               <input
@@ -935,7 +936,7 @@ const Invoice = () => {
                 disabled
                 className="w-full border px-3 py-2 rounded bg-gray-100"
                 value={`Remaining: ₹${
-                  paymentForm.totalAmount - (paymentForm.paidAmount || 0)
+                  paymentForm.totalAmount + (paymentForm.totalAmount*18)/100 + (selectedInvoice?.freight || 0) - (paymentForm.paidAmount || 0)
                 }`}
               />
 
