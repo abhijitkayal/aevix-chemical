@@ -23,6 +23,21 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Get one
+router.get('/:id', async (req, res) => {
+  try {
+    const invoice = await PurchaseInvoice.findById(req.params.id);
+
+    if (!invoice) {
+      return res.status(404).json({ message: 'Purchase invoice not found' });
+    }
+
+    res.json(invoice);
+  } catch (err) {
+    res.status(500).json({ message: 'Failed to fetch purchase invoice', error: err.message });
+  }
+});
+
 // Update
 router.put('/:id', async (req, res) => {
   try {
@@ -37,5 +52,28 @@ router.put('/:id', async (req, res) => {
     res.status(500).json({ message: 'Failed to update purchase invoice', error: err.message });
   }
 });
+
+
+/* ======================
+   DELETE INVOICE
+====================== */
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await PurchaseInvoice.findByIdAndDelete(id);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
+
+    res.json({ message: "Invoice deleted successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Delete failed" });
+  }
+});
+
+
 
 export default router;

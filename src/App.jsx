@@ -148,6 +148,7 @@ import PurchaseInvoicePage from "./component/Purchaseinvoice.jsx";
 import Login from "./component/Login.jsx";
 import OtpVerify from "./component/Otpverify.jsx";
 import ViewInvoice from "./component/ViewInvoice.jsx";
+import ViewPurchaseInvoice from "./component/ViewPurchaseInvoice.jsx";
 import Batch from "./component/Batch.jsx";
 import ViewDeliveryChallan from "./component/Viewdeliverychallan.jsx";
 
@@ -191,6 +192,10 @@ function App() {
                 <Route
                   path="/billing/purchase-invoices"
                   element={<PurchaseInvoicePage />}
+                />
+                <Route
+                  path="/purchase-invoices/view/:id"
+                  element={<ViewPurchaseInvoice />}
                 />
                 <Route path="/billing/quotations" element={<Quotation />} />
                 <Route path="/billing/ledgers" element={<Ledger />} />
