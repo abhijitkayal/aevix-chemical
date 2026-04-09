@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config/api";
-import PurchaseInvoicePDF, { downloadPurchaseInvoicePdf } from "./PurchaseInvoicePDF";
+import PurchaseInvoicePDF from "./PurchaseInvoicePDF";
+import { downloadPurchaseInvoicePdf } from "./downloadPurchaseInvoicePdf";
 
 const ViewPurchaseInvoice = () => {
   const { id } = useParams();
@@ -64,7 +65,7 @@ const ViewPurchaseInvoice = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
+    <div className="min-h-screen bg-gray-100 p-6 mt-10">
       <div className="max-w-6xl mx-auto mb-4 flex items-center justify-between">
         <button onClick={() => navigate(-1)} className="text-blue-600 underline">
           ← Back

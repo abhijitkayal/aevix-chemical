@@ -28,13 +28,15 @@ const PurchaseInvoiceSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Warehouse",
     },
-    product: {
-      productName: String,
-      description: String,
-      hsnCode: String,
-      quantity: Number,
-      unitPrice: Number,
-    },
+    products: [
+      {
+        productName: String,
+        description: String,
+        hsnCode: String,
+        quantity: Number,
+        unitPrice: Number,
+      },
+    ],
     shippingDetails: {
       shippingDate: Date,
       grossWeight: Number,
