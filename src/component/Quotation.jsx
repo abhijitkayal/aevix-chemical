@@ -47,6 +47,7 @@ export default function Quotation() {
 
   const [currentItem, setCurrentItem] = useState({
     productName: "",
+    productDescription: "",
     quantity: "",
     rate: "",
     state: "",
@@ -137,7 +138,7 @@ export default function Quotation() {
       return;
     }
     setForm({ ...form, items: [...form.items, currentItem] });
-    setCurrentItem({ productName: "", quantity: "", rate: "", state: "" });
+    setCurrentItem({ productName: "",productDescription:"", quantity: "", rate: "", state: "" });
   };
 
   const removeItem = (index) => {
@@ -338,6 +339,7 @@ export default function Quotation() {
             });
             setCurrentItem({
               productName: "",
+              productDescription: "",
               quantity: "",
               rate: "",
               state: "",
@@ -685,6 +687,13 @@ export default function Quotation() {
                   placeholder="Product Name"
                   className="border-2 rounded px-2 py-2"
                   value={currentItem.productName}
+                  onChange={handleItemChange}
+                />
+                 <input
+                  name="productDescription"
+                  placeholder="Product Description"
+                  className="border-2 rounded px-2 py-2"
+                  value={currentItem.productDescription}
                   onChange={handleItemChange}
                 />
                 <input

@@ -389,6 +389,9 @@ function computeVisibleTabs(role) {
   const lower = role.toLowerCase();
   const isAdmin = lower.includes("admin");
   const isAccountant = lower.includes("accountant");
+  const isSales=lower.includes("sales");
+  const isMarketing=lower.includes("marketing");
+  const isChemist=lower.includes("chemist");
 
   if (isAdmin) return baseTabs;
 
@@ -412,7 +415,78 @@ function computeVisibleTabs(role) {
           : tab,
       );
   }
+  // if(isSales){
+  //   return baseTabs
+  //   .filter((tab) => ["Dashboard", "Billing"].includes(tab.name))
+  //   .map((tab) =>
+  //       tab.name === "Billing"
+  //         ? {
+  //             ...tab,
+  //             subtabs: tab.subtabs.filter((s) =>
+  //               [
+  //                 "Quotations",
+  //                 "Proforma",
+  //                 "Order Acknowledgement",
+  //               ].includes(s.name),
+  //             ),
+  //           }
+  //         : tab,
+  //     );
+  // }
 
+  if (isSales || isMarketing) {
+  return baseTabs
+    .filter((tab) =>
+      ["Dashboard", "Billing", "Users & CRM"].includes(tab.name)
+    )
+    .map((tab) => {
+      // Billing filter
+      if (tab.name === "Billing") {
+        return {
+          ...tab,
+          subtabs: tab.subtabs.filter((s) =>
+            [
+              "Quotations",
+              "Proforma",
+              "Order Acknowledgement",
+            ].includes(s.name)
+          ),
+        };
+      }
+
+      // User & CRM filter (🔥 your requirement)
+      if (tab.name === "Users & CRM") {
+        return {
+          ...tab,
+          subtabs: tab.subtabs.filter((s) =>
+            ["Customer / Vendors"].includes(s.name)
+          ),
+        };
+      }
+
+      return tab;
+    });
+}
+ if (isChemist) {
+    return baseTabs
+      .filter((tab) => ["Dashboard", "Production"].includes(tab.name))
+      .map((tab) =>
+        tab.name === "Production"
+          ? {
+              ...tab,
+              subtabs: tab.subtabs.filter((s) =>
+                [
+                  "BOM",
+                  "Job Work",
+                  "Product Formulation",
+                  "Planning",
+                  // "Delivery Challan",
+                ].includes(s.name),
+              ),
+            }
+          : tab,
+      );
+  }
   return baseTabs;
 }
 

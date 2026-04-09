@@ -23,6 +23,7 @@ const QuotationSchema = new mongoose.Schema(
     items: [
       {
         productName: String,
+        productDescription: String,
         quantity: Number,
         rate: Number,
         state: String,
