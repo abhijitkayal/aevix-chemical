@@ -687,7 +687,7 @@ const Invoice = () => {
         );
       } else {
         // ✅ CREATE
-        await axios.post(`https://aevix-chemical-mpbw.vercel.app/api/invoices`, payload);
+        await axios.post(`${API_URL}/api/invoices`, payload);
       }
 
       setShowModal(false);
@@ -749,7 +749,7 @@ const Invoice = () => {
               <th className="p-3 text-left">Customer</th>
               <th className="p-3 text-left">Warehouse</th>
               <th className="p-3 text-left">Product</th>
-              <th className="p-3 text-right">Amount</th>
+              <th className="p-3 text-left"> Amount</th>
               <th className="p-3 text-right">Payment Type</th>
               <th className="p-3 text-center">Actions</th>
             </tr>
@@ -778,7 +778,7 @@ const Invoice = () => {
                 </td>
 
                 <td className="p-3 text-right font-semibold">
-                  ₹{inv.payment?.remainingAmount + (inv.totalAmount*18)/100 + inv.freight || inv.totalAmount + (inv.totalAmount*18)/100 +inv.freight}
+                  ₹{ (inv.totalAmount-(inv.freight)||0)*0.18 + inv.totalAmount  }
                 </td>
                 {/* <th className="flex fext-col"> */}
                 <td className="p-3 text-center">
@@ -919,7 +919,7 @@ const Invoice = () => {
               <input
                 disabled
                 className="w-full border px-3 py-2 rounded bg-gray-100"
-                value={`Total Amount: ₹${paymentForm.totalAmount + (paymentForm.totalAmount*18)/100 + (selectedInvoice?.freight || 0)}`} // Display total with tax and freight
+                value={`Total Amount: ₹${paymentForm.totalAmount }`} // Display total with tax and freight
               />
 
               <input

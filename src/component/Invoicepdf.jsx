@@ -27,13 +27,13 @@ const InvoicePDF = forwardRef(({ invoice }, ref) => {
     const rate = Number(product.rate) || 0;
     return sum + qty * rate;
   }, 0);
-  const totalTaxable = productSubtotal + invoiceFreight;
+  const totalTaxable = productSubtotal;
   const totalCgst = isWestBengal ? totalTaxable * 0.09 : 0;
   const totalSgst = isWestBengal ? totalTaxable * 0.09 : 0;
   const totalIgst = !isWestBengal ? totalTaxable * 0.18 : 0;
   const grandTotal = totalTaxable + totalCgst + totalSgst + totalIgst+ invoiceFreight;
   const remainingAmount = invoice.payment?.remainingAmount + totalCgst + totalSgst + totalIgst + invoiceFreight;
-  console.log(remainingAmount);
+  // console.log(remainingAmount);
 
   const amountInWords = (num) => {
     const ones = ['', 'ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT', 'NINE'];
